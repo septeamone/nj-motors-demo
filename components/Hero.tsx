@@ -27,7 +27,7 @@ export function Hero() {
         </h1>
 
         <p className="lead mt-4 !max-w-[40ch] max-sm:!text-[16px] lg:mt-6 lg:text-[18px]">
-          Подбираем, проверяем и привозим под ключ. Цену и каждый этап сделки вы видите до оплаты.
+          Подбираем, проверяем, привозим. Цену и каждый этап вы видите до оплаты.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 lg:mt-8">
