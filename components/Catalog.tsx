@@ -67,7 +67,7 @@ export function Catalog() {
                       <p className="label">{PRICE_LABEL}</p>
                       <p className="num mt-1 text-[24px] leading-none">{rub(car.price)}</p>
                     </div>
-                    <ArrowUpRight className="size-5 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={1.75} />
+                    <ArrowUpRight className="size-6 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={1.75} />
                   </div>
                 </div>
               </button>

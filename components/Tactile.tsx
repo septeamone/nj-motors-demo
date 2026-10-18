@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const TARGET = ".btn, .pill, [role='radio'], summary, [data-state] > button";
+const TARGET = ".btn, .pill, [role='radio'], summary, button[aria-expanded]";
 
 /** A press on a button leaves a red NJ stamp under the finger and gives a short buzz where the device can (Android). */
 export function Tactile() {
@@ -10,8 +10,8 @@ export function Tactile() {
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const onDown = (e: PointerEvent) => {
       if (e.button !== 0 || !(e.target instanceof Element) || !e.target.closest(TARGET)) return;
-      navigator.vibrate?.(10);
       if (calm) return;
+      navigator.vibrate?.(10);
       const s = document.createElement("span");
       s.setAttribute("aria-hidden", "true");
       s.textContent = "NJ";

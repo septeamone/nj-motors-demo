@@ -122,8 +122,10 @@ body {
 p,
 li {
   text-wrap: pretty;
-  hyphens: auto;
   hanging-punctuation: first last;
+}
+p {
+  hyphens: auto;
 }
 ::selection {
   background: var(--accent-fill);
@@ -1076,23 +1078,13 @@ html[data-intro="glide"] a[aria-label^="NJ Motors — Cars"] {
 .nj-ic .rs { stroke: var(--accent-fill); }
 .nj-ic .f { fill: currentColor; stroke: none; }
 
-/* ===== PRINT: paper grain and a second ink slightly off register ===== */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  pointer-events: none;
-  opacity: 0.085;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 1.4 -.35'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-[data-theme="light"] body::after {
-  opacity: 0.14;
-}
+/* ===== PRINT: a second ink slightly off register ===== */
 /* cars: the red plate peeks out a few pixels from under the photo */
-.stage img.car,
-.car-ink {
-  filter: drop-shadow(3px 2px 0 color-mix(in srgb, var(--accent) 34%, transparent));
+@media (min-width: 1024px) {
+  .stage img.car,
+  .car-ink {
+    filter: drop-shadow(3px 2px 0 color-mix(in srgb, var(--accent) 34%, transparent));
+  }
 }
 
 /* ===== MOTION: scroll-driven, no JavaScript. Where unsupported or reduced motion is asked for, nothing moves ===== */
@@ -1131,8 +1123,22 @@ body::after {
   select {
     cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M7 4 7 25 12.6 19.8 16.2 28 20.3 26.2 16.7 18.2 24 17.8Z' transform='translate%282.4 1.8%29' fill='%23040c14' stroke='%23040c14' stroke-width='2'/%3E%3Cpath d='M7 4 7 25 12.6 19.8 16.2 28 20.3 26.2 16.7 18.2 24 17.8Z' fill='%23d40404' stroke='%23f3e8d6' stroke-width='2.6'/%3E%3C/svg%3E") 7 4, pointer;
   }
+  button:disabled {
+    cursor: not-allowed;
+  }
   input:not([type="checkbox"]),
-  textarea {
+  textarea,
+  p,
+  li {
     cursor: text;
+  }
+}
+
+.font-display {
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce) {
+  .korea-reveal {
+    display: none;
   }
 }
