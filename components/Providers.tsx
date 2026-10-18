@@ -2,6 +2,7 @@
 
 import Lenis from "lenis";
 import { useEffect } from "react";
+import { Tactile } from "./Tactile";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -17,5 +18,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <>{children}</>;
+  return (
+    <>
+      <Tactile />
+      {children}
+    </>
+  );
 }

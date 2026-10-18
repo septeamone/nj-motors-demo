@@ -1116,3 +1116,23 @@ body::after {
     }
   }
 }
+
+/* ===== CURSOR: the arrow drawn like the icon set: thick round line and a red plate printed off to one side ===== */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M7 4 7 25 12.6 19.8 16.2 28 20.3 26.2 16.7 18.2 24 17.8Z' transform='translate%282.4 1.8%29' fill='%23d40404' stroke='%23d40404' stroke-width='2'/%3E%3Cpath d='M7 4 7 25 12.6 19.8 16.2 28 20.3 26.2 16.7 18.2 24 17.8Z' fill='%23040c14' stroke='%23f3e8d6' stroke-width='2.6'/%3E%3C/svg%3E") 7 4, auto;
+  }
+  a,
+  button,
+  summary,
+  [role="radio"],
+  [role="button"],
+  label[for],
+  select {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M7 4 7 25 12.6 19.8 16.2 28 20.3 26.2 16.7 18.2 24 17.8Z' transform='translate%282.4 1.8%29' fill='%23040c14' stroke='%23040c14' stroke-width='2'/%3E%3Cpath d='M7 4 7 25 12.6 19.8 16.2 28 20.3 26.2 16.7 18.2 24 17.8Z' fill='%23d40404' stroke='%23f3e8d6' stroke-width='2.6'/%3E%3C/svg%3E") 7 4, pointer;
+  }
+  input:not([type="checkbox"]),
+  textarea {
+    cursor: text;
+  }
+}

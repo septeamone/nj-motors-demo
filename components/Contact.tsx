@@ -81,7 +81,10 @@ ${text}` : text }));
     if (!endpoint) {
       // No receiver is connected yet (site.json). Only the local preview pretends to send;
       // a production build says honestly that nothing was delivered. `npm run check:publish` blocks the release.
-      if (process.env.NODE_ENV !== "production") timer.current = setTimeout(() => setStatus("success"), 1200);
+      if (process.env.NODE_ENV !== "production") timer.current = setTimeout(() => {
+          navigator.vibrate?.([20, 60, 35]);
+          setStatus("success");
+        }, 1200);
       else setStatus("error");
       return;
     }
@@ -93,6 +96,7 @@ ${text}` : text }));
         body: JSON.stringify({ ...f, source: "njmotors-landing" }),
       });
       if (!r.ok) throw new Error(String(r.status));
+      navigator.vibrate?.([20, 60, 35]);
       setStatus("success");
     } catch {
       setStatus("error");
