@@ -17,8 +17,8 @@ export function Tactile() {
       s.textContent = "NJ";
       const turn = (Math.random() * 18 - 9).toFixed(1);
       s.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;z-index:95;pointer-events:none;translate:-50% -50%;` +
-        "display:grid;place-items:center;width:54px;height:54px;border:3px solid var(--accent);border-radius:5px;" +
-        "color:var(--accent);font:400 19px/1 var(--font-russo),sans-serif;letter-spacing:.04em;";
+        "display:grid;place-items:center;width:36px;height:36px;border:2px solid var(--accent);border-radius:4px;" +
+        "color:var(--accent);font:400 13px/1 var(--font-russo),sans-serif;letter-spacing:.04em;";
       document.body.appendChild(s);
       s.animate(
         [

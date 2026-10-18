@@ -104,7 +104,7 @@ ${text}` : text }));
   };
 
   return (
-    <section id="contact" className="drench halftone relative overflow-hidden py-16 lg:py-24">
+    <section id="contact" className="drench halftone relative overflow-hidden py-12 lg:py-16">
       <Bolt size={520} className="pointer-events-none absolute -right-10 -bottom-10 -z-10 hidden rotate-[12deg] text-[#040c14] opacity-[0.12] lg:block" />
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">

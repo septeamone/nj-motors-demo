@@ -11,13 +11,36 @@ const OPTIONS: { value: Theme; label: string; icon: IconName }[] = [
   { value: "dark", label: "Тёмная тема", icon: "moon" },
 ];
 
+const poly = (t: number) => `polygon(0 0, ${t}% 0, ${t - 30}% 100%, 0 100%)`;
+const bandPoly = (t: number) => `polygon(${t - 7}% 0, ${t}% 0, ${t - 30}% 100%, ${t - 37}% 100%)`;
+
+/** The new theme is revealed by a slanted edge sweeping across the screen, with a red strip riding on it. */
 function apply(t: Theme) {
+  const root = document.documentElement;
   const set = () => {
-    document.documentElement.dataset.theme = t;
+    root.dataset.theme = t;
   };
-  // View Transitions crossfade a GPU snapshot instead of animating every element.
-  if (document.startViewTransition) document.startViewTransition(set);
-  else set();
+  if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    set();
+    return;
+  }
+  root.classList.add("theme-flip");
+  const band = document.createElement("div");
+  band.className = "theme-band";
+  band.setAttribute("aria-hidden", "true");
+  const run = document.startViewTransition(() => {
+    set();
+    document.body.appendChild(band);
+  });
+  run.ready.then(() => {
+    const opts = { duration: 950, easing: "cubic-bezier(0.76, 0, 0.24, 1)", fill: "forwards" as const };
+    root.animate({ clipPath: [poly(0), poly(140)] }, { ...opts, pseudoElement: "::view-transition-new(root)" });
+    root.animate({ clipPath: [bandPoly(0), bandPoly(140)] }, { ...opts, pseudoElement: "::view-transition-new(band)" });
+  });
+  run.finished.finally(() => {
+    band.remove();
+    root.classList.remove("theme-flip");
+  });
 }
 
 export function ThemeToggle() {

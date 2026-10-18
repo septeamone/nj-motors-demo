@@ -11,7 +11,7 @@ import { Reveal, SectionHead } from "./ui";
 /** One list: six steps, and on four of them the payment that belongs to that step. */
 export function Process() {
   return (
-    <section id="process" className="halftone border-t-[6px] border-accent bg-bg-2 pt-10 pb-16 lg:pt-16 lg:pb-28" style={{ ["--ht-dir" as string]: "80deg" }}>
+    <section id="process" className="halftone border-t-[6px] border-accent bg-bg-2 pt-8 pb-10 lg:pt-12 lg:pb-16" style={{ ["--ht-dir" as string]: "80deg" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           eyebrow="Сделка" n="03" shift={1}

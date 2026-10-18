@@ -14,7 +14,7 @@ import { Bolt, Reveal, SectionHead } from "./ui";
 export function Catalog() {
   const [open, setOpen] = useState<Car | null>(null);
   return (
-    <section id="catalog" className="cut-bottom halftone border-t border-line bg-bg-2 pt-12 lg:pt-20" style={{ ["--cut" as string]: "5.5rem", ["--ht-dir" as string]: "280deg" }}>
+    <section id="catalog" className="cut-bottom halftone border-t border-line bg-bg-2 pt-10 lg:pt-14" style={{ ["--cut" as string]: "5.5rem", ["--ht-dir" as string]: "280deg" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           eyebrow="Автомобили" n="01" shift={0}
@@ -22,9 +22,9 @@ export function Catalog() {
           lead="Примеры. Реальный автомобиль подбираем под вашу задачу, цену считаем до заказа."
         />
 
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
+        <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
           {CARS.map((car, i) => (
-            <Reveal as="li" key={car.slug} delay={i * 0.05}>
+            <Reveal as="li" key={car.slug} delay={i * 0.05} className="w-[80%] shrink-0 snap-start sm:w-auto">
               <button
                 type="button"
                 onClick={() => setOpen(car)}

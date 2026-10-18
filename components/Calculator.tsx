@@ -122,7 +122,7 @@ export function Calculator() {
     );
 
   return (
-    <section ref={section} id="calc" className="mx-auto max-w-[var(--page)] px-5 pt-20 pb-12 sm:px-8 lg:px-12 lg:pt-32 lg:pb-20 xl:px-20">
+    <section ref={section} id="calc" className="mx-auto max-w-[var(--page)] px-5 pt-14 pb-10 sm:px-8 lg:px-12 lg:pt-20 lg:pb-14 xl:px-20">
       <SectionHead
         eyebrow="Расчёт" n="02" shift={2}
         title="Сколько это стоит"

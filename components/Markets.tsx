@@ -45,9 +45,7 @@ export function Markets() {
   // seen while the halves part (scroll 0-600), gone right after, so it never sits on top of the next block
   const fade = useTransform(scrollY, [300, 500], [1, 0]);
 
-  // with reduced motion nothing fades it out, so it would cover the page below: it is simply not shown
-  if (reduce) return null;
-
+  // with reduced motion nothing fades it out, so the stylesheet hides it (.korea-reveal in globals.css)
   return (
     <motion.div aria-hidden style={reduce ? undefined : { opacity: fade }} className="korea-reveal pointer-events-none absolute inset-0 overflow-hidden bg-[#05090d] text-white">
       <motion.div style={reduce ? undefined : { y: photoY, scale: photoS }} className="absolute -inset-y-[8%] inset-x-0">

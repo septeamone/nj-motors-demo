@@ -31,7 +31,7 @@ function RouteVertical() {
       <span aria-hidden className="absolute top-2 bottom-2 left-0 w-[3px] bg-line-strong" />
       <motion.span aria-hidden style={{ scaleY: scrollYProgress }} className="absolute top-2 bottom-2 left-0 w-[3px] origin-top bg-accent" />
       {STOPS.map((s) => (
-        <li key={s.name} className="relative pb-9 pl-8 last:pb-0">
+        <li key={s.name} className="relative pb-6 pl-8 last:pb-0">
           <span aria-hidden className="absolute top-1 -left-[7px] size-[17px] rounded-full border-[3px] border-accent bg-bg" />
           <p className="flex items-center gap-2.5 text-[20px] font-bold text-ink">
             <NjIcon name={s.icon} className="size-8" />
