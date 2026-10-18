@@ -1,5 +1,6 @@
 "use client";
 
+import { nb } from "@/lib/typo";
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { asset } from "@/lib/asset";
@@ -141,7 +142,7 @@ export function SectionHead({
           <Lines text={title} className="h2 max-w-[18ch]" />
           {lead && (
             <Reveal delay={0.1}>
-              <p className="lead">{lead}</p>
+              <p className="lead">{typeof lead === "string" ? nb(lead) : lead}</p>
             </Reveal>
           )}
         </div>

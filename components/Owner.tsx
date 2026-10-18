@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
+import { nb } from "@/lib/typo";
 import { PhoneMock } from "./PhoneMock";
 import { NjIcon, type IconName } from "./NjIcon";
 import { Reveal, SectionHead } from "./ui";
@@ -55,7 +56,7 @@ export function Owner() {
                 <NjIcon name={icon} className="size-9" />
                 <span>
                   <span className="block text-[16px] font-bold text-ink">{t}</span>
-                  <span className="mt-1 block max-w-[52ch] text-[16px] leading-snug text-ink-2">{d}</span>
+                  <span className="mt-1 block max-w-[52ch] text-[16px] leading-snug text-ink-2">{nb(d)}</span>
                 </span>
               </li>
             ))}

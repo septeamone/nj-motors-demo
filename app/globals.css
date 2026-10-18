@@ -85,7 +85,7 @@
   --color-on-accent: var(--on-accent);
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
-  --font-display: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  --font-display: var(--font-head), "Arial Narrow", system-ui, sans-serif;
   --font-sans: var(--font-onest), system-ui, sans-serif;
   --font-mono: var(--font-onest), system-ui, sans-serif;
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
@@ -119,6 +119,12 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
+p,
+li {
+  text-wrap: pretty;
+  hyphens: auto;
+  hanging-punctuation: first last;
+}
 ::selection {
   background: var(--accent-fill);
   color: var(--on-accent);
@@ -145,19 +151,19 @@ html.lenis body {
 
 /* ---------- Type ---------- */
 .display {
-  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
-  font-weight: 400;
+  font-family: var(--font-head), "Arial Narrow", system-ui, sans-serif;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.004em;
-  line-height: 0.98;
+  letter-spacing: 0.002em;
+  line-height: 0.94;
   text-wrap: balance;
 }
 .h2 {
-  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
-  font-weight: 400;
+  font-family: var(--font-head), "Arial Narrow", system-ui, sans-serif;
+  font-weight: 800;
   text-transform: uppercase;
-  font-size: clamp(28px, 3.7vw, 54px);
-  line-height: 1;
+  font-size: clamp(38px, 5vw, 76px);
+  line-height: 0.95;
   letter-spacing: 0.004em;
   text-wrap: balance;
 }

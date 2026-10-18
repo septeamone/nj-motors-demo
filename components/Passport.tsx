@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { asset } from "@/lib/asset";
 import { DUR, EASE } from "@/lib/motion";
+import { nb } from "@/lib/typo";
 import { DEAL_STAGES, STEPS } from "@/lib/data";
 import { NjIcon, type IconName } from "./NjIcon";
 
@@ -45,7 +46,7 @@ export function Passport() {
               </div>
 
               <div className="flex flex-1 flex-col px-7 py-5 pl-9">
-                <p className="max-w-[46ch] pr-[26%] text-[clamp(17px,1.6vw,19px)] leading-snug">{s.text}</p>
+                <p className="max-w-[46ch] pr-[26%] text-[clamp(17px,1.6vw,19px)] leading-snug">{nb(s.text)}</p>
 
                 <div className="mt-auto pr-[34%]">
                   {pay ? (

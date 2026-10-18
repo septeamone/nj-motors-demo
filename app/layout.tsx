@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Onest, Russo_One } from "next/font/google";
+import { Fira_Sans_Extra_Condensed, Onest, Russo_One } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
 
@@ -8,6 +8,13 @@ const russo = Russo_One({
   variable: "--font-russo",
   subsets: ["latin", "cyrillic"],
   weight: "400",
+});
+
+// Headings: a tall, tight grotesque in the manner of road signs and press headlines. Russo One stays for numbers, stamps and buttons.
+const head = Fira_Sans_Extra_Condensed({
+  variable: "--font-head",
+  subsets: ["latin", "cyrillic"],
+  weight: ["700", "800"],
 });
 
 const onest = Onest({
@@ -50,7 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="ru"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${russo.variable} ${onest.variable}`}
+      className={`${russo.variable} ${head.variable} ${onest.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

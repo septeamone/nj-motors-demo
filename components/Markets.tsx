@@ -24,7 +24,7 @@ function BrandRow({ brands }: { brands: string[] }) {
   );
   return (
     <div role="img" aria-label={`Бренды: ${brands.join(", ")} и любой другой`} className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
-      <div className="display flex w-max text-[clamp(30px,4.2vw,64px)] !leading-[1.1]" style={{ animation: "marquee 60s linear infinite" }}>
+      <div className="display flex w-max text-[clamp(30px,4.2vw,64px)] !leading-[1.1]" style={{ fontFamily: "var(--font-russo)", fontWeight: 400, animation: "marquee 60s linear infinite" }}>
         {row("a")}
         {row("b")}
       </div>
@@ -54,7 +54,7 @@ export function Markets() {
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,9,13,0.5),transparent_35%,rgba(5,9,13,0.85))]" />
       <motion.span
         style={reduce ? undefined : { x: wordX }}
-        className="display absolute top-[16%] right-0 !leading-none whitespace-nowrap text-[clamp(200px,34vw,560px)] !text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,0.45)]"
+        className="display ![font-family:var(--font-russo)] !font-normal absolute top-[16%] right-0 !leading-none whitespace-nowrap text-[clamp(200px,34vw,560px)] !text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,0.45)]"
       >
         Korea
       </motion.span>

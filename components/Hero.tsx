@@ -19,7 +19,7 @@ export function Hero() {
           Автомобили из Кореи · с 2023 года
         </p>
 
-        <h1 className="display mt-4 text-[clamp(34px,9vw,48px)] !leading-[0.96] lg:mt-6 lg:text-[clamp(44px,4.2vw,76px)]">
+        <h1 className="display mt-4 text-[clamp(46px,12.5vw,64px)] !leading-[0.92] lg:mt-6 lg:text-[clamp(62px,6vw,108px)]">
           <span className="block">Из Кореи</span>
           <span className="block">
             в ваш <span className="text-accent-ink">город.</span>
