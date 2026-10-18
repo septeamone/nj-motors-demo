@@ -29,7 +29,7 @@ export function Passport() {
       {STEPS.map((s, i) => {
         const pay = i in PAY_AT ? DEAL_STAGES[PAY_AT[i]] : null;
         return (
-          <li key={s.title} className="sticky mx-auto w-full max-w-[820px] pb-[34svh] last:pb-0" style={{ top: TOP + i * TAB, zIndex: i + 1 }}>
+          <li key={s.title} className="sticky mx-auto w-full max-w-[820px] pb-[34svh] last:pb-0 lg:[transform:translateX(var(--dx))_rotate(var(--rot))]" style={{ top: TOP + i * TAB, zIndex: i + 1, ["--dx" as string]: `${[-26, 22, -14, 30, -22, 12][i]}px`, ["--rot" as string]: `${[-0.5, 0.45, -0.3, 0.55, -0.4, 0.2][i]}deg` }}>
             <article className="relative flex h-[min(430px,62svh)] flex-col overflow-hidden rounded-[8px] border border-[rgba(18,16,13,0.4)] bg-[var(--paper)] text-[var(--paper-ink)] shadow-[0_-14px_30px_-18px_var(--shadow),0_24px_40px_-26px_var(--shadow)]">
               {/* the binding */}
               <span aria-hidden className="absolute inset-y-0 left-0 w-[14px] bg-[repeating-linear-gradient(180deg,rgba(18,16,13,0.5)_0_10px,transparent_10px_22px)] opacity-40" />

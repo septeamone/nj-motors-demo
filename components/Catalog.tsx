@@ -22,7 +22,7 @@ export function Catalog() {
           lead="Примеры. Реальный автомобиль подбираем под вашу задачу, цену считаем до заказа."
         />
 
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
           {CARS.map((car, i) => (
             <Reveal as="li" key={car.slug} delay={i * 0.05}>
               <button
