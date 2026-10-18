@@ -1,0 +1,1071 @@
+@import "tailwindcss";
+
+/*
+  NJ Motors design system — "Modern Automotive Heritage".
+  Colours are sampled from the logo: ink #010b14, red #c70407, cream #dbc5b1.
+  Dark theme = the logo disc, light theme = the logo paper. Same structure, same red.
+*/
+
+/* ---------- Tokens ---------- */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #040c14;
+  --bg-2: #071624;
+  --surface: #0b1c2d;
+  --surface-2: #102a40;
+  --line: rgba(220, 196, 172, 0.12);
+  --line-strong: rgba(220, 196, 172, 0.28);
+  --ink: #f3e8d6;
+  --ink-2: #d4bfa5;
+  --ink-3: #a99480;
+  --accent: #e2231a;
+  --accent-fill: #d40404;
+  --accent-ink: #dcc4ac;
+  --accent-soft: rgba(212, 4, 4, 0.14);
+  --on-accent: #ffffff;
+  --paper: #e3cfb9;
+  --paper-ink: #12100d;
+  --split-art: var(--paper);
+  --ok: #5fd08a;
+  --warn: #f0b24a;
+  --warn-soft: rgba(240, 178, 74, 0.11);
+  --danger: #ff7a70;
+
+  --stage-top: #2b241f;
+  --stage-bottom: #0a0e12;
+  --stage-floor: rgba(0, 0, 0, 0.6);
+  --shadow: rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #efe5d3;
+  --bg-2: #e6d9c2;
+  --surface: #f6eedf;
+  --surface-2: #efe3cd;
+  --line: rgba(4, 12, 20, 0.14);
+  --line-strong: rgba(4, 12, 20, 0.34);
+  --ink: #040c14;
+  --ink-2: #2a3340;
+  --ink-3: #5c5448;
+  --accent: #c70407;
+  --accent-fill: #c70407;
+  --accent-ink: #6a4a2c;
+  --accent-soft: rgba(199, 4, 7, 0.09);
+  --on-accent: #ffffff;
+  --paper: #e3cfb9;
+  --paper-ink: #12100d;
+  --split-art: var(--ink);
+  --ok: #167a41;
+  --warn: #8f5a00;
+  --warn-soft: rgba(143, 90, 0, 0.1);
+  --danger: #b3261e;
+
+  --stage-top: #fffaf0;
+  --stage-bottom: #dccdb2;
+  --stage-floor: rgba(60, 38, 14, 0.34);
+  --shadow: rgba(50, 30, 10, 0.3);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-fill: var(--accent-fill);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --font-display: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  --font-sans: var(--font-onest), system-ui, sans-serif;
+  --font-mono: var(--font-onest), system-ui, sans-serif;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+}
+
+:root {
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 0.7s;
+  --page: 1440px;
+  --radius: 6px;
+}
+@media (min-width: 1900px) {
+  :root {
+    --page: 1700px;
+  }
+}
+
+/* ---------- Base ---------- */
+html {
+  font-synthesis-weight: none;
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-onest), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums lining-nums;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+::selection {
+  background: var(--accent-fill);
+  color: var(--on-accent);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field button:focus-visible {
+  outline: none;
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ---------- Type ---------- */
+.display {
+  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.004em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+.h2 {
+  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(28px, 3.7vw, 54px);
+  line-height: 1;
+  letter-spacing: 0.004em;
+  text-wrap: balance;
+}
+.lead {
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 54ch;
+  text-wrap: pretty;
+}
+.num {
+  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.mono {
+  font-family: var(--font-onest), system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@layer components {
+/* ---------- Plates: solid panels with a double pinstripe, like sign-painted metal ---------- */
+.plate {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+}
+.plate::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 2px);
+  pointer-events: none;
+}
+.plate-paper {
+  background: var(--paper);
+  color: var(--paper-ink);
+  border-color: rgba(18, 16, 13, 0.4);
+}
+.plate-paper::after {
+  border-color: rgba(18, 16, 13, 0.18);
+}
+
+/* Eyebrow label: red bolt + mono caps */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-onest), system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 54px;
+  padding: 0 28px;
+  border-radius: 4px;
+  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    box-shadow 200ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-sm {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 14.5px;
+}
+.btn-primary {
+  background: var(--accent-fill);
+  color: var(--on-accent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.22),
+    0 12px 28px -14px color-mix(in srgb, var(--accent) 80%, transparent);
+}
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--accent-fill) 86%, white);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn-ghost:hover {
+  border-color: var(--ink);
+  background: var(--accent-soft);
+}
+.btn-paper {
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+.btn-paper:hover {
+  background: color-mix(in srgb, var(--paper) 88%, white);
+}
+
+/* ---------- Fields ---------- */
+.field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 54px;
+  padding: 0 16px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  transition:
+    border-color 160ms var(--ease-out),
+    box-shadow 200ms var(--ease-out),
+    background-color 160ms var(--ease-out);
+}
+.field:hover {
+  border-color: var(--ink-3);
+}
+.field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.field[data-invalid="true"] {
+  border-color: var(--danger);
+}
+.field input,
+.field textarea {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: inherit;
+  font: 600 17px/1 var(--font-onest), system-ui, sans-serif;
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.field textarea {
+  padding: 16px 0;
+  resize: vertical;
+  min-height: 112px;
+  line-height: 1.5;
+}
+.field-area {
+  height: auto;
+  align-items: flex-start;
+}
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-onest), system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.hint {
+  margin-top: 8px;
+  font-size: 14.5px;
+  color: var(--ink-3);
+}
+
+/* ---------- Choice pills ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 4px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+.pill:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+.pill[aria-checked="true"],
+.pill[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* ---------- Select (Radix) ---------- */
+.select-content {
+  z-index: 90;
+  min-width: var(--radix-select-trigger-width);
+  max-height: min(320px, var(--radix-select-content-available-height));
+  overflow: hidden;
+  border-radius: 6px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 28px 70px -18px var(--shadow);
+  animation: pop 160ms var(--ease-out);
+}
+.select-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 3px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.select-item[data-highlighted] {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+.select-item[data-state="checked"] {
+  color: var(--accent-ink);
+}
+.select-item[data-disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+/* ---------- Showroom stage for cars: warm backdrop, painted floor line ---------- */
+.stage {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(75% 95% at 50% 0%, var(--stage-top), transparent 72%),
+    linear-gradient(180deg, color-mix(in srgb, var(--stage-top) 35%, var(--stage-bottom)), var(--stage-bottom));
+}
+.stage::before {
+  /* the floor line */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong) 12%, var(--line-strong) 88%, transparent);
+  z-index: 0;
+}
+.stage::after {
+  /* soft contact shadow under the car */
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 13%;
+  height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--stage-floor), transparent);
+  filter: blur(8px);
+  pointer-events: none;
+}
+.stage img.car {
+  position: absolute;
+  left: 50%;
+  bottom: 15%;
+  width: 82%;
+  max-height: 70%;
+  object-fit: contain;
+  object-position: bottom center;
+  transform: translateX(-50%);
+  z-index: 1;
+  transition: transform 700ms var(--ease-out);
+}
+.card-hover:hover .stage img.car {
+  transform: translateX(-50%) scale(1.05);
+}
+
+}
+
+/* ---------- Misc ---------- */
+.hairline {
+  border-color: var(--line);
+}
+.rule-double {
+  height: 5px;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* stroked (outline) display text */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--line-strong);
+}
+
+@keyframes acc-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+@keyframes acc-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+.field[data-disabled="true"] {
+  opacity: 0.5;
+}
+
+/* Entrance of the first screen runs in CSS, so it starts before JavaScript has loaded. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+}
+@keyframes drive {
+  from {
+    opacity: 0;
+    transform: translateX(-180px);
+    filter: blur(14px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.35) rotate(-14deg);
+  }
+}
+.anim-rise {
+  animation: rise 1s var(--ease-expo) both;
+  animation-delay: var(--d, 0s);
+}
+.anim-drive {
+  animation: drive 1.5s var(--ease-expo) both;
+  animation-delay: var(--d, 0s);
+}
+.anim-fade {
+  animation: fade-in 0.8s ease-out both;
+  animation-delay: var(--d, 0s);
+}
+.anim-stamp {
+  animation: stamp 0.7s var(--ease-expo) both;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+/* Theme switch: soft crossfade of the whole page (GPU, no per-element transitions) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Native scrollbars match the theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ---------- Hero scene ---------- */
+:root {
+  --car-w: 112; /* vw, kept in step with the car width in Hero.tsx */
+  --wheel-k: 10.9; /* degrees of wheel turn per vw of travel */
+}
+@media (min-width: 640px) {
+  :root {
+    --wheel-k: 15.2;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --wheel-k: 19.6;
+  }
+}
+@keyframes car-in {
+  from {
+    transform: translateX(-130vw) skewX(-8deg);
+  }
+  to {
+    transform: translateX(0) skewX(0);
+  }
+}
+/* same duration and easing as the car, so the wheels turn exactly as far as the car rolls */
+@keyframes wheel-in {
+  from {
+    transform: rotate(calc(var(--wheel-k) * -130deg));
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+@keyframes rumble {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-1.2px);
+  }
+}
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  11% {
+    opacity: 0.15;
+  }
+  17% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.35;
+  }
+  34%,
+  100% {
+    opacity: 0.9;
+  }
+}
+@keyframes badge-in {
+  from {
+    opacity: 0;
+    transform: scale(0.55) rotate(-24deg);
+  }
+}
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dash {
+  to {
+    background-position-x: -240px;
+  }
+}
+@keyframes streak-in {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.anim-car-in {
+  animation: car-in 2.3s cubic-bezier(0.12, 0.8, 0.2, 1) 0.25s both;
+}
+.anim-wheel-in {
+  animation: wheel-in 2.3s cubic-bezier(0.12, 0.8, 0.2, 1) 0.25s both;
+}
+.anim-rumble {
+  animation: rumble 0.14s ease-in-out 2.6s infinite alternate both;
+}
+.anim-flash {
+  animation: flash 1.6s ease-out var(--d, 0.35s) both;
+}
+/* Intro (see SplitHero): <html data-intro> is "play" while the emblem owns the screen, "glide" while it moves into its half
+   and the halves close in, then "done". The halves and the header wait for "glide". */
+@keyframes header-in {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+html[data-intro="play"],
+html[data-intro="glide"] {
+  overflow: hidden;
+}
+/* during the intro the stage is opaque, so the next section (pulled up under the halves) cannot show through */
+html[data-intro="play"] .split-stage,
+html[data-intro="glide"] .split-stage {
+  background: var(--bg);
+}
+/* Korea (behind the halves) must not show during the intro, only once the halves are closed and start to part */
+html[data-intro="play"] .korea-reveal,
+html[data-intro="glide"] .korea-reveal {
+  visibility: hidden;
+}
+html[data-intro="play"] :is(.header-in, .split-panel) {
+  opacity: 0;
+}
+
+/* Hero halves: --p (0 → 1, set from the scroll) slides them apart. Wide screens split left/right, phones top/bottom. */
+.split-panel {
+  position: absolute;
+  pointer-events: auto;
+}
+.split-text {
+  background-color: var(--bg);
+}
+.split-art {
+  background: var(--split-art);
+}
+@media (min-width: 1024px) {
+  .split-text {
+    inset: 0 50% 0 0;
+    border-right: 6px solid var(--accent);
+    transform: translateX(calc(var(--p, 0) * (-100% - 8px)));
+  }
+  .split-art {
+    inset: 0 0 0 50%;
+    transform: translateX(calc(var(--p, 0) * (100% + 8px)));
+  }
+  .split-slot {
+    position: absolute;
+    right: 25%;
+    top: calc(50% + 38px);
+    width: min(40vw, 70svh);
+    aspect-ratio: 1;
+    transform: translate(50%, -50%);
+  }
+}
+@media (max-width: 1023.98px) {
+  .split-text {
+    inset: 42% 0 0 0;
+    border-top: 5px solid var(--accent);
+    transform: translateY(calc(var(--p, 0) * (100% + 8px)));
+  }
+  .split-art {
+    inset: 0 0 58% 0;
+    transform: translateY(calc(var(--p, 0) * (-100% - 8px)));
+  }
+  .split-slot {
+    position: absolute;
+    left: 50%;
+    top: calc(21% + 34px);
+    width: min(58vw, 30svh);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+.anim-badge {
+  animation: badge-in 1.3s var(--ease-expo) 0.15s both;
+}
+.orbit {
+  background: conic-gradient(from 0deg, transparent 0 58%, rgba(255, 74, 61, 0.95) 86%, transparent 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  animation: orbit 9s linear infinite;
+}
+.road-dash {
+  background: repeating-linear-gradient(90deg, rgba(242, 231, 214, 0.55) 0 120px, transparent 120px 240px);
+  animation: dash 0.5s linear infinite;
+  animation-duration: 0.9s;
+}
+.streaks {
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 74, 61, 0.85)) 0 12% / 100% 2px no-repeat,
+    linear-gradient(90deg, transparent, rgba(242, 231, 214, 0.7)) 20% 34% / 80% 2px no-repeat,
+    linear-gradient(90deg, transparent, rgba(255, 74, 61, 0.7)) 6% 52% / 94% 3px no-repeat,
+    linear-gradient(90deg, transparent, rgba(242, 231, 214, 0.55)) 30% 72% / 70% 2px no-repeat,
+    linear-gradient(90deg, transparent, rgba(255, 74, 61, 0.6)) 14% 90% / 86% 2px no-repeat;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 40%);
+  mask: linear-gradient(90deg, transparent, #000 40%);
+  animation: streak-in 2.5s ease-out 0.25s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .road-dash {
+    animation: none;
+  }
+  .orbit {
+    animation: none;
+  }
+}
+
+/* the only motion in the hero: the wheels turn inside the logo */
+.wheel-spin {
+  animation: orbit 1.1s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wheel-spin {
+    animation: none;
+  }
+}
+
+/* Phone loading placeholder: a phone-shaped outline with a red bar sweeping along its foot */
+@keyframes phone-load {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.phone-loader-bar {
+  animation: phone-load 1.3s var(--ease-expo) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone-loader-bar {
+    animation: none;
+    transform: none;
+  }
+}
+
+
+/* Review player */
+.vp-btn {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.vp-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+@keyframes eq {
+  to {
+    transform: scaleY(0.3);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="eq "] {
+    animation: none !important;
+  }
+}
+
+/* Intro hint: a mouse that scrolls */
+@keyframes hint-wheel {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  70%,
+  100% {
+    transform: translate(-50%, 12px);
+    opacity: 0;
+  }
+}
+.intro-hint-mouse i {
+  animation: hint-wheel 1.4s ease-out infinite;
+}
+
+
+/* ---------- Print look (riso): three inks, paper grain, halftone, small misregistration ---------- */
+/* paper grain over the whole page: one static fixed layer, no blending */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 1.4 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* halftone dots in the ink colour, fading out toward one side */
+.halftone {
+  position: relative;
+}
+.halftone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at center, var(--ht, var(--accent)) 1.6px, transparent 1.9px);
+  background-size: 9px 9px;
+  opacity: 0.16;
+  -webkit-mask-image: linear-gradient(var(--ht-dir, 100deg), #000, transparent 55%);
+  mask-image: linear-gradient(var(--ht-dir, 100deg), #000, transparent 55%);
+}
+.halftone > *:not(.absolute):not(.fixed) {
+  position: relative;
+  z-index: 1;
+}
+/* headings: the red plate printed a hair off the ink plate */
+.display,
+.h2 {
+  text-shadow: 0.032em 0.026em 0 color-mix(in srgb, var(--accent) 78%, transparent);
+}
+.display .text-accent {
+  text-shadow: -0.03em -0.02em 0 color-mix(in srgb, var(--ink) 38%, transparent);
+}
+/* the Korean photo as a two-ink print: grey values in blue-black and red */
+.duotone {
+  filter: grayscale(1) contrast(1.25) brightness(0.92);
+}
+.duotone-tint {
+  background: linear-gradient(160deg, rgba(8, 24, 62, 0.82), rgba(201, 32, 27, 0.5));
+  mix-blend-mode: multiply;
+}
+/* torn edge between sections */
+.cut-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 38px), 0 100%);
+  padding-bottom: calc(var(--cut, 5rem) + 38px);
+}
+.cut-top {
+  clip-path: polygon(0 38px, 100% 0, 100% 100%, 0 100%);
+  padding-top: calc(var(--cut, 5rem) + 38px);
+}
+/* a section printed all in the red ink */
+.drench {
+  background: var(--accent-fill);
+  color: #fbf1e1;
+  --ink: #fbf1e1;
+  --ink-2: rgba(251, 241, 225, 0.88);
+  --ink-3: rgba(251, 241, 225, 0.74);
+  --line: rgba(251, 241, 225, 0.28);
+  --line-strong: rgba(251, 241, 225, 0.5);
+  --accent: #fbf1e1;
+  --accent-ink: #fbf1e1;
+  --ht: #040c14;
+}
+.drench .text-accent,
+.drench .eyebrow {
+  color: #fbf1e1;
+}
+.drench .plate {
+  background: #040c14;
+  border-color: rgba(220, 196, 172, 0.28);
+  color: #f2e7d6;
+  --ink: #f2e7d6;
+  --ink-2: #d4bfa5;
+  --ink-3: #a99480;
+  --line: rgba(238, 224, 205, 0.1);
+  --line-strong: rgba(238, 224, 205, 0.22);
+  --surface-2: #102a40;
+  --accent: #e2231a;
+  --accent-ink: #ff6b5e;
+  --accent-soft: rgba(229, 50, 43, 0.13);
+}
+.drench .plate .text-accent,
+.drench .plate .eyebrow {
+  color: var(--accent);
+}
+
+/* The wheels turn every frame: give each its own layer so the big emblem under them is not repainted, and drop the
+   emblem's soft shadow while it is full screen (a filter on a huge layer is what made the intro stutter). */
+.wheel-spin {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+html[data-intro="play"] a[aria-label^="NJ Motors — Cars"],
+html[data-intro="glide"] a[aria-label^="NJ Motors — Cars"] {
+  filter: none !important;
+}
+
+/* ---------- Calculator panel: quiet, ruled like a statement ---------- */
+.receipt {
+  position: relative;
+  padding: 30px 30px 28px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-top: 3px solid var(--accent);
+  border-radius: 4px;
+  box-shadow: 0 30px 60px -40px var(--shadow);
+}
+@media (min-width: 640px) {
+  .receipt {
+    padding: 36px 38px 32px;
+  }
+}
+/* rolling digits */
+.odo {
+  display: inline-flex;
+  align-items: flex-end;
+  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+.odo-wheel {
+  display: inline-block;
+  height: 1em;
+  line-height: 1;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent);
+}
+.odo-col {
+  display: flex;
+  flex-direction: column;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+.odo-col > span {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+.odo-sep {
+  display: inline-block;
+  line-height: 1;
+  white-space: pre;
+}
+
+/* ---------- Magazine: big section numbers hanging off the screen edge ---------- */
+.sect-num {
+  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
+  font-size: clamp(150px, 24vw, 380px);
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--ink) 16%, transparent);
+  letter-spacing: -0.04em;
+}
+@media (max-width: 1023.98px) {
+  .sect-num {
+    font-size: clamp(110px, 34vw, 190px);
+    top: -0.08em;
+  }
+}
+.h2,
+.display {
+  text-align: left;
+}
+
+/* NJ Motors icon set: bold round line (text colour) + one red plate printed a little off */
+.nj-ic {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+  flex: none;
+}
+.nj-ic .r { fill: var(--accent-fill); stroke: var(--accent-fill); stroke-width: 2; }
+.nj-ic .rs { stroke: var(--accent-fill); }
+.nj-ic .f { fill: currentColor; stroke: none; }

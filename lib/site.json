@@ -1,0 +1,31 @@
+{
+  "_about": "Everything here must be confirmed by NJ Motors before publication. Run `npm run check:publish` to see what is still missing.",
+  "brand": {
+    "name": "NJ Motors",
+    "since": 2023,
+    "slogan": "Cars from Korea"
+  },
+  "contacts": {
+    "phone": null,
+    "telegram": null,
+    "whatsapp": null,
+    "email": null,
+    "address": null
+  },
+  "owner": {
+    "name": "Андрей",
+    "role": "Владелец NJ Motors",
+    "video": null,
+    "poster": null
+  },
+  "legal": {
+    "entity": null,
+    "inn": null,
+    "ogrn": null
+  },
+  "form": {
+    "endpoint": null
+  },
+  "pricesConfirmed": false,
+  "dealConfirmed": false
+}

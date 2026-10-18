@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NJ Motors — 10 стилей иконок</title>
+<style>
+:root{--bg:#040c14;--panel:#0b1c2d;--line:rgba(220,196,172,.24);--ink:#f3e8d6;--ink2:#d4bfa5;--cream:#f3e8d6;--navy:#040c14;--red:#d40404}
+[data-theme="light"]{--bg:#efe5d3;--panel:#f6eedf;--line:rgba(4,12,20,.28);--ink:#040c14;--ink2:#2a3340;--cream:#040c14;--navy:#efe5d3}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,"Segoe UI",Arial,sans-serif;padding:clamp(18px,4vw,56px)}
+header{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--ink);padding-bottom:18px}
+h1{font:900 clamp(30px,5vw,60px)/1 "Arial Black",Impact,sans-serif;text-transform:uppercase}
+h1 small{display:block;font:600 13px system-ui;letter-spacing:.18em;color:var(--ink2);margin-bottom:8px}
+button.tool{background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:10px 16px;font:700 13px system-ui;cursor:pointer;letter-spacing:.06em;text-transform:uppercase}
+.note{color:var(--ink2);max-width:80ch;margin:18px 0 6px}
+.style{display:grid;grid-template-columns:230px 1fr;gap:0;border-top:1px solid var(--line);margin-top:0}
+.style:first-of-type{margin-top:18px}
+.meta{padding:22px 18px 22px 0}
+.meta b{display:block;font:900 44px/1 "Arial Black",Impact,sans-serif;color:transparent;-webkit-text-stroke:1.5px var(--ink2)}
+.meta h2{font:800 17px/1.2 system-ui;margin:8px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+.meta p{font-size:14px;color:var(--ink2)}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px 6px;padding:22px 0}
+.ic{display:flex;flex-direction:column;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink2)}
+.ic svg{width:72px;height:72px;overflow:visible}
+/* shared base */
+svg.i{fill:none;stroke:var(--cream);stroke-width:2.25;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:6}
+svg.i .r{fill:var(--red);stroke:none}
+svg.i .f{fill:var(--cream);stroke:none}
+/* 1 offset plate (the current set) */
+/* 2 flat plate, no offset */
+.s2 svg.i .r{transform:none!important}
+/* 3 bold, round */
+.s3 svg.i{stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round}
+/* 4 hairline, no plate, red only in dots */
+.s4 svg.i{stroke-width:1.4;stroke-linecap:butt}
+.s4 svg.i .r{display:none}
+.s4 svg.i .f{fill:var(--red)}
+/* 5 badge: red disc behind cream lines */
+.s5 .ic .b{width:72px;height:72px;border-radius:50%;background:var(--red);display:grid;place-items:center}
+.s5 .ic .b svg{width:44px;height:44px}
+.s5 svg.i{stroke:#f3e8d6;stroke-width:2.6}.s5 svg.i .r{display:none}.s5 svg.i .f{fill:#f3e8d6}
+/* 6 rubber stamp: all red ink, framed, tilted */
+.s6 .ic .b{width:72px;height:72px;border:3px solid var(--red);outline:1.5px solid var(--red);outline-offset:-8px;display:grid;place-items:center;transform:rotate(-4deg)}
+.s6 .ic .b svg{width:46px;height:46px}
+.s6 svg.i{stroke:var(--red);stroke-width:2.6}.s6 svg.i .r{display:none}.s6 svg.i .f{fill:var(--red)}
+/* 7 double line: outline of the outline */
+.s7 svg.i{stroke-width:6;stroke:var(--cream)}
+.s7 svg.i *{vector-effect:none}
+.s7 svg.i .r{fill:var(--red)}
+.s7 .ic .b{position:relative}
+/* 8 solid duotone: red body, thin cream outline */
+.s8 svg.i{stroke-width:1.8}
+.s8 svg.i .r{transform:none!important;opacity:.95}
+/* 9 perforated: dashed line + offset plate */
+.s9 svg.i{stroke-dasharray:4.5 3.2;stroke-linecap:butt}
+.s9 svg.i .r{transform:translate(3px,3px)!important}
+/* 10 tile: cream card, navy line, red plate */
+.s10 .ic .b{width:72px;height:72px;background:var(--cream);display:grid;place-items:center;box-shadow:5px 5px 0 var(--red)}
+.s10 .ic .b svg{width:48px;height:48px}
+.s10 svg.i{stroke:#040c14}.s10 svg.i .f{fill:#040c14}.s10 svg.i .r{transform:none!important}
+@media(max-width:720px){.style{grid-template-columns:1fr}.meta{padding-bottom:0}}
+</style></head><body>
+<header><h1><small>NJ MOTORS · 10 СТИЛЕЙ ИКОНОК</small>Выберите язык иконок</h1><button class="tool" id="theme">Светлая тема</button></header>
+<p class="note">Одни и те же 12 иконок (маршрут, судно, автовоз, порт, автомобиль, осмотр, фото, договор, рубль, гарантия, телефон, ключи) в десяти манерах. Скажите номер, и я сделаю полный набор в выбранной манере и вставлю его на сайт.</p>
+<main id="root"></main>
+<script>
+const ICONS = {
+"Маршрут и доставка": [
+ ["route","Маршрут","Путь от Кореи до вашего города",
+  `<path class="r" d="M7 38c0-14 14-6 20-16s4-12 12-12" transform="translate(3 2)" stroke="#d40404" stroke-width="2.25" fill="none"/><circle cx="9" cy="38" r="4"/><path d="M8 34c0-14 14-6 20-16s4-12 12-12" /><path d="M36 4l8 6-8 6z" class="f"/>`],
+ ["ship","Судно","Море до Владивостока",
+  `<path class="r" d="M8 30h34l-5 10H13z" transform="translate(3 2)"/><path d="M6 28h36l-6 11H12z"/><path d="M14 28V18h20v10M20 18v-6h8v6"/><path d="M4 44c4 0 4-2 8-2s4 2 8 2 4-2 8-2 4 2 8 2 4-2 8-2" opacity="0"/>`],
+ ["truck","Автовоз","Дорога по России",
+  `<path class="r" d="M5 15h25v18H5z" transform="translate(3 3)"/><path d="M4 12h26v22H4zM30 20h8l6 7v7H30z"/><circle cx="13" cy="36" r="4" class="f"/><circle cx="37" cy="36" r="4" class="f"/><path d="M8 20h14"/>`],
+ ["rail","Железная дорога","Ж/Д по России",
+  `<path class="r" d="M12 8h24v26H12z" transform="translate(3 3)"/><path d="M11 6h26v28H11z"/><path d="M11 22h26M17 12h14"/><circle cx="18" cy="28" r="2" class="f"/><circle cx="30" cy="28" r="2" class="f"/><path d="M14 34l-4 8M34 34l4 8M12 42h24"/>`],
+ ["port","Порт","Пусан, Владивосток",
+  `<path class="r" d="M6 40h36v-5H6z" transform="translate(3 1)"/><path d="M8 40V8h24v8M8 14h24M32 16l8 12M40 28v12"/><path d="M4 40h40"/><path d="M14 22h10v10H14z"/>`],
+ ["container","Контейнер","Отдельный контейнер на машину",
+  `<path class="r" d="M6 12h36v24H6z" transform="translate(3 3)"/><path d="M5 10h36v24H5z"/><path d="M13 10v24M21 10v24M29 10v24M37 10v24"/>`],
+ ["pin","Место","Адрес и город доставки",
+  `<circle class="r" cx="26" cy="22" r="14" transform="translate(2 2)"/><path d="M24 44C14 32 10 26 10 19a14 14 0 0128 0c0 7-4 13-14 25z"/><circle cx="24" cy="19" r="5"/>`],
+],
+"Автомобиль и проверка": [
+ ["car","Автомобиль","Подбор и выкуп",
+  `<path class="r" d="M6 30l6-12h24l6 12v8H6z" transform="translate(3 2)"/><path d="M4 30l6-13h28l6 13v8H4z"/><path d="M4 30h40"/><circle cx="14" cy="38" r="4" class="f"/><circle cx="34" cy="38" r="4" class="f"/><path d="M12 24h24" opacity="0"/>`],
+ ["inspect","Осмотр","Независимый осмотр до отправки",
+  `<circle class="r" cx="21" cy="21" r="14" transform="translate(3 3)"/><circle cx="20" cy="20" r="13"/><path d="M30 30l13 13" stroke-width="4.5"/><path d="M14 20h12M20 14v12"/>`],
+ ["camera","Фотоотчёт","Фото до выкупа",
+  `<path class="r" d="M5 14h38v26H5z" transform="translate(3 3)"/><path d="M4 13h12l3-5h10l3 5h12v26H4z"/><circle cx="24" cy="26" r="8"/><circle cx="24" cy="26" r="2.5" class="f"/>`],
+ ["video","Видеоотчёт","Видео автомобиля",
+  `<rect class="r" x="6" y="12" width="26" height="24" transform="translate(3 3)"/><path d="M4 10h28v26H4zM32 20l12-7v22l-12-7z"/>`],
+ ["history","История","История обслуживания и ДТП",
+  `<path class="r" d="M10 6h24v36H10z" transform="translate(3 3)"/><path d="M9 4h26v38H9z"/><path d="M15 14h14M15 21h14M15 28h8"/><path d="M26 33l4 4 8-9" stroke-width="3.5"/>`],
+ ["engine","Двигатель","Объём и мощность",
+  `<path class="r" d="M10 14h24v22H10z" transform="translate(3 3)"/><path d="M9 12h26v24H9zM15 12V7h14v5M9 20H4v10h5M35 22h6v6h-6"/><path d="M16 22h12v8H16z"/>`],
+ ["wheel","Колесо","Эмблема сайта",
+  `<circle class="r" cx="24" cy="24" r="18" transform="translate(3 3)"/><circle cx="24" cy="24" r="19"/><circle cx="24" cy="24" r="4"/><path d="M24 5v15M24 28v15M5 24h15M28 24h15M10.5 10.5l10 10M27.5 27.5l10 10M37.5 10.5l-10 10M20.5 27.5l-10 10" opacity=".9"/>`],
+ ["fuel","Топливо","Бензин, дизель, гибрид",
+  `<path class="r" d="M10 8h18v34H10z" transform="translate(3 3)"/><path d="M9 6h20v36H9zM15 12h8v8h-8zM29 14l8 6v18a3 3 0 01-6 0v-8h-2"/><path d="M5 42h28"/>`],
+],
+"Деньги и документы": [
+ ["rub","Рубль","Цена и платёж",
+  `<circle class="r" cx="24" cy="24" r="18" transform="translate(3 3)"/><circle cx="24" cy="24" r="19"/><path d="M19 34V14h8a5 5 0 010 10h-8M15 28h13"/>`],
+ ["calc","Расчёт","Калькулятор стоимости",
+  `<path class="r" d="M10 5h28v38H10z" transform="translate(3 3)"/><path d="M9 4h28v38H9z"/><path d="M15 10h16v8H15z"/><circle cx="17" cy="26" r="1.8" class="f"/><circle cx="23" cy="26" r="1.8" class="f"/><circle cx="29" cy="26" r="1.8" class="f"/><circle cx="17" cy="33" r="1.8" class="f"/><circle cx="23" cy="33" r="1.8" class="f"/><circle cx="29" cy="33" r="1.8" class="f"/>`],
+ ["contract","Договор","Условия до первого платежа",
+  `<path class="r" d="M10 5h22l8 8v30H10z" transform="translate(3 3)"/><path d="M8 4h22l8 8v30H8z"/><path d="M30 4v8h8M14 20h18M14 27h18M14 34h10"/>`],
+ ["seal","Печать","Подтверждено, принято",
+  `<rect class="r" x="9" y="9" width="32" height="32" transform="translate(3 3)"/><rect x="8" y="8" width="32" height="32"/><rect x="12" y="12" width="24" height="24" stroke-width="1.5"/><path d="M17 20h14M17 24h14M17 28h8" stroke-width="2.75"/>`],
+ ["stamp","Штамп","Статус этапа",
+  `<path class="r" d="M16 6h12v14H16z" transform="translate(3 3)"/><path d="M15 4h12v14l7 6v6H8v-6l7-6zM6 40h36M6 36h36"/>`],
+ ["passport","Паспорт сделки","Шесть шагов",
+  `<path class="r" d="M10 5h28v38H10z" transform="translate(3 3)"/><path d="M9 4h28v38H9z"/><circle cx="23" cy="19" r="7"/><path d="M14 33h18M14 38h18"/>`],
+ ["pay","Платёж","Оплата по этапам",
+  `<rect class="r" x="5" y="12" width="38" height="26" transform="translate(3 3)"/><path d="M4 10h38v26H4zM4 18h38"/><path d="M10 28h10" stroke-width="3.5"/>`],
+ ["shield","Гарантия","Условия на бумаге",
+  `<path class="r" d="M24 4l16 6v14c0 10-7 16-16 20-9-4-16-10-16-20V10z" transform="translate(3 3)"/><path d="M24 3l16 6v14c0 10-7 16-16 20C15 39 8 33 8 23V9z"/><path d="M16 23l6 6 11-12" stroke-width="3.5"/>`],
+ ["clock","Срок","5–9 недель до ключей",
+  `<circle class="r" cx="24" cy="24" r="18" transform="translate(3 3)"/><circle cx="24" cy="24" r="19"/><path d="M24 12v13l9 6" stroke-width="3"/>`],
+],
+"Связь": [
+ ["phone","Телефон","Позвонить",
+  `<path class="r" d="M12 5h10l3 10-5 3c3 6 6 9 12 12l3-5 10 3v10c0 2-2 4-4 4C20 42 6 28 6 9c0-2 2-4 6-4z" transform="translate(3 2)"/><path d="M11 4h10l3 10-5 3c3 6 6 9 12 12l3-5 10 3v10c0 2-2 4-4 4C19 41 5 27 5 8c0-2 2-4 6-4z"/>`],
+ ["mail","Почта","Эл. адрес",
+  `<rect class="r" x="5" y="10" width="38" height="28" transform="translate(3 3)"/><path d="M4 8h38v28H4zM4 10l19 15L42 10"/>`],
+ ["message","Мессенджер","Max, WhatsApp, чат",
+  `<path class="r" d="M5 6h38v26H22l-9 8v-8H5z" transform="translate(3 3)"/><path d="M4 4h38v26H21l-9 9v-9H4z"/><path d="M12 14h22M12 21h14"/>`],
+ ["plane","Telegram","Канал и чат (как дополнение)",
+  `<path class="r" d="M5 22l36-15-6 33-12-8-6 7-1-10z" transform="translate(3 3)"/><path d="M4 21l36-15-6 33-12-9-6 7-1-11z"/><path d="M15 29l19-17"/>`],
+ ["person","Менеджер","Один человек на всю сделку",
+  `<circle class="r" cx="24" cy="15" r="9" transform="translate(3 3)"/><circle cx="23" cy="14" r="9"/><path d="M6 43c0-10 8-16 17-16s17 6 17 16z"/>`],
+ ["form","Заявка","Оставить заявку",
+  `<path class="r" d="M9 5h28v38H9z" transform="translate(3 3)"/><path d="M8 4h28v38H8z"/><path d="M14 12h16M14 19h16M14 26h9"/><path d="M26 36l3-3 11-11 3 3-11 11-6 2z" stroke-width="2.25" class="f"/>`],
+],
+"Знаки сайта": [
+ ["bolt","Молния","Знак логотипа",
+  `<path class="r" d="M28 3L10 26h11l-4 19 21-26H27z" transform="translate(3 2)"/><path d="M27 2L9 25h11l-4 19 21-26H26z"/>`],
+ ["arrow","Дальше","Кнопки и ссылки",
+  `<path class="r" d="M6 22h28v6H6z" transform="translate(3 3)"/><path d="M5 21h30v6H5z" opacity="0"/><path d="M6 24h34M28 12l12 12-12 12"/>`],
+ ["check","Готово","Этап пройден",
+  `<path class="r" d="M7 25l10 10 22-24" stroke="none"/><path d="M8 25l10 10 22-23" stroke-width="4.5"/>`],
+ ["play","Видео","Смотреть отзыв",
+  `<path class="r" d="M14 8l28 16-28 16z" transform="translate(3 3)"/><path d="M12 6l28 18-28 18z"/>`],
+ ["key","Ключи","Передача автомобиля",
+  `<circle class="r" cx="15" cy="24" r="10" transform="translate(3 3)"/><circle cx="14" cy="23" r="9"/><circle cx="14" cy="23" r="3" class="f"/><path d="M23 23h20M35 23v8M41 23v6"/>`],
+ ["globe","Корея → Россия","Откуда и куда",
+  `<circle class="r" cx="24" cy="24" r="18" transform="translate(3 3)"/><circle cx="24" cy="24" r="19"/><path d="M5 24h38M24 5c-9 8-9 30 0 38M24 5c9 8 9 30 0 38"/>`],
+]
+};
+
+
+const PICK=["route","ship","truck","port","car","inspect","camera","contract","rub","shield","phone","key"];
+const all={};Object.values(ICONS).forEach(g=>g.forEach(i=>all[i[0]]=i));
+const STYLES=[
+ ["Смещённая плата","Линия + красная форма, сдвинутая как вторая краска при печати. Нынешний набор."],
+ ["Плоская плата","То же, но без сдвига: чистый двухцветный знак. Строже и «банковее»."],
+ ["Жирная круглая","Толстая линия, круглые концы. Дружелюбнее, лучше читается на телефоне."],
+ ["Волосяная","Тонкая линия 1,4, красные только точки. Журнальная, дорогая, но хрупкая на малых размерах."],
+ ["Красный значок","Кремовая линия на красном круге. Для списка этапов и кнопок."],
+ ["Резиновый штамп","Всё красное, в рамке с наклоном. Для статусов и «паспорта сделки»."],
+ ["Двойная линия","Очень жирная линия с красным телом. Плакатная, громкая."],
+ ["Красное тело","Красная заливка и тонкий кремовый контур. Самая насыщенная."],
+ ["Перфорация","Пунктирная линия со сдвинутой платой: как отрывной талон."],
+ ["Карточка","Кремовая плитка с красной тенью-смещением. Ретро-наклейка."]
+];
+const root=document.getElementById('root');
+STYLES.forEach(([name,desc],k)=>{
+  const n=k+1;const sec=document.createElement('section');sec.className='style s'+n;
+  const wrap=[5,6,10].includes(n);
+  sec.innerHTML=`<div class="meta"><b>${String(n).padStart(2,'0')}</b><h2>${name}</h2><p>${desc}</p></div><div class="row">${PICK.map(id=>{const i=all[id];const svg=`<svg viewBox="0 0 48 48" class="i" role="img" aria-label="${i[1]}">${i[3]}</svg>`;return `<div class="ic">${wrap?`<span class="b">${svg}</span>`:svg}<span>${i[1]}</span></div>`}).join('')}</div>`;
+  root.appendChild(sec);
+});
+document.getElementById('theme').onclick=e=>{const l=document.documentElement.dataset.theme!=='light';document.documentElement.dataset.theme=l?'light':'dark';e.currentTarget.textContent=l?'Тёмная тема':'Светлая тема'};
+</script></body></html>
