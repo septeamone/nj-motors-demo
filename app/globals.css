@@ -1069,3 +1069,22 @@ html[data-intro="glide"] a[aria-label^="NJ Motors — Cars"] {
 .nj-ic .r { fill: var(--accent-fill); stroke: var(--accent-fill); stroke-width: 2; }
 .nj-ic .rs { stroke: var(--accent-fill); }
 .nj-ic .f { fill: currentColor; stroke: none; }
+
+/* ===== PRINT: paper grain and a second ink slightly off register ===== */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.085;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 1.4 -.35'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="light"] body::after {
+  opacity: 0.14;
+}
+/* cars: the red plate peeks out a few pixels from under the photo */
+.stage img.car,
+.car-ink {
+  filter: drop-shadow(3px 2px 0 color-mix(in srgb, var(--accent) 34%, transparent));
+}

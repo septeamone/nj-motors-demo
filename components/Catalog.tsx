@@ -37,7 +37,7 @@ export function Catalog() {
                     alt={`${car.brand} ${car.model}`}
                     fill
                     sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 92vw"
-                    className="object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
+                    className="car-ink object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
                   />
                 </div>
                 <div className="flex flex-1 flex-col gap-4 p-5">
