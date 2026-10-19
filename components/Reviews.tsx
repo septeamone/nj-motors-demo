@@ -24,8 +24,6 @@ const PHOTOS = [
   { n: 6, title: "Kia", alt: "Белая Kia на площадке" },
   { n: 7, title: "SsangYong", alt: "Белый SsangYong на парковке" },
 ].map((p) => ({ ...p, tile: asset(`/gallery/car-${p.n}.webp`), full: asset(`/gallery/car-${p.n}-full.webp`) }));
-// the tiles of the wall: the first is large, the last two are wide
-const TILE_CLASS = ["col-span-2 row-span-2", "", "", "", "", "col-span-2", "col-span-2"];
 
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
@@ -39,6 +37,58 @@ function Bars({ on }: { on: boolean }) {
         <i key={i} className="w-[3px] origin-bottom rounded-[1px] bg-accent" style={{ height: "100%", animation: on ? `eq 0.9s ease-in-out ${i * 0.18}s infinite alternate` : undefined, transform: on ? undefined : "scaleY(0.35)" }} />
       ))}
     </span>
+  );
+}
+
+/**
+ * A compact shelf: a fixed number of rows that scrolls sideways, so ten or fifty items take the same room.
+ * Arrows appear only when there is more than fits.
+ */
+function Rail({ label, hint, grid, listRef, children }: { label: string; hint: string; grid: string; listRef?: React.RefObject<HTMLUListElement | null>; children: React.ReactNode }) {
+  const own = useRef<HTMLUListElement>(null);
+  const box = listRef ?? own;
+  const [more, setMore] = useState(false);
+
+  // Lenis (smooth page scroll) is told to leave the shelf alone only while it actually scrolls
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const check = () => {
+      const over = el.scrollWidth > el.clientWidth + 2;
+      setMore(over);
+      if (over) el.setAttribute("data-lenis-prevent", "");
+      else el.removeAttribute("data-lenis-prevent");
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [box]);
+
+  const slide = (dir: number) => box.current?.scrollBy({ left: dir * box.current.clientWidth * 0.9, behavior: "smooth" });
+
+  return (
+    <div>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="eyebrow">
+          {label}
+          <span className="num text-ink-3">{hint}</span>
+        </p>
+        {more && (
+          <span className="flex gap-1.5">
+            <button type="button" aria-label="Назад" onClick={() => slide(-1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
+              <ChevronLeft className="size-4" strokeWidth={2} />
+            </button>
+            <button type="button" aria-label="Вперёд" onClick={() => slide(1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
+              <ChevronRight className="size-4" strokeWidth={2} />
+            </button>
+          </span>
+        )}
+      </div>
+      <ul ref={box} className={`grid snap-x snap-mandatory grid-flow-col gap-3 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none] ${grid}`}>
+        {children}
+      </ul>
+    </div>
   );
 }
 
@@ -60,7 +110,7 @@ export function Reviews() {
   const box = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const wrap = useRef<HTMLDivElement>(null);
-  const list = useRef<HTMLOListElement>(null);
+  const list = useRef<HTMLUListElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const clock = useRef<HTMLSpanElement>(null);
   const segs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -94,21 +144,6 @@ export function Reviews() {
     const seg = segs.current[idxRef.current];
     if (seg) seg.style.transform = `scaleX(${k})`;
     if (clock.current) clock.current.textContent = `${mmss(time)} / ${mmss(d)}`;
-  }, []);
-
-  // Lenis (smooth page scroll) is told to leave the list alone only while the list actually scrolls;
-  // otherwise the wheel over it would stop moving the page and the page would judder
-  useEffect(() => {
-    const el = list.current;
-    if (!el) return;
-    const mark = () => {
-      if (el.scrollHeight > el.clientHeight + 2 || el.scrollWidth > el.clientWidth + 2) el.setAttribute("data-lenis-prevent", "");
-      else el.removeAttribute("data-lenis-prevent");
-    };
-    mark();
-    const ro = new ResizeObserver(mark);
-    ro.observe(el);
-    return () => ro.disconnect();
   }, []);
 
   const go = useCallback((n: number, play = true) => {
@@ -378,21 +413,20 @@ export function Reviews() {
           </Reveal>
 
           <Reveal delay={0.08} className="min-w-0">
-            <p className="eyebrow mb-4">Видео</p>
-            <ol ref={list} className="flex gap-3 overflow-x-auto overscroll-contain pb-2 lg:grid lg:grid-cols-2 lg:overflow-visible lg:pb-0">
+            <Rail label="Видео" hint={`${ITEMS.length}`} grid="grid-rows-1 auto-cols-[82%] sm:auto-cols-[calc((100%-0.75rem)/2)] lg:grid-rows-2" listRef={list}>
               {ITEMS.map((it, n) => {
                 const on = n === i;
                 return (
-                  <li key={it.id} className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-auto">
+                  <li key={it.id} className="min-w-0 snap-start">
                     <button
                       type="button"
                       onClick={() => go(n)}
                       aria-current={on}
-                      className={`flex w-full cursor-pointer items-center gap-4 rounded-[10px] border p-3 text-left transition-colors ${
+                      className={`flex size-full cursor-pointer items-center gap-3 rounded-[10px] border p-2.5 text-left transition-colors ${
                         on ? "border-accent bg-accent-soft" : "border-line-strong hover:border-ink-3"
                       }`}
                     >
-                      <span className={`relative shrink-0 overflow-hidden rounded-[6px] bg-black ${it.wide ? "aspect-video w-[120px]" : "aspect-[9/16] w-[68px]"}`}>
+                      <span className={`relative shrink-0 overflow-hidden rounded-[6px] bg-black ${it.wide ? "aspect-video w-[100px]" : "aspect-[9/16] w-[56px]"}`}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={asset(`/reviews/${it.id}-poster.webp`)} alt="" loading="lazy" className="size-full object-cover" />
                         <span aria-hidden className="absolute inset-0 grid place-items-center bg-black/25">
@@ -400,34 +434,35 @@ export function Reviews() {
                         </span>
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="num block text-[14px] text-accent-ink">{String(n + 1).padStart(2, "0")}</span>
-                        <span className="block text-[18px] leading-tight font-bold text-ink">{it.title}</span>
-                        <span className="mt-1 block text-[15px] text-ink-2">{it.sub}</span>
+                        <span className="num block text-[13px] text-accent-ink">{String(n + 1).padStart(2, "0")}</span>
+                        <span className="block text-[16px] leading-tight font-bold text-ink">{it.title}</span>
+                        <span className="mt-0.5 block text-[14px] text-ink-2">{it.sub}</span>
                       </span>
-                      <span className="num shrink-0 text-[16px] text-ink-3">{mmss(it.dur)}</span>
+                      <span className="num shrink-0 text-[15px] text-ink-3">{mmss(it.dur)}</span>
                     </button>
                   </li>
                 );
               })}
-            </ol>
+            </Rail>
 
-            <p className="eyebrow mt-8 mb-4 lg:mt-10">Фото автомобилей</p>
-            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:auto-rows-[112px] [&>li]:min-w-0">
-              {PHOTOS.map((p, n) => (
-                <li key={p.n} className={`${TILE_CLASS[n]} ${n === 0 ? "max-sm:col-span-2" : ""}`}>
-                  <button
-                    type="button"
-                    onClick={() => setPhoto(n)}
-                    aria-label={`Открыть фото: ${p.title}`}
-                    className="group relative block size-full cursor-pointer overflow-hidden rounded-[8px] border border-line-strong bg-bg-2 outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.tile} alt={p.alt} loading="lazy" className="aspect-[4/3] size-full object-cover transition-transform duration-500 group-hover:scale-[1.04] lg:aspect-auto" />
-                    <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2.5 pt-6 pb-2 text-[14px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{p.title}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-6 lg:mt-8">
+              <Rail label="Фото автомобилей" hint={`${PHOTOS.length}`} grid="grid-rows-2 auto-cols-[44%] sm:auto-cols-[calc((100%-1.5rem)/3)] lg:auto-cols-[calc((100%-3rem)/5)]">
+                {PHOTOS.map((p, n) => (
+                  <li key={p.n} className="min-w-0 snap-start">
+                    <button
+                      type="button"
+                      onClick={() => setPhoto(n)}
+                      aria-label={`Открыть фото: ${p.title}`}
+                      className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-[8px] border border-line-strong bg-bg-2 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={p.tile} alt={p.alt} loading="lazy" className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                      <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2.5 pt-6 pb-1.5 text-[13px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{p.title}</span>
+                    </button>
+                  </li>
+                ))}
+              </Rail>
+            </div>
           </Reveal>
         </div>
       </div>
