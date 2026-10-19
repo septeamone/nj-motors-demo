@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { QUIZ } from "@/lib/data";
 import { channels, SITE } from "@/lib/site";
@@ -103,10 +103,21 @@ ${text}` : text }));
     }
   };
 
+  const sec = useRef<HTMLElement>(null);
+  const calm = useReducedMotion();
+  // two red flaps close in from the sides as the section arrives, and stay shut
+  const { scrollYProgress } = useScroll({ target: sec, offset: ["start end", "start 28%"] });
+  const closed = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 });
+  const leftX = useTransform(closed, [0, 1], ["-101%", "0%"]);
+  const rightX = useTransform(closed, [0, 1], ["101%", "0%"]);
+  const rise = useTransform(closed, [0.55, 1], [0, 1]);
+
   return (
-    <section id="contact" className="drench halftone relative overflow-hidden py-12 lg:py-16">
+    <section ref={sec} id="contact" className="drench relative isolate overflow-hidden !bg-transparent py-12 lg:py-16">
+      <motion.span aria-hidden style={calm ? undefined : { x: leftX }} className="halftone !absolute inset-y-0 left-0 -z-10 w-[50.2%] bg-accent-fill" />
+      <motion.span aria-hidden style={calm ? undefined : { x: rightX }} className="halftone !absolute inset-y-0 right-0 -z-10 w-[50.2%] bg-accent-fill" />
       <Bolt size={520} className="pointer-events-none absolute -right-10 -bottom-10 -z-10 hidden rotate-[12deg] text-[#040c14] opacity-[0.12] lg:block" />
-      <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
+      <motion.div style={calm ? undefined : { opacity: rise }} className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <div>
             <SectionHead
@@ -297,7 +308,7 @@ ${text}` : text }));
             </div>
           </Reveal>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
