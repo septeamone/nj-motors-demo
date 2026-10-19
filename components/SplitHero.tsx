@@ -149,9 +149,12 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     }
 
     html.dataset.intro = "play";
-    // the browser may restore a scroll position or jump to a #anchor: during the intro the page stays at the top,
-    // and the anchor is followed only once the intro is over
-    const hash = location.hash;
+    // the browser may restore a scroll position or jump to a #anchor: during the intro the page stays at the top.
+    // A link opened with a #anchor is followed once the intro is over; a page refresh forgets the anchor
+    // (menu clicks leave one in the address, and after a refresh it threw the visitor down the page)
+    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    const hash = nav?.type === "reload" ? "" : location.hash;
+    if (nav?.type === "reload" && location.hash) history.replaceState(null, "", location.pathname + location.search);
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     const hold = () => {
       if (html.dataset.intro !== "done" && scrollY !== 0) scrollTo(0, 0);
