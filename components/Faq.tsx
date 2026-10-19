@@ -19,7 +19,7 @@ export function Faq() {
                   <Accordion.Trigger className="group flex w-full items-center justify-between gap-6 py-5 text-left text-[17px] font-bold text-ink transition-colors hover:text-accent-ink">
                     {nb(f.q)}
                     <span className="grid size-10 shrink-0 place-items-center rounded-full border border-line-strong transition-transform duration-300 group-data-[state=open]:rotate-45 group-data-[state=open]:border-accent group-data-[state=open]:text-accent-ink">
-                      <Plus className="size-[18px]" strokeWidth={1.75} />
+                      <Plus className="size-[18px] text-accent" strokeWidth={2} />
                     </span>
                   </Accordion.Trigger>
                 </Accordion.Header>
