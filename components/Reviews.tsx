@@ -1,6 +1,7 @@
 "use client";
 
-import { Maximize, Minimize, Pause, Play, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { ChevronLeft, ChevronRight, Maximize, Minimize, Pause, Play, SkipBack, SkipForward, Volume1, Volume2, VolumeX, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { Reveal, SectionHead } from "./ui";
@@ -12,6 +13,19 @@ const ITEMS = [
   { id: "review-2", title: "Отзыв клиента", sub: "Видео от клиента", wide: false, dur: 102 },
   { id: "review-3", title: "Отзыв клиента", sub: "Видео от клиента", wide: true, dur: 30 },
 ] as const;
+
+// Photos of cars sent by the owner (public/gallery): a cropped tile for the wall and the whole frame for the big view.
+const PHOTOS = [
+  { n: 1, title: "Land Rover Discovery", alt: "Белый Land Rover Discovery, вид спереди" },
+  { n: 2, title: "BMW", alt: "Чёрный BMW, вид спереди" },
+  { n: 3, title: "Kia", alt: "Белая Kia под навесом, вид спереди" },
+  { n: 4, title: "Volkswagen", alt: "Белый Volkswagen, вид спереди" },
+  { n: 5, title: "Chevrolet", alt: "Белый Chevrolet на площадке" },
+  { n: 6, title: "Kia", alt: "Белая Kia на площадке" },
+  { n: 7, title: "SsangYong", alt: "Белый SsangYong на парковке" },
+].map((p) => ({ ...p, tile: asset(`/gallery/car-${p.n}.webp`), full: asset(`/gallery/car-${p.n}-full.webp`) }));
+// the tiles of the wall: the first is large, the last two are wide
+const TILE_CLASS = ["col-span-2 row-span-2", "", "", "", "", "col-span-2", "col-span-2"];
 
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
@@ -40,6 +54,8 @@ export function Reviews() {
   const [waiting, setWaiting] = useState(false);
   const [fs, setFs] = useState(false);
   const [auto, setAuto] = useState(true);
+  const [volume, setVolume] = useState(1);
+  const [photo, setPhoto] = useState<number | null>(null);
 
   const box = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -52,6 +68,25 @@ export function Reviews() {
   const wantPlay = useRef(false);
   const cur = ITEMS[i];
   const idxRef = useRef(0);
+
+  // volume and mute are properties of the video element, not attributes: the element follows the state
+  useEffect(() => {
+    const v = video.current;
+    if (!v) return;
+    v.volume = volume;
+    v.muted = muted || volume === 0;
+  }, [volume, muted, i]);
+
+  const setLevel = (value: number) => {
+    setVolume(value);
+    setMuted(value === 0);
+  };
+  const toggleMute = () => {
+    if (muted || volume === 0) {
+      if (volume === 0) setVolume(0.6);
+      setMuted(false);
+    } else setMuted(true);
+  };
 
   const paint = useCallback((time: number, d: number) => {
     const k = d ? Math.min(1, time / d) : 0;
@@ -171,16 +206,16 @@ export function Reviews() {
 
   const onKey = (e: React.KeyboardEvent) => {
     const v = video.current;
-    if (!v) return;
+    if (!v || (e.target as HTMLElement).tagName === "INPUT") return;
     if (e.key === " " || e.key === "k") {
       e.preventDefault();
       toggle();
-    } else if (e.key === "m") setMuted((m) => !m);
+    } else if (e.key === "m") toggleMute();
     else if (e.key === "f") fullscreen();
     else if (e.key === "ArrowRight") v.currentTime = Math.min(v.duration || 0, v.currentTime + 5);
     else if (e.key === "ArrowLeft") v.currentTime = Math.max(0, v.currentTime - 5);
-    else if (e.key === "ArrowUp") go(i - 1);
-    else if (e.key === "ArrowDown") go(i + 1);
+    else if (e.key === "ArrowUp") setLevel(Math.min(1, volume + 0.1));
+    else if (e.key === "ArrowDown") setLevel(Math.max(0, volume - 0.1));
   };
 
   const next = ITEMS[(i + 1) % ITEMS.length];
@@ -191,17 +226,17 @@ export function Reviews() {
         <SectionHead
           eyebrow="Отзывы" n="04" shift={3}
           title="Что говорят клиенты"
-          lead="Видео клиентов. Начинает Андрей."
+          lead="Видео клиентов и фото автомобилей. Начинает Андрей."
         />
 
-        <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
-          <Reveal delay={0.08} className="min-w-0 lg:order-2">
+        <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-10 xl:gap-14">
+          <Reveal delay={0.08} className="min-w-0">
             <div className="mx-auto flex min-h-[480px] items-center justify-center lg:min-h-[600px]">
               <div
                 ref={box}
                 tabIndex={0}
                 role="group"
-                aria-label={`Видеоплеер: ${cur.title}. Пробел: пауза, M: звук, F: во весь экран, стрелки: перемотка и смена видео`}
+                aria-label={`Видеоплеер: ${cur.title}. Пробел: пауза, M: звук, F: во весь экран, стрелки влево и вправо: перемотка, вверх и вниз: громкость`}
                 onKeyDown={onKey}
                 className={`group relative overflow-hidden rounded-[20px] border border-line-strong bg-black shadow-[0_40px_80px_-36px_var(--shadow)] outline-none transition-[width,max-width] duration-500 focus-visible:ring-2 focus-visible:ring-accent ${
                   cur.wide ? "aspect-video w-full max-w-[600px]" : "aspect-[9/16] h-[min(70svh,600px)] max-w-full"
@@ -212,7 +247,6 @@ export function Reviews() {
                   key={cur.id}
                   poster={asset(`/reviews/${cur.id}-poster.webp`)}
                   playsInline
-                  muted={muted}
                   preload="metadata"
                   onClick={toggle}
                   onPlay={() => setPlaying(true)}
@@ -220,7 +254,11 @@ export function Reviews() {
                   onWaiting={() => setWaiting(true)}
                   onPlaying={() => setWaiting(false)}
                   onCanPlay={() => setWaiting(false)}
-                  onLoadedMetadata={(e) => setDur(e.currentTarget.duration)}
+                  onLoadedMetadata={(e) => {
+                    setDur(e.currentTarget.duration);
+                    e.currentTarget.volume = volume;
+                    e.currentTarget.muted = muted || volume === 0;
+                  }}
                   onEnded={() => go(i + 1)}
                   className="size-full cursor-pointer object-contain"
                 >
@@ -248,7 +286,7 @@ export function Reviews() {
                 {muted && playing && (
                   <button
                     type="button"
-                    onClick={() => setMuted(false)}
+                    onClick={() => setLevel(volume || 1)}
                     className="absolute top-12 left-3 inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent-fill px-4 py-2.5 text-[15px] font-bold text-white shadow-lg"
                   >
                     <VolumeX className="size-[18px]" strokeWidth={2} />
@@ -303,13 +341,30 @@ export function Reviews() {
                     <button type="button" aria-label="Следующее видео" onClick={() => go(i + 1)} className="vp-btn">
                       <SkipForward className="size-5" strokeWidth={2} />
                     </button>
-                    <span ref={clock} className="num ml-1 text-[15px] opacity-85">
+                    <span ref={clock} className="num ml-1 text-[14px] whitespace-nowrap opacity-85">
                       0:00 / {mmss(dur)}
                     </span>
                     <span className="flex-1" />
-                    <button type="button" aria-label={muted ? "Включить звук" : "Выключить звук"} onClick={() => setMuted((m) => !m)} className="vp-btn">
-                      {muted ? <VolumeX className="size-5" strokeWidth={2} /> : <Volume2 className="size-5" strokeWidth={2} />}
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button type="button" aria-label={muted || volume === 0 ? "Включить звук" : "Выключить звук"} onClick={toggleMute} className="vp-btn">
+                        {(() => {
+                          const lvl = muted ? 0 : volume;
+                          const Icon = lvl === 0 ? VolumeX : lvl < 0.5 ? Volume1 : Volume2;
+                          return <Icon className="size-5" strokeWidth={2} />;
+                        })()}
+                      </button>
+                      <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.02}
+                        value={muted ? 0 : volume}
+                        onChange={(e) => setLevel(Number(e.target.value))}
+                        aria-label="Громкость"
+                        className="vp-range w-[52px] sm:w-[60px]"
+                        style={{ ["--lvl" as string]: `${(muted ? 0 : volume) * 100}%` }}
+                      />
+                    </div>
                     <button type="button" aria-label={fs ? "Выйти из полноэкранного режима" : "Во весь экран"} onClick={fullscreen} className="vp-btn">
                       {fs ? <Minimize className="size-5" strokeWidth={2} /> : <Maximize className="size-5" strokeWidth={2} />}
                     </button>
@@ -323,8 +378,8 @@ export function Reviews() {
           </Reveal>
 
           <Reveal delay={0.08} className="min-w-0">
-            <p className="eyebrow mb-5">Все видео</p>
-            <ol ref={list} className="flex gap-3 overflow-x-auto overscroll-contain pb-2 lg:grid lg:max-h-[min(70svh,600px)] lg:auto-rows-min lg:overflow-x-hidden lg:overflow-y-auto lg:pr-2">
+            <p className="eyebrow mb-4">Видео</p>
+            <ol ref={list} className="flex gap-3 overflow-x-auto overscroll-contain pb-2 lg:grid lg:grid-cols-2 lg:overflow-visible lg:pb-0">
               {ITEMS.map((it, n) => {
                 const on = n === i;
                 return (
@@ -355,9 +410,59 @@ export function Reviews() {
                 );
               })}
             </ol>
+
+            <p className="eyebrow mt-8 mb-4 lg:mt-10">Фото автомобилей</p>
+            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:auto-rows-[112px] [&>li]:min-w-0">
+              {PHOTOS.map((p, n) => (
+                <li key={p.n} className={`${TILE_CLASS[n]} ${n === 0 ? "max-sm:col-span-2" : ""}`}>
+                  <button
+                    type="button"
+                    onClick={() => setPhoto(n)}
+                    aria-label={`Открыть фото: ${p.title}`}
+                    className="group relative block size-full cursor-pointer overflow-hidden rounded-[8px] border border-line-strong bg-bg-2 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.tile} alt={p.alt} loading="lazy" className="aspect-[4/3] size-full object-cover transition-transform duration-500 group-hover:scale-[1.04] lg:aspect-auto" />
+                    <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2.5 pt-6 pb-2 text-[14px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{p.title}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </Reveal>
         </div>
       </div>
+
+      <Dialog.Root open={photo !== null} onOpenChange={(v) => !v && setPhoto(null)}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-[100] bg-[rgba(4,12,20,0.88)] backdrop-blur-sm" />
+          <Dialog.Content aria-describedby={undefined} className="fixed inset-0 z-[101] grid place-items-center p-3 outline-none sm:p-6" onClick={(e) => e.target === e.currentTarget && setPhoto(null)}>
+            <Dialog.Title className="sr-only">{photo !== null ? PHOTOS[photo].title : ""}</Dialog.Title>
+            {photo !== null && (
+              <figure className="relative flex max-h-full max-w-full flex-col items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={PHOTOS[photo].full} alt={PHOTOS[photo].alt} className="max-h-[80svh] max-w-[94vw] rounded-[10px] object-contain shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)]" />
+                <figcaption className="flex items-center gap-4 text-white">
+                  <button type="button" aria-label="Предыдущее фото" onClick={() => setPhoto((photo + PHOTOS.length - 1) % PHOTOS.length)} className="vp-btn">
+                    <ChevronLeft className="size-6" strokeWidth={2} />
+                  </button>
+                  <span className="text-center">
+                    <span className="font-display block text-[20px] tracking-wide uppercase">{PHOTOS[photo].title}</span>
+                    <span className="num text-[14px] opacity-75">
+                      {photo + 1} / {PHOTOS.length}
+                    </span>
+                  </span>
+                  <button type="button" aria-label="Следующее фото" onClick={() => setPhoto((photo + 1) % PHOTOS.length)} className="vp-btn">
+                    <ChevronRight className="size-6" strokeWidth={2} />
+                  </button>
+                </figcaption>
+              </figure>
+            )}
+            <Dialog.Close aria-label="Закрыть" className="absolute top-3 right-3 z-[102] grid size-11 cursor-pointer place-items-center rounded-full bg-black/60 text-white transition-colors hover:bg-accent-fill sm:top-5 sm:right-5">
+              <X className="size-5" strokeWidth={2} />
+            </Dialog.Close>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </section>
   );
 }
