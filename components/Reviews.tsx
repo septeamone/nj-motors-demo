@@ -40,20 +40,27 @@ function Bars({ on }: { on: boolean }) {
   );
 }
 
+type Shelf = { rows: number; cols: number; show?: number };
+// how many rows and columns each shelf shows at a given screen width (show: columns' worth of width, a little more than cols peeks the next page)
+const VIDEO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 1, cols: 1, show: 1.22 } : { rows: w < 1024 ? 1 : 2, cols: 2 });
+const PHOTO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 2, cols: 2, show: 2.25 } : w < 1024 ? { rows: 2, cols: 3 } : { rows: 2, cols: 5 });
+
 /**
  * A compact shelf: a fixed number of rows that scrolls sideways, so ten or fifty items take the same room.
- * Arrows appear only when there is more than fits.
+ * Items read in rows (1 2 3 / 4 5 6), page by page; arrows appear only when there is more than fits.
  */
-function Rail({ label, hint, grid, listRef, children }: { label: string; hint: string; grid: string; listRef?: React.RefObject<HTMLUListElement | null>; children: React.ReactNode }) {
+function Rail({ label, hint, shelf, listRef, children }: { label: string; hint: string; shelf: (width: number) => Shelf; listRef?: React.RefObject<HTMLUListElement | null>; children: React.ReactNode[] }) {
   const own = useRef<HTMLUListElement>(null);
   const box = listRef ?? own;
   const [more, setMore] = useState(false);
+  const [lay, setLay] = useState<Shelf>(() => shelf(0));
 
-  // Lenis (smooth page scroll) is told to leave the shelf alone only while it actually scrolls
+  // the shelf layout follows the screen; Lenis (smooth page scroll) is told to leave the shelf alone only while it scrolls
   useEffect(() => {
     const el = box.current;
     if (!el) return;
     const check = () => {
+      setLay(shelf(window.innerWidth));
       const over = el.scrollWidth > el.clientWidth + 2;
       setMore(over);
       if (over) el.setAttribute("data-lenis-prevent", "");
@@ -63,9 +70,11 @@ function Rail({ label, hint, grid, listRef, children }: { label: string; hint: s
     const ro = new ResizeObserver(check);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [box]);
+  }, [box, shelf]);
 
   const slide = (dir: number) => box.current?.scrollBy({ left: dir * box.current.clientWidth * 0.9, behavior: "smooth" });
+  const show = lay.show ?? lay.cols;
+  const page = lay.rows * lay.cols;
 
   return (
     <div>
@@ -85,8 +94,20 @@ function Rail({ label, hint, grid, listRef, children }: { label: string; hint: s
           </span>
         )}
       </div>
-      <ul ref={box} className={`grid snap-x snap-mandatory grid-flow-col gap-3 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none] ${grid}`}>
-        {children}
+      <ul
+        ref={box}
+        className="grid snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none]"
+        style={{ gridAutoFlow: "column", gridAutoColumns: `calc((100% - ${(show - 1) * 12}px) / ${show})` }}
+      >
+        {children.map((child, k) => {
+          const inPage = k % page;
+          const col = Math.floor(k / page) * lay.cols + (inPage % lay.cols) + 1;
+          return (
+            <li key={k} className={`min-w-0 ${inPage % lay.cols === 0 && inPage < lay.cols ? "snap-start" : ""}`} style={{ gridRow: Math.floor(inPage / lay.cols) + 1, gridColumn: col }}>
+              {child}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -413,11 +434,11 @@ export function Reviews() {
           </Reveal>
 
           <Reveal delay={0.08} className="min-w-0">
-            <Rail label="Видео" hint={`${ITEMS.length}`} grid="grid-rows-1 auto-cols-[82%] sm:auto-cols-[calc((100%-0.75rem)/2)] lg:grid-rows-2" listRef={list}>
+            <Rail label="Видео" hint={`${ITEMS.length}`} shelf={VIDEO_SHELF} listRef={list}>
               {ITEMS.map((it, n) => {
                 const on = n === i;
                 return (
-                  <li key={it.id} className="min-w-0 snap-start">
+                  <div key={it.id} className="h-full">
                     <button
                       type="button"
                       onClick={() => go(n)}
@@ -440,15 +461,15 @@ export function Reviews() {
                       </span>
                       <span className="num shrink-0 text-[15px] text-ink-3">{mmss(it.dur)}</span>
                     </button>
-                  </li>
+                  </div>
                 );
               })}
             </Rail>
 
             <div className="mt-6 lg:mt-8">
-              <Rail label="Фото автомобилей" hint={`${PHOTOS.length}`} grid="grid-rows-2 auto-cols-[44%] sm:auto-cols-[calc((100%-1.5rem)/3)] lg:auto-cols-[calc((100%-3rem)/5)]">
+              <Rail label="Фото автомобилей" hint={`${PHOTOS.length}`} shelf={PHOTO_SHELF}>
                 {PHOTOS.map((p, n) => (
-                  <li key={p.n} className="min-w-0 snap-start">
+                  <div key={p.n}>
                     <button
                       type="button"
                       onClick={() => setPhoto(n)}
@@ -459,7 +480,7 @@ export function Reviews() {
                       <img src={p.tile} alt={p.alt} loading="lazy" className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
                       <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2.5 pt-6 pb-1.5 text-[13px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{p.title}</span>
                     </button>
-                  </li>
+                  </div>
                 ))}
               </Rail>
             </div>
