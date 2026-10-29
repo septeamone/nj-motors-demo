@@ -36,12 +36,10 @@
   --stage-bottom: #0a0e12;
   --stage-floor: rgba(0, 0, 0, 0.6);
   --shadow: rgba(0, 0, 0, 0.55);
-  --headlight: 1;
 }
 
 [data-theme="light"] {
   color-scheme: light;
-  --headlight: 0;
   --bg: #efe5d3;
   --bg-2: #e6d9c2;
   --surface: #f6eedf;
@@ -424,24 +422,6 @@ html.lenis body {
   opacity: 0.4;
   cursor: not-allowed;
 }
-/* Headlight (dark theme, mouse only): a warm beam that follows the pointer and lights up what is under it */
-.headlight {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 80;
-  width: 760px;
-  height: 760px;
-  margin: -380px 0 0 -380px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(closest-side, rgba(255, 232, 196, 0.17), rgba(255, 232, 196, 0.06) 45%, transparent);
-  mix-blend-mode: screen;
-  opacity: calc(var(--headlight) * var(--on, 0));
-  transition: opacity 400ms var(--ease-expo);
-  will-change: transform;
-}
-
 /* Section headings are sprayed on through a stencil: the paint edge sweeps across, ragged and speckled */
 .spray {
   --a: 120%;

@@ -2,7 +2,7 @@
  * The site's sounds, made in the browser with Web Audio (no files, nothing loaded from outside). Off until the
  * visitor turns them on with the button in the header; the choice is remembered on this device.
  */
-type Cue = "engine" | "stamp" | "page" | "doors";
+type Cue = "engine" | "stamp" | "page";
 
 const KEY = "nj-sound";
 let ctx: AudioContext | null = null;
@@ -77,18 +77,6 @@ export function play(cue: Cue) {
     f.frequency.exponentialRampToValueAtTime(4200, t + 0.28);
     n.connect(f).connect(env(a, 0.12, 0.06, 0.24)).connect(a.destination);
     n.start(t);
-  } else if (cue === "doors") {
-    // the steel doors of a container: a low metallic groan and a clunk
-    const o = a.createOscillator();
-    o.type = "sawtooth";
-    o.frequency.setValueAtTime(70, t);
-    o.frequency.linearRampToValueAtTime(52, t + 0.5);
-    const f = a.createBiquadFilter();
-    f.type = "lowpass";
-    f.frequency.value = 420;
-    o.connect(f).connect(env(a, 0.16, 0.08, 0.5)).connect(a.destination);
-    o.start(t);
-    o.stop(t + 0.65);
   } else {
     // the engine starting: the starter, then the idle settling down
     const o = a.createOscillator();
