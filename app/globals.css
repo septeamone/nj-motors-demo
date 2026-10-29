@@ -439,6 +439,16 @@ html.lenis body {
   mask-size: 100% 100%, 120px 120px, 100% 100%;
 }
 
+/* text standing on a film (catalog over the container, the deal heading over the sea): a soft shade keeps it legible */
+.on-film .h2 {
+  text-shadow:
+    0.032em 0.026em 0 color-mix(in srgb, var(--accent) 78%, transparent),
+    0 4px 40px rgba(4, 12, 20, 0.55);
+}
+.on-film .lead {
+  text-shadow: 0 1px 18px rgba(4, 12, 20, 0.7);
+}
+
 /* the car picture flows from its card into the dialog (Catalog, View Transitions) */
 ::view-transition-group(*.car) {
   animation-duration: 700ms;

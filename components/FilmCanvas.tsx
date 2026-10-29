@@ -1,34 +1,28 @@
 "use client";
 
-import { useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
+import { useMotionValueEvent, useReducedMotion, type MotionValue } from "motion/react";
 import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 
 /**
- * A rendered film played by the scroll: the section pins and the frames of the clip follow the scroll, forwards and
- * back. The frames are pictures drawn on a canvas (seeking a video by scroll stutters, on iPhones most of all);
- * phones load a smaller set. The frames load only when the film gets near, the first one right away.
- * The next section is pulled up over the last screen of the track, so it rises over the film's final frame.
+ * A rendered film played by a progress value (0 → 1, from the scroll): the frames of the clip follow it, forwards
+ * and back. The frames are pictures drawn on a canvas (seeking a video by scroll stutters, on iPhones most of all);
+ * phones load their own vertical cut. The frames load only when the film gets near, the first one right away.
  *
  * Smoothness: between two frames of the clip the next one is blended in by how far the scroll has got, so the
  * picture flows instead of stepping. The frames are kept as small compressed files and only the ones around the
  * current position are unpacked in the background (createImageBitmap), so a frame never has to be unpacked at the
  * moment it is shown and a phone never holds the whole film unpacked in memory.
  */
-export function ScrollFilm({ name, count, from, to }: { name: string; count: number; from: string; to: string }) {
-  const box = useRef<HTMLDivElement>(null);
+export function FilmCanvas({ name, count, progress: p, className = "" }: { name: string; count: number; progress: MotionValue<number>; className?: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const files = useRef<(Blob | undefined)[]>([]);
   const bitmaps = useRef(new Map<number, ImageBitmap | "pending">());
   const shown = useRef(-1);
   const calm = useReducedMotion();
-  const { scrollYProgress: p } = useScroll({ target: box, offset: ["start start", "end end"] });
-
-  // the film plays over the first part of the pinned scroll; the next section rises over the rest
-  // (track 320svh, 220svh of it pinned; the next section starts rising 120svh in, at 120/220 ≈ 0.55)
-  const PLAY = 0.54;
   const AHEAD = 10; // frames unpacked on each side of the current one
-  const at = (v: number) => Math.min(count - 1, Math.max(0, (v / PLAY) * (count - 1)));
+  // reduced motion: the film stands still on its last frame
+  const at = (v: number) => (calm ? count - 1 : Math.min(count - 1, Math.max(0, v * (count - 1))));
 
   // unpack the frames around the current one, let go of the far ones
   const keep = (center: number) => {
@@ -96,8 +90,7 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
 
   useEffect(() => {
     const c = canvas.current;
-    const bx = box.current;
-    if (!c || !bx || calm) return;
+    if (!c) return;
     const small = innerWidth < 768;
     const dir = asset(`/films/${name}/${small ? "m" : "d"}`);
     const map = bitmaps.current;
@@ -130,7 +123,7 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
         }),
       );
     };
-    void fetchFrame(0);
+    void fetchFrame(calm ? count - 1 : 0);
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(c);
@@ -138,12 +131,12 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
       (e) => {
         if (!e[0].isIntersecting) return;
         io.disconnect();
-        void fetchAll();
+        if (!calm) void fetchAll();
       },
       { rootMargin: "150% 0px" },
     );
     // not during the hero intro: it is busy loading the page, and the film is still far below
-    const start = () => io.observe(bx);
+    const start = () => io.observe(c);
     if (document.documentElement.dataset.intro === "play") window.addEventListener("intro-end", start, { once: true });
     else start();
     return () => {
@@ -157,14 +150,5 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calm, name, count]);
 
-  if (calm) return null;
-  return (
-    <div ref={box} aria-hidden className="relative mb-[-100svh] h-[320svh]" style={{ background: from }}>
-      <div className="sticky top-0 h-svh overflow-hidden">
-        <canvas ref={canvas} className="block size-full" />
-        {/* the edges of the film melt into the page */}
-        <span className="pointer-events-none absolute inset-0" style={{ boxShadow: `inset 0 0 18vmin 6vmin ${to}` }} />
-      </div>
-    </div>
-  );
+  return <canvas ref={canvas} aria-hidden className={`block size-full ${className}`} />;
 }

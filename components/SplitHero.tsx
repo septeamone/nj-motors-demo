@@ -1,9 +1,11 @@
 "use client";
 
+import { useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { EASE_CSS as EASE } from "@/lib/motion";
+import { FilmCanvas } from "./FilmCanvas";
 
 // Wheel discs cut from the logo itself (centres measured on the 1254px original), as fractions of the logo.
 const WHEELS = [
@@ -13,6 +15,10 @@ const WHEELS = [
 
 // Scroll distance (in screen heights) over which the halves part and the emblem flies up into the header.
 const PART = 0.65;
+// After the halves have parted, the container standing behind them opens (the film, made with Higgsfield) over
+// FILM screens of scroll; the stage then holds its last frame while the catalog rises over it. The section is
+// 100svh + the pinned scroll (PART + FILM, 2 screens) + 100svh pulled back by the negative margin so the catalog overlaps.
+const FILM = 1.35;
 // Intro scrub: how much wheel / swipe it takes to open the site (1 = the whole way)
 const WHEEL_PER_PX = 1 / 650;
 const AUTO_AFTER_MS = 6000;
@@ -43,6 +49,8 @@ const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
  * The emblem is one fixed element positioned from the scroll (outside the sticky stage so it can sit above the header).
  */
 export function SplitHero({ children }: { children: React.ReactNode }) {
+  const { scrollY: pageY } = useScroll();
+  const film = useTransform(pageY, (v) => (typeof window === "undefined" ? 0 : Math.min(1, Math.max(0, (v - PART * innerHeight) / (FILM * innerHeight)))));
   const stage = useRef<HTMLDivElement>(null);
   const slot = useRef<HTMLDivElement>(null);
   const emblem = useRef<HTMLAnchorElement>(null);
@@ -355,8 +363,13 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <section id="top" className="relative -mb-[90svh] h-[165svh]">
-        <div ref={stage} className="split-stage pointer-events-none sticky top-0 z-10 h-svh overflow-hidden">
+      <section id="top" className="relative -mb-[100svh] h-[400svh]">
+        <div ref={stage} className="split-stage pointer-events-none sticky top-0 h-svh overflow-hidden">
+          {/* behind the halves: the NJ Motors container, which opens as you scroll on */}
+          <div aria-hidden className="absolute inset-0 bg-[#05080c]">
+            <FilmCanvas name="container" count={91} progress={film} />
+            <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_18vmin_6vmin_#05080c]" />
+          </div>
           <div ref={artHalf} aria-hidden className="split-panel split-art" />
           <div ref={textHalf} className="split-panel split-text grain">
             {children}

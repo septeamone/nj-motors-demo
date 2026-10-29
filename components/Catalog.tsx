@@ -31,12 +31,21 @@ export function Catalog() {
     );
   };
   return (
-    <section id="catalog" className="cut-bottom bg-bg-2 pt-10 lg:pt-14" style={{ ["--cut" as string]: "5.5rem", ["--ht-dir" as string]: "280deg" }}>
+    // The top of the section is see-through: it rises over the last frame of the container film in the hero, so the
+    // heading stands on the film (in the dark theme's light ink, whatever the theme), and the section's own ground
+    // fades in under the cards (a scrim, not decoration).
+    <section
+      id="catalog"
+      className="cut-bottom pt-[30svh]"
+      style={{ ["--cut" as string]: "5.5rem", background: "linear-gradient(180deg, transparent 0, transparent calc(30svh + 140px), var(--bg-2) calc(30svh + 380px))" }}
+    >
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
-        <SectionHead
-          title="Примеры из Кореи"
-          lead="Примеры. Реальный автомобиль подбираем под вашу задачу, цену считаем до заказа."
-        />
+        <div data-theme="dark" className="on-film">
+          <SectionHead
+            title="Примеры из Кореи"
+            lead="Примеры. Реальный автомобиль подбираем под вашу задачу, цену считаем до заказа."
+          />
+        </div>
 
         <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
           {CARS.map((car, i) => (
