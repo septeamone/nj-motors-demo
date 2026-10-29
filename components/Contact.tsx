@@ -2,7 +2,9 @@
 
 import { ArrowUpRight, CheckCircle2, Loader2, Plus, TriangleAlert } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { asset } from "@/lib/asset";
 import { QUIZ } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
 import { channels, SITE } from "@/lib/site";
@@ -145,6 +147,15 @@ ${text}` : text }));
                   })}
                 </ul>
               )}
+              {/* the brand's muscle car poster, keyed out of its own red so it stands straight on the section's red */}
+              <Image
+                src={asset("/brand/car-poster.webp")}
+                alt=""
+                width={1400}
+                height={470}
+                sizes="(min-width:1024px) 46vw, 92vw"
+                className="mt-6 block h-auto w-full select-none lg:mt-12 lg:-ml-[6%] lg:w-[112%]"
+              />
             </Reveal>
           </motion.div>
 
