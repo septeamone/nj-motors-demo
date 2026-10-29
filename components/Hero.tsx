@@ -3,9 +3,9 @@ import { SplitHero } from "./SplitHero";
 
 const FACTS = [
   { k: "Маршрут", v: "Корея → Владивосток → ваш город" },
-  { k: "Срок до ключей · ориентир", v: "5–9 недель" },
-  { k: "Сделка", v: "Договор и оплата по этапам" },
-  { k: "Контроль", v: "Фото- и видеоотчёт до выкупа" },
+  { k: "От выкупа до ключей", v: "5–9 недель, ориентир" },
+  { k: "Осмотр", v: "Независимый, до выкупа" },
+  { k: "Договор", v: "Вознаграждение и этапы оплаты" },
 ];
 
 /** Text half of the hero; SplitHero owns the split, the intro and the emblem. */
@@ -26,14 +26,11 @@ export function Hero() {
 
         <div className="mt-5 flex flex-wrap items-center gap-3 lg:mt-8">
           <a href="#contact" className="btn btn-primary">
-            Получить расчёт
+            Оставить заявку
             <ArrowRight className="size-[18px]" strokeWidth={2} />
           </a>
-          <a href="#catalog" className="btn btn-ghost max-sm:hidden">
-            Смотреть автомобили
-          </a>
           <a href="#calc" className="px-2 text-[16px] font-bold text-ink-2 underline decoration-line-strong underline-offset-[6px] transition-colors hover:text-ink">
-            Прикинуть цену самому
+            Посчитать стоимость самому
           </a>
         </div>
 

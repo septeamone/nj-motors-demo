@@ -13,7 +13,7 @@ const NAV = [
   { id: "process", label: "Как мы работаем" },
   { id: "reviews", label: "Отзывы" },
   { id: "faq", label: "Вопросы" },
-  { id: "contact", label: "Контакты" },
+  { id: "contact", label: "Заявка" },
 ];
 
 function NavList({ items, prefix, active, className = "" }: { items: typeof NAV; prefix: string; active: string; className?: string }) {
@@ -90,7 +90,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
             <SoundToggle className="hidden sm:grid" />
             <ThemeToggle />
             <a href={`${prefix}#contact`} className="btn btn-primary btn-sm hidden 2xl:inline-flex">
-              Рассчитать стоимость
+              Оставить заявку
               <ArrowUpRight className="size-4" strokeWidth={2} />
             </a>
             <button
@@ -137,7 +137,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
           <div className="mt-2 flex items-center justify-between gap-3 p-3 pt-4">
             <SoundToggle />
             <a href={`${prefix}#contact`} onClick={() => setOpen(false)} className="btn btn-primary btn-sm">
-              Рассчитать
+              Оставить заявку
             </a>
           </div>
         </motion.div>

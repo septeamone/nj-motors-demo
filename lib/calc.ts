@@ -101,13 +101,13 @@ const UTIL_2000_3000: [number, number, number][] = [
 function utilisation(isNew: boolean, volume: number, hp: number, fuel: Fuel): Part {
   const key = "util";
   const label = "Утилизационный сбор";
-  if (fuel === "electric") return manager(key, "customs", label, "Для электромобилей считает менеджер по действующей шкале");
+  if (fuel === "electric") return manager(key, "customs", label, "Для электромобилей считает Андрей по действующей шкале");
   const preferential = fuel === "hybrid" ? hp <= 80 : hp <= 160 && volume <= 3000;
   if (preferential)
     return same(key, "customs", label, "Льготный: личное пользование, не больше одного автомобиля в год, не продавать 12 месяцев", isNew ? 3400 : 5200);
-  if (fuel === "hybrid") return manager(key, "customs", label, "Мощный гибрид: сбор считают по отдельной шкале, назовёт менеджер");
+  if (fuel === "hybrid") return manager(key, "customs", label, "Мощный гибрид: сбор считают по отдельной шкале, назовёт Андрей");
   const table = volume > 1000 && volume <= 2000 ? UTIL_1000_2000 : volume > 2000 && volume <= 3000 ? UTIL_2000_3000 : null;
-  if (!table) return manager(key, "customs", label, "Для такого объёма двигателя считает менеджер");
+  if (!table) return manager(key, "customs", label, "Для такого объёма двигателя считает Андрей");
   const row = table.find(([lim]) => hp <= lim)!;
   const v = isNew ? row[1] : row[2];
   const note = "Мощность выше 160 л.с.: льготы нет, ставка коммерческая";
@@ -135,14 +135,14 @@ export function calculate(i: CalcInput) {
         ? range("inland", "russia", "Владивосток → Москва", "Автовоз, около 9 000 км", 170_000, 200_000)
         : i.inland === "rail"
           ? range("inland", "russia", "Владивосток → Москва", "Железная дорога, автомобиль в контейнере", 130_000, 180_000)
-          : manager("inland", "russia", "Владивосток → ваш город", "Цена зависит от расстояния, назовёт менеджер");
+          : manager("inland", "russia", "Владивосток → ваш город", "Цена зависит от расстояния, назовёт Андрей");
 
   const parts: Part[] = [
     same("car", "korea", "Автомобиль в Корее", `${Math.round(i.priceKrw).toLocaleString("ru-RU")} ₩ по курсу ЦБ ${RATES.date}`, car),
     same("dealer", "korea", "Услуги в Корее", "Осмотр, оформление покупки, экспортные документы, доставка в порт: 500 000 ₩", 500_000 * RATES.krw),
     sea,
     same("insurance", "sea", "Страховка груза", "На время морской перевозки", 5_200),
-    duty === null ? manager("duty", "customs", "Пошлина (единая ставка)", "Для электромобилей считает менеджер") : same("duty", "customs", "Пошлина (единая ставка)", ageNote, duty),
+    duty === null ? manager("duty", "customs", "Пошлина (единая ставка)", "Для электромобилей считает Андрей") : same("duty", "customs", "Пошлина (единая ставка)", ageNote, duty),
     same("fee", "customs", "Таможенный сбор", "Фиксированная сумма по стоимости автомобиля", customsFee(customsValue)),
     utilisation(isNew, i.volume, i.hp, i.fuel),
     same("broker", "customs", "Брокер, склад, лаборатория, ЭПТС", "Оформление декларации и временное хранение в порту", 90_000),

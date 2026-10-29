@@ -50,7 +50,7 @@
       "svg": "<rect class=\"r\" x=\"4\" y=\"11\" width=\"40\" height=\"26\" transform=\"translate(3 2)\"/><path d=\"M4 11h40v26H4zM4 20h40M11 30h9\"/>" },
     { "id": "shield", "name": "Гарантия", "meaning": "Условия на бумаге",
       "svg": "<path class=\"r\" d=\"M24 4l16 6v14c0 10-7 16-16 20C15 40 8 34 8 24V10z\" transform=\"translate(3 2)\"/><path d=\"M24 4l16 6v14c0 10-7 16-16 20C15 40 8 34 8 24V10z\"/><path d=\"M16 24l6 6 11-12\"/>" },
-    { "id": "clock", "name": "Срок", "meaning": "5–9 недель до ключей",
+    { "id": "clock", "name": "Срок", "meaning": "5–9 недель от выкупа до ключей",
       "svg": "<circle class=\"r\" cx=\"24\" cy=\"24\" r=\"19\" transform=\"translate(3 2)\"/><circle cx=\"24\" cy=\"24\" r=\"19\"/><path d=\"M24 13v12l8 5\"/>" }
   ]},
   { "group": "Связь", "icons": [

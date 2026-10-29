@@ -35,7 +35,7 @@ export function MobileBar() {
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
           <a href="#contact" className="plate flex h-14 items-center justify-between rounded-full pr-1.5 pl-6 text-[16px] font-bold text-ink">
-            Рассчитать стоимость
+            Оставить заявку
             <span className="grid size-11 place-items-center rounded-full bg-accent-fill text-on-accent">
               <ArrowUpRight className="size-5" strokeWidth={2} />
             </span>

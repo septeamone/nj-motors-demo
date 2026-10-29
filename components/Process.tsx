@@ -1,6 +1,6 @@
 "use client";
 
-import { Download } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { asset } from "@/lib/asset";
@@ -59,7 +59,7 @@ export function Process() {
         <div className="on-film">
           <SectionHead
             title="Паспорт вашей сделки"
-            lead="Платите по ходу дела: каждый платёж идёт после результата, который вы видите."
+            lead="Четыре платежа по этапам сделки. За что и когда вы платите, записано в договоре до первого платежа."
           />
         </div>
 
@@ -94,12 +94,19 @@ export function Process() {
             </div>
             <p className="mt-6 max-w-[62ch] text-[16px] leading-snug text-ink-3">
               Суммы и сроки вписываются в договор
-              {SITE.dealConfirmed
-                ? ""
-                : ". Порядок этапов взят из договоров других импортёров"}
+              {SITE.dealConfirmed ? "" : ". Этапы на сайте пока уточняются с владельцем"}
               .
             </p>
           </div>
+        </Reveal>
+
+        {/* the most reassuring moment of the page ends with the action */}
+        <Reveal className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <a href="#contact" className="btn btn-primary">
+            Оставить заявку
+            <ArrowRight className="size-[18px]" strokeWidth={2} />
+          </a>
+          <p className="text-[17px] font-medium text-ink">Первый шаг бесплатный: платить пока не нужно.</p>
         </Reveal>
       </div>
     </section>

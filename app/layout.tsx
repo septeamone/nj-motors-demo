@@ -25,7 +25,7 @@ const onest = Onest({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const TITLE = "NJ Motors — автомобили из Кореи под ключ";
 const DESCRIPTION =
-  "Подбираем, проверяем и привозим автомобили из Южной Кореи. Цену и каждый этап сделки вы видите до оплаты: договор, оплата по этапам, фото- и видеоотчёт.";
+  "Подбираем, проверяем и привозим автомобили из Южной Кореи. Цену и каждый этап сделки вы видите до оплаты: договор, оплата по этапам, независимый осмотр до выкупа.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

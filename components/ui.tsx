@@ -6,15 +6,6 @@ import Image from "next/image";
 import { asset } from "@/lib/asset";
 import { DUR, EASE } from "@/lib/motion";
 
-/** The brand lightning: a decorative motif drawn after the bolts of the logo (the logo itself is never redrawn). */
-export function Bolt({ className = "", size = 16 }: { className?: string; size?: number }) {
-  return (
-    <svg aria-hidden width={size * 0.72} height={size} viewBox="0 0 72 100" className={className} fill="currentColor">
-      <path d="M44 0 4 56h27L20 100 68 38H41z" />
-    </svg>
-  );
-}
-
 /** Small round mark from the logo + wordmark. */
 export function Wordmark({ className = "", tagline = true }: { className?: string; tagline?: boolean }) {
   return (
@@ -32,20 +23,6 @@ export function Wordmark({ className = "", tagline = true }: { className?: strin
           <span className="mono mt-1 hidden text-ink-3 sm:block">Автомобили из Кореи с 2023 года</span>
         )}
       </span>
-    </span>
-  );
-}
-
-/** The red stamp of the logo, as a small decorative seal. */
-export function Seal({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`inline-grid place-items-center rounded-[3px] border-2 border-accent px-2.5 py-1.5 text-center leading-[1.15] font-bold text-accent-ink [font-family:'Malgun_Gothic','Apple_SD_Gothic_Neo','Noto_Sans_KR',sans-serif] text-[16px] ${className}`}
-    >
-      엔제이
-      <br />
-      모터스
     </span>
   );
 }

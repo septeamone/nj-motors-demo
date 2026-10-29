@@ -43,7 +43,7 @@ export function Catalog() {
         <div data-theme="dark" className="on-film">
           <SectionHead
             title="Примеры из Кореи"
-            lead="Примеры. Реальный автомобиль подбираем под вашу задачу, цену считаем до заказа."
+            lead="Реальный автомобиль Андрей подбирает под вашу задачу, а цену считает до заказа."
           />
         </div>
 
@@ -182,7 +182,7 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
         <p className="label">{car.brand}</p>
         <Dialog.Title className="font-display mt-1 text-[32px] leading-tight tracking-wide uppercase">{car.model}</Dialog.Title>
         <Dialog.Description className="mt-3 text-[16px] leading-snug text-ink-2">
-          Привезём именно такой автомобиль или подберём по вашим параметрам: проверим историю, пришлём фото и видео до оплаты, зафиксируем условия в договоре.
+          Привезём именно такой автомобиль или подберём по вашим параметрам: проверим историю, до выкупа проведём независимый осмотр, условия зафиксируем в договоре.
         </Dialog.Description>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-line-strong pt-5">
           {specs.map(([k, v]) => (
@@ -195,7 +195,7 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
         <div className="mt-6 border-t border-line pt-5">
           <p className="label">{PRICE_LABEL}</p>
           <p className="num mt-1 text-[30px] leading-none">{rub(car.price)}</p>
-          <p className="mt-2 text-[16px] leading-snug text-ink-3">Сумма примерная, без таможенных платежей. Точный расчёт делает менеджер.</p>
+          <p className="mt-2 text-[16px] leading-snug text-ink-3">Примерная сумма под ключ. Точную Андрей считает по таможенным ставкам на дату сделки.</p>
         </div>
         <a href="#contact" onClick={onDone} className="btn btn-primary mt-6 w-full sm:w-auto sm:self-start">
           Получить расчёт

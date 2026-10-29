@@ -205,7 +205,7 @@ function Ledger({ active }: { active: number }) {
   return (
     <div>
       <h3 className="font-display text-[clamp(22px,2vw,28px)] leading-none tracking-wide uppercase">Четыре платежа</h3>
-      <p className="mt-3 max-w-[34ch] text-[17px] leading-snug text-ink-2">Каждый после результата, который вы уже видите.</p>
+      <p className="mt-3 max-w-[34ch] text-[17px] leading-snug text-ink-2">Сумма и срок каждого записаны в договоре.</p>
       <ol className="mt-6 flex flex-col gap-1.5">
         {DEAL_STAGES.map((d, k) => {
           const state = PAY_STEP[k] < active ? "done" : PAY_STEP[k] === active ? "now" : "next";

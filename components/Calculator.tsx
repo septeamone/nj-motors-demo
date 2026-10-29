@@ -74,7 +74,7 @@ function sum(parts: Part[]) {
   };
 }
 const label = (s: NonNullable<ReturnType<typeof sum>>) => (s.open ? `от ${rub(s.lo)}` : s.lo === s.hi ? rub(s.lo) : `${fmt(s.lo)}–${fmt(s.hi)} ₽`);
-const one = (p: Part) => (p.lo === null ? "менеджер" : p.hi === null ? `от ${rub(p.lo)}` : p.hi === p.lo ? rub(p.lo) : `${fmt(p.lo)}–${fmt(p.hi)} ₽`);
+const one = (p: Part) => (p.lo === null ? "уточнит Андрей" : p.hi === null ? `от ${rub(p.lo)}` : p.hi === p.lo ? rub(p.lo) : `${fmt(p.lo)}–${fmt(p.hi)} ₽`);
 
 export function Calculator() {
   const [price, setPrice] = useState("18000000");
@@ -117,7 +117,7 @@ export function Calculator() {
         detail:
           `Расчёт на сайте: автомобиль ${fmt(priceKrw)} ₩, ${year} г., ${FUEL_LABEL[fuel].toLowerCase()}` +
           `${fuel === "electric" ? "" : `, ${volume} см³`}, ${hp} л.с.; море: ${SEA_LABEL[sea].toLowerCase()}; ${INLAND_LABEL[inland].toLowerCase()}. ` +
-          `Ориентир ${totalText} без вознаграждения.`,
+          `Ориентир ${totalText} без вознаграждения NJ Motors.`,
       }),
     );
 
@@ -237,7 +237,7 @@ export function Calculator() {
               </div>
               <p className="mt-2 flex items-center gap-2 text-[15px] font-bold">
                 <NjIcon name="clock" className="size-6" />
-                Срок: около {weeks[0]}–{weeks[1]} нед. {days.partial ? "до таможни во Владивостоке" : "до ключей"}
+                Срок: около {weeks[0]}–{weeks[1]} нед. от выкупа {days.partial ? "до таможни во Владивостоке" : "до ключей"}
               </p>
             </div>
 
@@ -286,7 +286,8 @@ export function Calculator() {
             </ul>
 
             <p className="mt-3 text-[14px] leading-snug opacity-70">
-              Без вознаграждения NJ Motors{total.missing.length ? ` и без строк «менеджер» (${total.missing.join(", ")})` : ""}.
+              Сюда не входит вознаграждение NJ Motors: это фиксированная сумма, Андрей называет её до подписания и вписывает в договор
+              {total.missing.length ? `. Не посчитаны строки «уточнит Андрей» (${total.missing.join(", ")})` : ""}.
             </p>
 
             <a href="#contact" onClick={request} className="btn btn-primary mt-4 w-full">

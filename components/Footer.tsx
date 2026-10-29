@@ -13,7 +13,6 @@ const NAV = [
 ];
 
 const NAMES: Record<string, string> = {
-  "hero-ship": "Автомобилевоз (блок «Как проходит сделка»)",
   ...Object.fromEntries(CARS.map((c) => [c.slug, `${c.brand} ${c.model}`])),
 };
 
