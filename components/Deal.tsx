@@ -60,11 +60,11 @@ function Page({ i, pressed, className = "" }: { i: number; pressed?: boolean; cl
       ? { initial: "off" as const, whileInView: "on" as const, viewport: { once: true, amount: 0.6 } }
       : { initial: "off" as const, animate: pressed ? "on" : "off" };
   return (
-    <article className={`relative flex flex-col rounded-[6px] bg-[var(--paper)] text-[var(--paper-ink)] ${className}`}>
+    <article className={`relative flex flex-col overflow-hidden rounded-[6px] bg-[var(--paper)] text-[var(--paper-ink)] shadow-[0_1px_0_rgba(18,16,13,0.18),0_22px_40px_-26px_var(--shadow)] ${className}`}>
       {/* punched holes of the binding along the top edge */}
       <span aria-hidden className="absolute inset-x-8 top-3 flex justify-between">
         {Array.from({ length: 9 }, (_, k) => (
-          <i key={k} className="block size-2.5 rounded-full bg-bg-2" />
+          <i key={k} className="block size-2.5 rounded-full bg-[rgba(18,16,13,0.32)]" />
         ))}
       </span>
 

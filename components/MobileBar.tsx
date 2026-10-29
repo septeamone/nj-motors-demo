@@ -31,7 +31,7 @@ export function MobileBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 90, opacity: 0 }}
           transition={{ duration: DUR, ease: EASE }}
-          className="fixed inset-x-3 bottom-3 z-40 sm:hidden"
+          className="fixed inset-x-3 bottom-3 z-40 mx-auto max-w-[480px] lg:hidden"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
           <a href="#contact" className="plate flex h-14 items-center justify-between rounded-full pr-1.5 pl-6 text-[16px] font-bold text-ink">

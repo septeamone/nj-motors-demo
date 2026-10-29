@@ -85,7 +85,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
           <div className="flex items-center justify-end gap-3">
             <NavList items={NAV.slice(3)} prefix={prefix} active={active} />
             <ThemeToggle />
-            <a href={`${prefix}#contact`} className="btn btn-primary btn-sm hidden sm:inline-flex lg:hidden 2xl:inline-flex">
+            <a href={`${prefix}#contact`} className="btn btn-primary btn-sm hidden 2xl:inline-flex">
               Рассчитать стоимость
               <ArrowUpRight className="size-4" strokeWidth={2} />
             </a>
