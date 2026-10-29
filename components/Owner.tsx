@@ -3,14 +3,7 @@ import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
 import { nb } from "@/lib/typo";
 import { PhoneMock } from "./PhoneMock";
-import { NjIcon, type IconName } from "./NjIcon";
 import { Reveal, SectionHead } from "./ui";
-
-const POINTS: [string, string, IconName][] = [
-  ["Один контакт на всю сделку", "От заявки до ключей вы общаетесь с одним человеком.", "person"],
-  ["Видите то же, что и мы", "Фото, видео и документы приходят до выкупа.", "camera"],
-  ["Условия в договоре", "Цена и этапы оплаты прописаны до первого платежа.", "contract"],
-];
 
 export function Owner() {
   const { owner, legal } = SITE;
@@ -49,17 +42,9 @@ export function Owner() {
             lead={`С ${SITE.brand.since} года. Вашу сделку ведёт один человек.`}
           />
 
-          <ul className="mt-10 grid gap-6 border-t border-line pt-8">
-            {POINTS.map(([t, d, icon]) => (
-              <li key={t} className="flex gap-4">
-                <NjIcon name={icon} className="size-9" />
-                <span>
-                  <span className="block text-[16px] font-bold text-ink">{t}</span>
-                  <span className="mt-1 block max-w-[52ch] text-[16px] leading-snug text-ink-2">{nb(d)}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
+          <p className="mt-8 max-w-[44ch] text-[clamp(19px,1.7vw,23px)] leading-snug font-medium text-ink">
+            {nb("Фото, видео и документы приходят до выкупа, а цена и этапы оплаты записаны в договоре до первого платежа.")}
+          </p>
 
           {rows.length > 0 && (
             <dl className="mt-10 grid grid-cols-[auto_1fr] gap-x-8 gap-y-3 border-t border-line pt-6">

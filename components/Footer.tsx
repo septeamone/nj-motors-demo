@@ -7,7 +7,7 @@ const NAV = [
   ["catalog", "Автомобили"],
   ["calc", "Расчёт"],
   ["process", "Как мы работаем"],
-  ["deal", "Договор и оплата"],
+  ["reviews", "Отзывы"],
   ["faq", "Вопросы"],
   ["contact", "Контакты"],
 ];
@@ -64,9 +64,18 @@ export function Footer({ prefix = "" }: { prefix?: string }) {
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 max-w-[30ch] text-[16px] leading-snug text-ink-2">
-                Оставьте заявку в форме выше: менеджер свяжется с вами сам.
-              </p>
+              <>
+                {/* макет: контакты ещё не подтверждены владельцем, места под них показаны честно */}
+                <ul className="mt-4 grid gap-4 text-[16px]">
+                  {["Телефон", "Эл. почта"].map((k) => (
+                    <li key={k}>
+                      <span className="block text-ink-3">{k}</span>
+                      <span className="font-semibold text-ink-2">Появится после подтверждения</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 max-w-[30ch] text-[16px] leading-snug text-ink-2">Пока можно оставить заявку в форме выше: Андрей свяжется сам.</p>
+              </>
             )}
           </div>
         </div>

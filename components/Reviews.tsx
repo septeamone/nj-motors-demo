@@ -9,9 +9,9 @@ import { Reveal, SectionHead } from "./ui";
 // Videos compressed from the owner's originals (public/reviews). The first one is Andrey himself, it opens the row.
 const ITEMS = [
   { id: "andrey", title: "Андрей, NJ Motors", sub: "Начинает Андрей", wide: false, dur: 98 },
-  { id: "review-1", title: "Отзыв клиента", sub: "Видео от клиента", wide: false, dur: 82 },
-  { id: "review-2", title: "Отзыв клиента", sub: "Видео от клиента", wide: false, dur: 102 },
-  { id: "review-3", title: "Отзыв клиента", sub: "Видео от клиента", wide: true, dur: 30 },
+  { id: "review-1", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 82 },
+  { id: "review-2", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 102 },
+  { id: "review-3", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: true, dur: 30 },
 ] as const;
 
 // Photos of cars sent by the owner (public/gallery): a cropped tile for the wall and the whole frame for the big view.
@@ -489,8 +489,8 @@ export function Reviews() {
 
       <Dialog.Root open={photo !== null} onOpenChange={(v) => !v && setPhoto(null)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-[100] bg-[rgba(4,12,20,0.88)] backdrop-blur-sm" />
-          <Dialog.Content aria-describedby={undefined} className="fixed inset-0 z-[101] grid place-items-center p-3 outline-none sm:p-6" onClick={(e) => e.target === e.currentTarget && setPhoto(null)}>
+          <Dialog.Overlay className="dlg-fade fixed inset-0 z-[100] bg-[rgba(4,12,20,0.92)]" />
+          <Dialog.Content aria-describedby={undefined} className="dlg-pop fixed inset-0 z-[101] grid place-items-center p-3 outline-none sm:p-6" onClick={(e) => e.target === e.currentTarget && setPhoto(null)}>
             <Dialog.Title className="sr-only">{photo !== null ? PHOTOS[photo].title : ""}</Dialog.Title>
             {photo !== null && (
               <figure className="relative flex max-h-full max-w-full flex-col items-center gap-3">

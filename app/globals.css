@@ -253,7 +253,11 @@ html.lenis body {
     color 160ms var(--ease-out);
 }
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
+}
+.pill:active,
+[role="radio"]:active {
+  transform: scale(0.97);
 }
 .btn-sm {
   height: 44px;
@@ -268,24 +272,30 @@ html.lenis body {
     inset 0 -2px 0 rgba(0, 0, 0, 0.22),
     0 12px 28px -14px color-mix(in srgb, var(--accent) 80%, transparent);
 }
-.btn-primary:hover {
-  background: color-mix(in srgb, var(--accent-fill) 86%, white);
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background: color-mix(in srgb, var(--accent-fill) 86%, white);
+  }
 }
 .btn-ghost {
   background: transparent;
   color: var(--ink);
   border-color: var(--line-strong);
 }
-.btn-ghost:hover {
-  border-color: var(--ink);
-  background: var(--accent-soft);
+@media (hover: hover) and (pointer: fine) {
+  .btn-ghost:hover {
+    border-color: var(--ink);
+    background: var(--accent-soft);
+  }
 }
 .btn-paper {
   background: var(--paper);
   color: var(--paper-ink);
 }
-.btn-paper:hover {
-  background: color-mix(in srgb, var(--paper) 88%, white);
+@media (hover: hover) and (pointer: fine) {
+  .btn-paper:hover {
+    background: color-mix(in srgb, var(--paper) 88%, white);
+  }
 }
 
 /* ---------- Fields ---------- */
@@ -304,8 +314,10 @@ html.lenis body {
     box-shadow 200ms var(--ease-out),
     background-color 160ms var(--ease-out);
 }
-.field:hover {
-  border-color: var(--ink-3);
+@media (hover: hover) and (pointer: fine) {
+  .field:hover {
+    border-color: var(--ink-3);
+  }
 }
 .field:focus-within {
   border-color: var(--accent);
@@ -372,11 +384,14 @@ html.lenis body {
   transition:
     background-color 160ms var(--ease-out),
     color 160ms var(--ease-out),
-    border-color 160ms var(--ease-out);
+    border-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
 }
-.pill:hover {
-  color: var(--ink);
-  border-color: var(--ink-3);
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover {
+    color: var(--ink);
+    border-color: var(--ink-3);
+  }
 }
 .pill[aria-checked="true"],
 .pill[aria-pressed="true"] {
@@ -423,6 +438,41 @@ html.lenis body {
 .select-item[data-disabled] {
   opacity: 0.4;
   cursor: not-allowed;
+}
+/* Dialogs (car details, photo viewer): open in the site's rhythm, close quickly */
+.dlg-fade[data-state="open"] {
+  animation: dlg-fade-in 400ms var(--ease-expo) both;
+}
+.dlg-fade[data-state="closed"] {
+  animation: dlg-fade-out 200ms ease-out both;
+}
+.dlg-pop[data-state="open"] {
+  animation: dlg-pop-in 700ms var(--ease-expo) both;
+}
+.dlg-pop[data-state="closed"] {
+  animation: dlg-pop-out 200ms ease-out both;
+}
+@keyframes dlg-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dlg-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes dlg-pop-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+@keyframes dlg-pop-out {
+  to {
+    opacity: 0;
+    scale: 0.98;
+  }
 }
 @keyframes pop {
   from {
@@ -475,8 +525,10 @@ html.lenis body {
   z-index: 1;
   transition: transform 700ms var(--ease-out);
 }
-.card-hover:hover .stage img.car {
-  transform: translateX(-50%) scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .card-hover:hover .stage img.car {
+    transform: translateX(-50%) scale(1.05);
+  }
 }
 
 }
@@ -857,8 +909,10 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   cursor: pointer;
   transition: background 0.2s;
 }
-.vp-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+@media (hover: hover) and (pointer: fine) {
+  .vp-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
 }
 @keyframes eq {
   to {

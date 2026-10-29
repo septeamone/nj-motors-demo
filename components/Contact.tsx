@@ -4,6 +4,7 @@ import { ArrowUpRight, CheckCircle2, Loader2, TriangleAlert } from "lucide-react
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { QUIZ } from "@/lib/data";
+import { DUR, EASE } from "@/lib/motion";
 import { channels, SITE } from "@/lib/site";
 import { NjIcon, type IconName } from "./NjIcon";
 import { Select } from "./Select";
@@ -173,8 +174,8 @@ ${text}` : text }));
                   <motion.div
                     key="ok"
                     initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: DUR, ease: EASE } }}
+                    exit={{ opacity: 0, transition: { duration: 0.2 } }}
                     className="grid place-items-center py-14 text-center"
                     role="status"
                   >
@@ -195,7 +196,7 @@ ${text}` : text }));
                     </button>
                   </motion.div>
                 ) : (
-                  <motion.form key="form" onSubmit={submit} noValidate exit={{ opacity: 0 }} className="grid gap-5">
+                  <motion.form key="form" onSubmit={submit} noValidate initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: DUR, ease: EASE } }} exit={{ opacity: 0, transition: { duration: 0.2 } }} className="grid gap-5">
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
                         <label htmlFor="f-name" className="label">
@@ -249,7 +250,7 @@ ${text}` : text }));
                               role="radio"
                               aria-checked={f[q.key] === o}
                               onClick={() => set(q.key, f[q.key] === o ? "" : o)}
-                              className="cursor-pointer rounded-full border border-line-strong px-3.5 py-1.5 text-[16px] font-bold text-ink-2 transition-colors hover:border-accent hover:text-ink aria-checked:border-accent aria-checked:bg-accent-soft aria-checked:text-ink"
+                              className="cursor-pointer rounded-full border border-line-strong px-3.5 py-1.5 text-[16px] font-bold text-ink-2 transition-[color,background-color,border-color,transform] duration-150 hover:border-accent hover:text-ink aria-checked:border-accent aria-checked:bg-accent-soft aria-checked:text-ink"
                             >
                               {o}
                             </button>

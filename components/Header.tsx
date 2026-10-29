@@ -1,7 +1,8 @@
 "use client";
 
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { motion, useScroll, useSpring } from "motion/react";
+import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
+import { DUR, EASE } from "@/lib/motion";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -29,7 +30,7 @@ function NavList({ items, prefix, active }: { items: typeof NAV; prefix: string;
               <motion.span
                 layoutId="nav-active"
                 className="absolute inset-x-3 -bottom-[1px] h-[2px] bg-accent xl:inset-x-4"
-                transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                transition={{ duration: 0.45, ease: EASE }}
               />
             )}
           </a>
@@ -107,11 +108,17 @@ export function Header({ prefix = "" }: { prefix?: string }) {
         />
       </nav>
 
+      <AnimatePresence>
       {open && (
-        <div className="plate mx-3 mt-2 p-3 lg:hidden">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0, transition: { duration: DUR, ease: EASE } }}
+          exit={{ opacity: 0, y: -6, transition: { duration: 0.2, ease: "easeOut" } }}
+          className="plate mx-3 mt-2 p-3 lg:hidden"
+        >
           <ul className="flex flex-col">
-            {NAV.map((n) => (
-              <li key={n.id}>
+            {NAV.map((n, i) => (
+              <motion.li key={n.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR, ease: EASE, delay: 0.05 + i * 0.04 }}>
                 <a
                   href={`${prefix}#${n.id}`}
                   onClick={() => setOpen(false)}
@@ -120,7 +127,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
                   {n.label}
                   <ArrowUpRight className="size-4 text-ink-3" strokeWidth={1.75} />
                 </a>
-              </li>
+              </motion.li>
             ))}
           </ul>
           <div className="mt-2 flex items-center justify-end gap-3 p-3 pt-4">
@@ -128,8 +135,9 @@ export function Header({ prefix = "" }: { prefix?: string }) {
               Рассчитать
             </a>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -84,10 +84,10 @@ export function Catalog() {
 
       <Dialog.Root open={open !== null} onOpenChange={(v) => !v && setOpen(null)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm" />
+          <Dialog.Overlay className="dlg-fade fixed inset-0 z-[60] bg-[rgba(4,12,20,0.82)]" />
           <Dialog.Content
             data-lenis-prevent
-            className="plate fixed top-1/2 left-1/2 z-[70] max-h-[92svh] w-[min(94vw,880px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto"
+            className="plate dlg-pop fixed top-1/2 left-1/2 z-[70] max-h-[92svh] w-[min(94vw,880px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto"
           >
             {open && <CarDetails car={open} onDone={() => setOpen(null)} />}
           </Dialog.Content>

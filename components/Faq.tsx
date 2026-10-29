@@ -18,12 +18,12 @@ export function Faq() {
                 <Accordion.Header>
                   <Accordion.Trigger className="group flex w-full items-center justify-between gap-6 py-5 text-left text-[17px] font-bold text-ink transition-colors hover:text-accent-ink">
                     {nb(f.q)}
-                    <span className="grid size-11 shrink-0 place-items-center rounded-full border-2 border-accent/40 transition-transform duration-300 group-data-[state=open]:rotate-45 group-data-[state=open]:border-accent group-data-[state=open]:text-accent-ink">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-full border-2 border-accent/40 transition-[rotate,transform,border-color] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-data-[state=open]:rotate-45 group-data-[state=open]:border-accent group-data-[state=open]:text-accent-ink">
                       <Plus className="size-6 text-accent" strokeWidth={3.2} strokeLinecap="round" />
                     </span>
                   </Accordion.Trigger>
                 </Accordion.Header>
-                <Accordion.Content className="overflow-hidden data-[state=closed]:animate-[acc-up_260ms_ease-out] data-[state=open]:animate-[acc-down_320ms_cubic-bezier(.2,0,0,1)]">
+                <Accordion.Content className="overflow-hidden data-[state=closed]:animate-[acc-up_300ms_ease-out] data-[state=open]:animate-[acc-down_700ms_cubic-bezier(0.16,1,0.3,1)]">
                   <p className="max-w-[62ch] pb-7 text-[16px] leading-relaxed text-ink-2">{nb(f.a)}</p>
                 </Accordion.Content>
               </Accordion.Item>
