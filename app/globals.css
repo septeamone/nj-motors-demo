@@ -422,6 +422,11 @@ html.lenis body {
   opacity: 0.4;
   cursor: not-allowed;
 }
+/* the car picture flows from its card into the dialog (Catalog, View Transitions) */
+::view-transition-group(*.car) {
+  animation-duration: 700ms;
+  animation-timing-function: var(--ease-expo);
+}
 /* Dialogs (car details, photo viewer): open in the site's rhythm, close quickly */
 .dlg-fade[data-state="open"] {
   animation: dlg-fade-in 400ms var(--ease-expo) both;

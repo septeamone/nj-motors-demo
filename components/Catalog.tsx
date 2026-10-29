@@ -2,8 +2,10 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { ArrowRight, ArrowUpRight, X } from "lucide-react";
+import { motion, useReducedMotion, useSpring } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { asset } from "@/lib/asset";
 import { CARS, FUEL_NAME, type Car } from "@/lib/data";
 import { km, rub } from "@/lib/format";
@@ -13,6 +15,21 @@ import { Reveal, SectionHead } from "./ui";
 
 export function Catalog() {
   const [open, setOpen] = useState<Car | null>(null);
+  const calm = useReducedMotion();
+  // the card's picture flows into the dialog (View Transitions), where the browser can do it
+  // only the clicked card carries the transition name, and only for the moment of the switch
+  const [morph, setMorph] = useState<string | null>(null);
+  const show = (car: Car) => {
+    const d = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    if (calm || !d.startViewTransition) return setOpen(car);
+    flushSync(() => setMorph(car.slug));
+    d.startViewTransition(() =>
+      flushSync(() => {
+        setMorph(null);
+        setOpen(car);
+      }),
+    );
+  };
   return (
     <section id="catalog" className="cut-bottom bg-bg-2 pt-10 lg:pt-14" style={{ ["--cut" as string]: "5.5rem", ["--ht-dir" as string]: "280deg" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
@@ -24,52 +41,7 @@ export function Catalog() {
         <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
           {CARS.map((car, i) => (
             <Reveal as="li" key={car.slug} delay={i * 0.05} className="w-[80%] shrink-0 snap-start sm:w-auto">
-              <button
-                type="button"
-                onClick={() => setOpen(car)}
-                aria-haspopup="dialog"
-                className="plate group flex h-full w-full flex-col overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
-                  <Image
-                    src={asset(`/cars/${car.slug}.webp`)}
-                    alt={`${car.brand} ${car.model}`}
-                    fill
-                    sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 92vw"
-                    className="car-ink object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-4 p-5">
-                  <div>
-                    <p className="label">{car.brand}</p>
-                    <p className="font-display mt-1 text-[24px] leading-tight tracking-wide uppercase">{car.model}</p>
-                  </div>
-                  <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-[16px] text-ink-2">
-                    <div>
-                      <dt className="sr-only">Год</dt>
-                      <dd className="num">{car.year}</dd>
-                    </div>
-                    <div>
-                      <dt className="sr-only">Пробег</dt>
-                      <dd>{km(car.mileage)}</dd>
-                    </div>
-                    <div className="col-span-2">
-                      <dt className="sr-only">Двигатель</dt>
-                      <dd className="flex items-center gap-1.5">
-                        <NjIcon name="fuel" className="size-5" />
-                        {FUEL_NAME[car.fuel]} · {car.engine}
-                      </dd>
-                    </div>
-                  </dl>
-                  <div className="mt-auto flex items-end justify-between gap-3 pt-2">
-                    <div>
-                      <p className="label">{PRICE_LABEL}</p>
-                      <p className="num mt-1 text-[24px] leading-none">{rub(car.price)}</p>
-                    </div>
-                    <ArrowUpRight className="size-6 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={1.75} />
-                  </div>
-                </div>
-              </button>
+              <CarCard car={car} morph={morph === car.slug} onOpen={() => show(car)} />
             </Reveal>
           ))}
         </ul>
@@ -99,6 +71,86 @@ export function Catalog() {
   );
 }
 
+/**
+ * A car card with depth: under the mouse the card tilts towards the pointer and the car shifts against it, as if it
+ * stood a little in front of the card. Touch screens and reduced motion get the flat card.
+ */
+function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () => void }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  const calm = useReducedMotion();
+  const spring = { stiffness: 220, damping: 22, mass: 0.6 };
+  const rx = useSpring(0, spring);
+  const ry = useSpring(0, spring);
+  const px = useSpring(0, spring);
+  const py = useSpring(0, spring);
+  const move = (e: React.PointerEvent) => {
+    const el = ref.current;
+    if (calm || e.pointerType !== "mouse" || !el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    rx.set(-y * 7);
+    ry.set(x * 9);
+    px.set(x * -16);
+    py.set(y * -10);
+  };
+  const leave = () => [rx, ry, px, py].forEach((v) => v.set(0));
+  return (
+    <motion.button
+      ref={ref}
+      type="button"
+      onClick={onOpen}
+      onPointerMove={move}
+      onPointerLeave={leave}
+      aria-haspopup="dialog"
+      style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
+      className="plate group flex h-full w-full flex-col overflow-hidden text-left"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-surface-2" style={{ viewTransitionName: morph ? `car-${car.slug}` : undefined, viewTransitionClass: "car" } as React.CSSProperties}>
+        <motion.div style={{ x: px, y: py }} className="absolute -inset-[4%]">
+        <Image
+          src={asset(`/cars/${car.slug}.webp`)}
+          alt={`${car.brand} ${car.model}`}
+          fill
+          sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 92vw"
+          className="car-ink object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
+        />
+        </motion.div>
+      </div>
+      <div className="flex flex-1 flex-col gap-4 p-5">
+        <div>
+          <p className="label">{car.brand}</p>
+          <p className="font-display mt-1 text-[24px] leading-tight tracking-wide uppercase">{car.model}</p>
+        </div>
+        <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-[16px] text-ink-2">
+          <div>
+            <dt className="sr-only">Год</dt>
+            <dd className="num">{car.year}</dd>
+          </div>
+          <div>
+            <dt className="sr-only">Пробег</dt>
+            <dd>{km(car.mileage)}</dd>
+          </div>
+          <div className="col-span-2">
+            <dt className="sr-only">Двигатель</dt>
+            <dd className="flex items-center gap-1.5">
+              <NjIcon name="fuel" className="size-5" />
+              {FUEL_NAME[car.fuel]} · {car.engine}
+            </dd>
+          </div>
+        </dl>
+        <div className="mt-auto flex items-end justify-between gap-3 pt-2">
+          <div>
+            <p className="label">{PRICE_LABEL}</p>
+            <p className="num mt-1 text-[24px] leading-none">{rub(car.price)}</p>
+          </div>
+          <ArrowUpRight className="size-6 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={1.75} />
+        </div>
+      </div>
+    </motion.button>
+  );
+}
+
 function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
   const name = `${car.brand} ${car.model}`;
   const specs = [
@@ -111,7 +163,7 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
   ];
   return (
     <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      <div className="relative aspect-[4/3] bg-surface-2 md:aspect-auto md:min-h-[420px]">
+      <div className="relative aspect-[4/3] bg-surface-2 md:aspect-auto md:min-h-[420px]" style={{ viewTransitionName: `car-${car.slug}`, viewTransitionClass: "car" } as React.CSSProperties}>
         <Image src={asset(`/cars/${car.slug}.webp`)} alt={name} fill sizes="(min-width:768px) 440px, 94vw" className="object-contain p-4" />
       </div>
       <div className="flex flex-col p-6 sm:p-8">
