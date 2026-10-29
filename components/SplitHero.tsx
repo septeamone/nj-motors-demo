@@ -241,7 +241,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       loop = 0;
       if (finished) return;
       // 0.14 per frame at 60 Hz, the same speed on 120 Hz screens
-      const k = 1 - Math.pow(1 - 0.14, Math.min(64, now - (frameT || now - 16.7)) / 16.7);
+      const k = 1 - Math.pow(1 - 0.14, Math.min(250, now - (frameT || now - 16.7)) / 16.7);
       frameT = now;
       const d = gt - g;
       g = Math.abs(d) < 0.0008 ? gt : g + d * k;

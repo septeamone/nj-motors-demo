@@ -81,10 +81,14 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
       },
       { rootMargin: "150% 0px" },
     );
-    io.observe(b);
+    // not during the hero intro: it is busy loading the page, and the film is still far below
+    const start = () => io.observe(b);
+    if (document.documentElement.dataset.intro === "play") window.addEventListener("intro-end", start, { once: true });
+    else start();
     return () => {
       ro.disconnect();
       io.disconnect();
+      window.removeEventListener("intro-end", start);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calm, name, count]);

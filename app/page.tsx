@@ -23,7 +23,8 @@ export default function Home() {
         <Hero />
         <Catalog />
         {/* the container doors open and the camera goes in (a clip made with Higgsfield, played by the scroll) */}
-        <ScrollFilm name="container" count={121} from="var(--bg)" to="var(--bg)" />
+        {/* the film is a dark cinema moment in both themes: it melts into the night of the clip itself */}
+        <ScrollFilm name="container" count={121} from="#05080c" to="#05080c" />
         <div className="relative bg-bg">
           <Calculator />
         </div>
