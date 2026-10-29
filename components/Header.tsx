@@ -15,9 +15,9 @@ const NAV = [
   { id: "contact", label: "Контакты" },
 ];
 
-function NavList({ items, prefix, active }: { items: typeof NAV; prefix: string; active: string }) {
+function NavList({ items, prefix, active, className = "" }: { items: typeof NAV; prefix: string; active: string; className?: string }) {
   return (
-    <ul className="hidden items-center gap-1 lg:flex">
+    <ul className={`hidden items-center gap-1 lg:flex ${className}`}>
       {items.map((n) => (
         <li key={n.id}>
           <a
@@ -76,14 +76,15 @@ export function Header({ prefix = "" }: { prefix?: string }) {
             <a href={`${prefix}#top`} aria-label="NJ Motors — на главную" className="font-display text-[15px] tracking-[0.02em] whitespace-nowrap text-ink uppercase sm:text-[18px] lg:hidden">
               NJ Motors
             </a>
-            <NavList items={NAV.slice(0, 3)} prefix={prefix} active={active} />
+            <NavList items={NAV.slice(0, 3)} prefix={prefix} active={active} className="ml-auto" />
           </div>
 
           {/* the emblem, flown here from the hero by SplitHero, spins in this gap */}
           <div aria-hidden className="w-[60px] sm:w-[72px] lg:w-[96px]" />
 
-          <div className="flex items-center justify-end gap-3">
+          <div className="flex items-center gap-3">
             <NavList items={NAV.slice(3)} prefix={prefix} active={active} />
+            <span className="ml-auto" />
             <ThemeToggle />
             <a href={`${prefix}#contact`} className="btn btn-primary btn-sm hidden 2xl:inline-flex">
               Рассчитать стоимость

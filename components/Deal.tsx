@@ -126,31 +126,57 @@ function Page({ i, pressed, className = "" }: { i: number; pressed?: boolean; cl
 function RouteLine({ p, active }: { p: MotionValue<number>; active: number }) {
   const path = useRef<SVGPathElement>(null);
   const car = useRef<HTMLDivElement>(null);
-  const lut = useRef<{ len: number; pts: { x: number; y: number }[] }>(null);
+  const box = useRef<HTMLDivElement>(null);
+  // points along the path, the length drawn on screen up to each one (the stroke does not scale with the drawing, so
+  // its dashes are measured in screen pixels), and the point where each stop sits
+  const lut = useRef<{ pts: DOMPoint[]; cum: number[]; at: number[] }>(null);
+  const SAMPLES = 480;
+
+  const measure = () => {
+    const el = path.current;
+    const b = box.current;
+    if (!el || !b) return;
+    const len = el.getTotalLength();
+    const sx = b.clientWidth / 1000;
+    const sy = b.clientHeight / 120;
+    const pts = Array.from({ length: SAMPLES + 1 }, (_, k) => el.getPointAtLength((len * k) / SAMPLES));
+    const cum = [0];
+    for (let k = 1; k <= SAMPLES; k++) cum.push(cum[k - 1] + Math.hypot((pts[k].x - pts[k - 1].x) * sx, (pts[k].y - pts[k - 1].y) * sy));
+    const at = STOPS.map(([x, y]) => pts.reduce((best, q, k) => (Math.hypot(q.x - x, q.y - y) < Math.hypot(pts[best].x - x, pts[best].y - y) ? k : best), 0));
+    lut.current = { pts, cum, at };
+  };
 
   const draw = (v: number) => {
     const el = path.current;
     if (!el) return;
-    if (!lut.current) {
-      const len = el.getTotalLength();
-      lut.current = { len, pts: Array.from({ length: 241 }, (_, k) => el.getPointAtLength((len * k) / 240)) };
-    }
-    const { len, pts } = lut.current;
-    const k = Math.min(1, Math.max(0, v / (N - 1)));
-    el.style.strokeDasharray = `${len}`;
-    el.style.strokeDashoffset = `${len * (1 - k)}`;
-    const j = Math.round(k * 240);
+    if (!lut.current) measure();
+    if (!lut.current) return;
+    const { pts, cum, at } = lut.current;
+    // the car rests at a stop while its page lies flat and drives to the next one while the page turns
+    const seg = Math.min(N - 2, Math.max(0, Math.floor(v)));
+    const f = Math.min(1, Math.max(0, (v - seg - 0.25) / 0.6));
+    const j = Math.round(at[seg] + (at[seg + 1] - at[seg]) * (v >= N - 1 ? 1 : f));
+    const total = cum[SAMPLES];
+    el.style.strokeDasharray = `${total} ${total}`;
+    el.style.strokeDashoffset = `${total - cum[j]}`;
     const pt = pts[j];
-    const ahead = pts[Math.min(240, j + 2)];
-    const ang = j < 239 ? (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI : 0;
+    const ahead = pts[Math.min(SAMPLES, j + 3)];
+    const ang = j < SAMPLES - 3 ? (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI : 0;
     if (car.current) car.current.style.transform = `translate(${pt.x / 10}cqw, ${(pt.y / 120) * 100}cqh) translate(-50%, -50%) rotate(${ang * 0.3}deg)`;
   };
   useMotionValueEvent(p, "change", draw);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => draw(p.get()), []);
+  useEffect(() => {
+    const ro = new ResizeObserver(() => {
+      measure();
+      draw(p.get());
+    });
+    if (box.current) ro.observe(box.current);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="relative h-[120px] [container-type:size]" aria-hidden>
+    <div ref={box} className="relative h-[120px] [container-type:size]" aria-hidden>
       <svg viewBox="0 0 1000 120" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible">
         <path d={D} fill="none" stroke="var(--line-strong)" strokeWidth="2" strokeDasharray="3 9" vectorEffect="non-scaling-stroke" />
         <path ref={path} d={D} fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ strokeDasharray: 3000, strokeDashoffset: 3000 }} />

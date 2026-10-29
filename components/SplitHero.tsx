@@ -123,7 +123,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       tx.style.transform = lgNow ? `translateX(calc(${e} * (-100% - 8px)))` : `translateY(calc(${e} * (100% + 8px)))`;
       ar.style.transform = lgNow ? `translateX(calc(${e} * (100% + 8px)))` : `translateY(calc(${e} * (-100% - 8px)))`;
       const k = 1 + (endSize / s0 - 1) * e;
-      const cx = slotCx + (innerWidth / 2 - slotCx) * e;
+      const cx = slotCx + (html.clientWidth / 2 - slotCx) * e; // the middle of the page, not counting the scrollbar
       const cy = slotCy + (endTop + endSize / 2 - slotCy) * e;
       em.style.transform = pose(cx, cy, k);
     };
