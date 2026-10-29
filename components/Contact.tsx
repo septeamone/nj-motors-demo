@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { QUIZ } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
@@ -104,25 +104,12 @@ ${text}` : text }));
     }
   };
 
-  const sec = useRef<HTMLElement>(null);
-  const calm = useReducedMotion();
-  // two red flaps close in from the sides as the section arrives, and stay shut
-  const { scrollYProgress } = useScroll({ target: sec, offset: ["start end", "start 55%"] });
-  const closed = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 });
-  const leftX = useTransform(closed, [0, 1], ["-101%", "0%"]);
-  const rightX = useTransform(closed, [0, 1], ["101%", "0%"]);
-  const rise = useTransform(closed, [0.4, 0.95], [0, 1]);
-  // the two columns come in with the flaps: the text from the left, the form plate from the right
-  const textX = useTransform(closed, [0, 1], ["-34%", "0%"]);
-  const plateX = useTransform(closed, [0, 1], ["34%", "0%"]);
-
   return (
-    <section ref={sec} id="contact" className="drench relative isolate overflow-hidden !bg-transparent py-12 lg:py-16">
-      <motion.span aria-hidden style={calm ? undefined : { x: leftX }} className="halftone !absolute inset-y-0 left-0 -z-10 w-[51%] bg-accent-fill" />
-      <motion.span aria-hidden style={calm ? undefined : { x: rightX }} className="halftone !absolute inset-y-0 right-0 -z-10 w-[51%] bg-accent-fill" />
-      <motion.div style={calm ? undefined : { opacity: rise }} className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
+    // the camera arrives here through the ring of the emblem (Portal), straight into this red field
+    <section id="contact" className="drench relative isolate overflow-hidden !bg-accent-fill py-14 lg:py-20">
+      <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-          <motion.div style={calm ? undefined : { x: textX }}>
+          <div>
             <SectionHead
               stacked
               title="Расскажите, какую машину ищете"
@@ -159,9 +146,9 @@ ${text}` : text }));
                 </ul>
               )}
             </Reveal>
-          </motion.div>
+          </div>
 
-          <motion.div style={calm ? undefined : { x: plateX }}><Reveal delay={0.08}>
+          <Reveal delay={0.08}>
             <div className="plate overflow-hidden p-6 sm:p-9">
               <AnimatePresence mode="wait" initial={false}>
                 {status === "success" ? (
@@ -303,9 +290,9 @@ ${text}` : text }));
                 )}
               </AnimatePresence>
             </div>
-          </Reveal></motion.div>
+          </Reveal>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

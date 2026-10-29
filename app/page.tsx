@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { MobileBar } from "@/components/MobileBar";
 import { Owner } from "@/components/Owner";
+import { Portal } from "@/components/Portal";
 import { Process } from "@/components/Process";
 import { Reviews } from "@/components/Reviews";
 
@@ -21,12 +22,22 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Catalog />
-        <Calculator />
-        <Process />
+        <Portal kind="container" from="var(--bg)" to="var(--bg)" />
+        {/* the section after a portal rises over the portal's last screen */}
+        <div className="relative">
+          <Calculator />
+        </div>
+        <Portal kind="porthole" from="var(--bg)" to="var(--bg-2)" />
+        <div className="relative">
+          <Process />
+        </div>
         <Reviews />
         <Owner />
         <Faq />
-        <Contact />
+        <Portal kind="emblem" from="var(--bg)" to="var(--accent-fill)" />
+        <div className="relative">
+          <Contact />
+        </div>
       </main>
       <Footer />
       <MobileBar />
