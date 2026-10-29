@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { DEAL_STAGES, STEPS } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
-import { play } from "@/lib/sound";
 import { nb } from "@/lib/typo";
 import { NjIcon, type IconName } from "./NjIcon";
 
@@ -273,17 +272,6 @@ function Scene() {
   const { scrollYProgress } = useScroll({ target: box, offset: ["start start", "end end"] });
   const p = useTransform(scrollYProgress, [0, 1], [0, N - 1]);
   const [active, setActive] = useState(-1);
-  // a page turning, then the stamp landing on the one that came up
-  const last = useRef(-1);
-  useEffect(() => {
-    if (active > last.current) {
-      if (active > 0) play("page");
-      const t = window.setTimeout(() => play("stamp"), active > 0 ? 260 : 60);
-      last.current = active;
-      return () => clearTimeout(t);
-    }
-    last.current = active;
-  }, [active]);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     // a page counts as up (and gets its stamp) once the leaf above it has turned
     const a = v <= 0.005 ? -1 : Math.min(N - 1, Math.floor(v * (N - 1) + 0.2));
@@ -321,10 +309,10 @@ function List({ className = "" }: { className?: string }) {
       <span aria-hidden className="absolute top-3 bottom-3 left-[7px] w-[3px] bg-line-strong" />
       <motion.span aria-hidden style={{ scaleY: scrollYProgress }} className="absolute top-3 bottom-3 left-[7px] w-[3px] origin-top bg-accent" />
       {STEPS.map((s, i) => (
-        <motion.li key={s.title} className="relative" viewport={{ once: true, amount: 0.6 }} onViewportEnter={() => play("stamp")}>
+        <li key={s.title} className="relative">
           <span aria-hidden className="absolute top-8 -left-7 size-[17px] rounded-full border-[3px] border-accent bg-bg-2" />
           <Page i={i} />
-        </motion.li>
+        </li>
       ))}
     </ol>
   );

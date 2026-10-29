@@ -1124,24 +1124,12 @@ html[data-intro="glide"] .emblem-img {
   }
 }
 
-/* theme change: a sheet turned over along a slanted red edge (see ThemeToggle) */
-.theme-flip::view-transition-old(root),
-.theme-flip::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-.theme-flip::view-transition-group(band),
-.theme-flip::view-transition-image-pair(band),
-.theme-flip::view-transition-new(band) {
-  animation: none;
-}
-.theme-band {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483000;
-  pointer-events: none;
-  background: var(--accent-fill);
-  view-transition-name: band;
+/* theme change: one instant repaint, no colour transitions on the way (see ThemeToggle) */
+.theme-swap,
+.theme-swap *,
+.theme-swap *::before,
+.theme-swap *::after {
+  transition: none !important;
 }
 
 .font-display {

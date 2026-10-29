@@ -11,36 +11,17 @@ const OPTIONS: { value: Theme; label: string; icon: IconName }[] = [
   { value: "dark", label: "Тёмная тема", icon: "moon" },
 ];
 
-const poly = (t: number) => `polygon(0 0, ${t}% 0, ${t - 30}% 100%, 0 100%)`;
-const bandPoly = (t: number) => `polygon(${t - 7}% 0, ${t}% 0, ${t - 30}% 100%, ${t - 37}% 100%)`;
-
-/** The new theme is revealed by a slanted edge sweeping across the screen, with a red strip riding on it. */
+/**
+ * The theme changes at once: the whole page repaints in one frame with every colour transition switched off (so
+ * nothing on the page fades on its own schedule), and only the switch itself moves.
+ */
 function apply(t: Theme) {
   const root = document.documentElement;
-  const set = () => {
-    root.dataset.theme = t;
-  };
-  if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    set();
-    return;
-  }
-  root.classList.add("theme-flip");
-  const band = document.createElement("div");
-  band.className = "theme-band";
-  band.setAttribute("aria-hidden", "true");
-  const run = document.startViewTransition(() => {
-    set();
-    document.body.appendChild(band);
-  });
-  run.ready.then(() => {
-    const opts = { duration: 950, easing: "cubic-bezier(0.76, 0, 0.24, 1)", fill: "forwards" as const };
-    root.animate({ clipPath: [poly(0), poly(140)] }, { ...opts, pseudoElement: "::view-transition-new(root)" });
-    root.animate({ clipPath: [bandPoly(0), bandPoly(140)] }, { ...opts, pseudoElement: "::view-transition-new(band)" });
-  });
-  run.finished.finally(() => {
-    band.remove();
-    root.classList.remove("theme-flip");
-  });
+  root.classList.add("theme-swap");
+  root.dataset.theme = t;
+  // let the new colours land before transitions come back
+  void root.offsetHeight;
+  requestAnimationFrame(() => root.classList.remove("theme-swap"));
 }
 
 export function ThemeToggle() {
@@ -61,7 +42,13 @@ export function ThemeToggle() {
   };
 
   return (
-    <div role="radiogroup" aria-label="Тема оформления" className="flex items-center gap-0.5 rounded-full bg-ink/[0.07] p-[3px]">
+    <div role="radiogroup" aria-label="Тема оформления" className="relative flex items-center gap-0.5 rounded-full bg-ink/[0.07] p-[3px]">
+      {/* the thumb slides under the chosen icon */}
+      <span
+        aria-hidden
+        className="absolute top-[3px] left-[3px] size-9 rounded-full bg-surface shadow-[0_1px_2px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]"
+        style={{ transform: theme === "dark" ? "translateX(calc(100% + 2px))" : "none" }}
+      />
       {OPTIONS.map(({ value, label, icon }) => (
         <button
           key={value}
@@ -71,7 +58,7 @@ export function ThemeToggle() {
           aria-label={label}
           title={label}
           onClick={() => choose(value)}
-          className="grid size-9 place-items-center rounded-full text-ink-3 transition-colors hover:text-ink aria-checked:bg-surface aria-checked:text-ink aria-checked:shadow-[0_1px_2px_rgba(0,0,0,0.3)]"
+          className="relative grid size-9 place-items-center rounded-full text-ink-3 transition-colors hover:text-ink aria-checked:text-ink"
         >
           <NjIcon name={icon} className="size-[22px]" />
         </button>
