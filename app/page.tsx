@@ -26,8 +26,9 @@ export default function Home() {
         </div>
         <Calculator />
         <Process />
-        <Reviews />
+        {/* one block: who you work with, then what his clients say */}
         <Owner />
+        <Reviews />
         <Faq />
         <Contact />
       </main>

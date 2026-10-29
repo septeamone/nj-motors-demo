@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Loader2, Plus, TriangleAlert } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { QUIZ } from "@/lib/data";
@@ -24,11 +24,6 @@ const BUDGETS = [
   { value: "3–5 млн ₽", label: "3–5 млн ₽" },
   { value: "5–8 млн ₽", label: "5–8 млн ₽" },
   { value: "от 8 млн ₽", label: "от 8 млн ₽" },
-];
-const NEXT = [
-  ["Связываемся", "Уточняем задачу, бюджет и сроки."],
-  ["Готовим подборку", "Варианты с проверкой и расчётом стоимости по каждому."],
-  ["Решаете вы", "Выкупаем автомобиль только после вашего согласия."],
 ];
 
 function validate(f: Form) {
@@ -129,17 +124,9 @@ ${text}` : text }));
             <SectionHead
               stacked
               title="Расскажите, какую машину ищете"
-              lead="Опишите задачу, пришлём подборку и расчёт."
+              lead="Опишите задачу: Андрей пришлёт подборку и расчёт. Платить пока ничего не нужно."
             />
-            <Reveal delay={0.1} className="mt-10">
-              <ol className="grid gap-6">
-                {NEXT.map(([t, d]) => (
-                  <li key={t}>
-                    <span className="font-display block text-[clamp(22px,2vw,28px)] leading-none tracking-wide text-ink uppercase">{t}</span>
-                    <span className="mt-1.5 block text-[17px] text-ink-2">{d}</span>
-                  </li>
-                ))}
-              </ol>
+            <Reveal delay={0.1} className="mt-8">
               {contacts.length > 0 && (
                 <ul className="mt-8 flex flex-wrap gap-3">
                   {contacts.map((c) => {
@@ -234,10 +221,15 @@ ${text}` : text }));
                         <Select id="f-budget" aria-label="Бюджет" value={f.budget} onChange={(v) => set("budget", v)} options={BUDGETS} />
                       </div>
                     </div>
-                    <div className="grid gap-4 border-t border-line pt-5">
-                      <p className="label">
-                        Что ищете <span className="font-medium text-ink-3">· по желанию, поможет подобрать быстрее</span>
-                      </p>
+                    {/* the optional wishes stay folded until asked for, so the form reads as name, contact, send */}
+                    <details className="group/w border-t border-line pt-5">
+                      <summary className="label flex cursor-pointer list-none items-center justify-between [&::-webkit-details-marker]:hidden">
+                        <span>
+                          Добавить пожелания <span className="font-medium text-ink-3">· кузов, двигатель, возраст</span>
+                        </span>
+                        <Plus aria-hidden className="size-5 shrink-0 text-accent-ink transition-transform duration-300 group-open/w:rotate-45" strokeWidth={3} />
+                      </summary>
+                      <div className="mt-4 grid gap-4">
                       {PREFS.map((q) => (
                         <div key={q.key} role="radiogroup" aria-label={q.q} className="flex flex-wrap gap-2">
                           {q.options.map((o) => (
@@ -254,7 +246,8 @@ ${text}` : text }));
                           ))}
                         </div>
                       ))}
-                    </div>
+                      </div>
+                    </details>
                     <div>
                       <label htmlFor="f-msg" className="label">
                         Сообщение <span className="font-medium text-ink-3">· необязательно</span>

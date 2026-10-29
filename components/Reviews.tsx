@@ -6,9 +6,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { Reveal, SectionHead } from "./ui";
 
-// Videos compressed from the owner's originals (public/reviews). The first one is Andrey himself, it opens the row.
+// Videos compressed from the owner's originals (public/reviews). Andrey's own video lives in the block above (Owner).
 const ITEMS = [
-  { id: "andrey", title: "Андрей, NJ Motors", sub: "Начинает Андрей", wide: false, dur: 98 },
   { id: "review-1", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 82 },
   { id: "review-2", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 102 },
   { id: "review-3", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: true, dur: 30 },
@@ -277,11 +276,12 @@ export function Reviews() {
   const next = ITEMS[(i + 1) % ITEMS.length];
 
   return (
-    <section id="reviews" className="cut-top pb-14 lg:pb-20" style={{ ["--cut" as string]: "3.5rem" }}>
+    // the second half of one block with Owner above it: same ground, no cut between them
+    <section id="reviews" className="bg-bg-2 pt-10 pb-14 lg:pt-14 lg:pb-20">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           title="Что говорят клиенты"
-          lead="Видео клиентов и фото автомобилей. Начинает Андрей."
+          lead="Видео от клиентов Андрея. Имена, машины и города добавим с их согласия."
         />
 
         <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-10 xl:gap-14">
@@ -466,7 +466,7 @@ export function Reviews() {
             </Rail>
 
             <div className="mt-6 lg:mt-8">
-              <Rail label="Фото автомобилей" hint={`${PHOTOS.length}`} shelf={PHOTO_SHELF}>
+              <Rail label="Фото с площадок в Корее, от Андрея" hint={`${PHOTOS.length}`} shelf={PHOTO_SHELF}>
                 {PHOTOS.map((p, n) => (
                   <div key={p.n}>
                     <button

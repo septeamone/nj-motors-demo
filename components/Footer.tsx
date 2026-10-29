@@ -3,15 +3,6 @@ import { CARS } from "@/lib/data";
 import { channels, SITE } from "@/lib/site";
 import { Wordmark } from "./ui";
 
-const NAV = [
-  ["catalog", "Автомобили"],
-  ["calc", "Расчёт"],
-  ["process", "Как мы работаем"],
-  ["reviews", "Отзывы"],
-  ["faq", "Вопросы"],
-  ["contact", "Контакты"],
-];
-
 const NAMES: Record<string, string> = {
   ...Object.fromEntries(CARS.map((c) => [c.slug, `${c.brand} ${c.model}`])),
 };
@@ -23,27 +14,15 @@ export function Footer({ prefix = "" }: { prefix?: string }) {
   const contacts = channels();
   const rows = Object.entries(credits as Record<string, Credit>).filter(([slug]) => slug in NAMES);
   return (
-    <footer className="border-t border-line bg-bg-2">
-      <div className="mx-auto max-w-[var(--page)] px-5 py-16 sm:px-8 lg:px-12 xl:px-20">
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,4fr)_minmax(0,3fr)_minmax(0,3fr)]">
+    <footer className="bg-bg-2">
+      <div className="mx-auto max-w-[var(--page)] px-5 py-12 sm:px-8 lg:px-12 xl:px-20">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,6fr)_minmax(0,4fr)]">
           <div>
             <Wordmark />
             <p className="mt-5 max-w-[34ch] text-[16px] leading-relaxed text-ink-2">
               Подбираем, проверяем и привозим автомобили из Южной Кореи. Работаем с {SITE.brand.since} года.
             </p>
           </div>
-          <nav aria-label="Разделы сайта">
-            <p className="label">Навигация</p>
-            <ul className="mt-4 grid gap-3">
-              {NAV.map(([id, label]) => (
-                <li key={id}>
-                  <a href={`${prefix}#${id}`} className="text-[16px] font-semibold text-ink transition-colors hover:text-accent-ink">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
           <div>
             <p className="label">Контакты</p>
             {contacts.length ? (

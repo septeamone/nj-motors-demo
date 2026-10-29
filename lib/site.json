@@ -15,8 +15,8 @@
   "owner": {
     "name": "Андрей",
     "role": "Владелец NJ Motors",
-    "video": null,
-    "poster": null
+    "video": "/reviews/andrey.mp4",
+    "poster": "/reviews/andrey-poster.webp"
   },
   "legal": {
     "entity": null,
