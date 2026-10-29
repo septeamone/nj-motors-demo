@@ -36,10 +36,12 @@
   --stage-bottom: #0a0e12;
   --stage-floor: rgba(0, 0, 0, 0.6);
   --shadow: rgba(0, 0, 0, 0.55);
+  --headlight: 1;
 }
 
 [data-theme="light"] {
   color-scheme: light;
+  --headlight: 0;
   --bg: #efe5d3;
   --bg-2: #e6d9c2;
   --surface: #f6eedf;
@@ -422,6 +424,41 @@ html.lenis body {
   opacity: 0.4;
   cursor: not-allowed;
 }
+/* Headlight (dark theme, mouse only): a warm beam that follows the pointer and lights up what is under it */
+.headlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  width: 760px;
+  height: 760px;
+  margin: -380px 0 0 -380px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 232, 196, 0.17), rgba(255, 232, 196, 0.06) 45%, transparent);
+  mix-blend-mode: screen;
+  opacity: calc(var(--headlight) * var(--on, 0));
+  transition: opacity 400ms var(--ease-expo);
+  will-change: transform;
+}
+
+/* Section headings are sprayed on through a stencil: the paint edge sweeps across, ragged and speckled */
+.spray {
+  --a: 120%;
+  -webkit-mask-image:
+    linear-gradient(90deg, #000 calc(var(--a) - 14%), transparent calc(var(--a) - 4%)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.4 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, transparent calc(var(--a) - 18%), #000 calc(var(--a) - 10%), #000 var(--a), transparent calc(var(--a) + 6%));
+  mask-image:
+    linear-gradient(90deg, #000 calc(var(--a) - 14%), transparent calc(var(--a) - 4%)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.4 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, transparent calc(var(--a) - 18%), #000 calc(var(--a) - 10%), #000 var(--a), transparent calc(var(--a) + 6%));
+  -webkit-mask-composite: source-over, source-in;
+  mask-composite: add, intersect;
+  -webkit-mask-size: 100% 100%, 120px 120px, 100% 100%;
+  mask-size: 100% 100%, 120px 120px, 100% 100%;
+}
+
 /* the car picture flows from its card into the dialog (Catalog, View Transitions) */
 ::view-transition-group(*.car) {
   animation-duration: 700ms;

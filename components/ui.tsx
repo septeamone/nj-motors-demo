@@ -50,7 +50,7 @@ export function Seal({ className = "" }: { className?: string }) {
   );
 }
 
-/** Heading whose words rise out from under a mask, line by line. */
+/** Heading sprayed on through a stencil: the paint edge sweeps across it once, ragged and speckled (.spray). */
 export function Lines({
   text,
   className,
@@ -64,30 +64,15 @@ export function Lines({
 }) {
   const reduce = useReducedMotion();
   const Tag = motion[as];
-  const words = text.split(" ");
   return (
     <Tag
-      className={className}
-      initial="hidden"
-      whileInView="show"
+      className={`spray ${className ?? ""}`}
+      initial={reduce ? false : { "--a": "-20%" }}
+      whileInView={{ "--a": "120%" }}
       viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-      transition={{ staggerChildren: reduce ? 0 : 0.045, delayChildren: delay }}
-      aria-label={text}
+      transition={{ duration: 1.1, ease: [0.45, 0, 0.25, 1], delay }}
     >
-      {words.map((w, i) => (
-        <span key={i} aria-hidden>
-          <span className="inline-block overflow-hidden pb-[0.12em] align-bottom">
-            <motion.span
-              className="inline-block"
-              variants={{ hidden: { y: reduce ? 0 : "108%" }, show: { y: 0 } }}
-              transition={{ duration: DUR, ease: EASE }}
-            >
-              {w}
-            </motion.span>
-          </span>
-          {i < words.length - 1 ? " " : ""}
-        </span>
-      ))}
+      {text}
     </Tag>
   );
 }
