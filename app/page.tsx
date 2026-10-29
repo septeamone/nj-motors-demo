@@ -9,6 +9,7 @@ import { MobileBar } from "@/components/MobileBar";
 import { Owner } from "@/components/Owner";
 import { Process } from "@/components/Process";
 import { Reviews } from "@/components/Reviews";
+import { ScrollFilm } from "@/components/ScrollFilm";
 
 // Marks the intro before first paint, so the header and hero text never flash ahead of the emblem (see EmblemStage).
 const introScript = `if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.dataset.intro='play'`;
@@ -21,7 +22,11 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Catalog />
-        <Calculator />
+        {/* the container doors open and the camera goes in (a clip made with Higgsfield, played by the scroll) */}
+        <ScrollFilm name="container" count={121} from="var(--bg)" to="var(--bg)" />
+        <div className="relative bg-bg">
+          <Calculator />
+        </div>
         <Process />
         <Reviews />
         <Owner />
