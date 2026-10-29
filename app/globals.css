@@ -614,11 +614,6 @@ html.lenis body {
   animation-delay: var(--d, 0s);
 }
 
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
 @keyframes pulse-ring {
   0% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent);
@@ -772,11 +767,6 @@ html[data-intro="glide"] {
 html[data-intro="play"] .split-stage,
 html[data-intro="glide"] .split-stage {
   background: var(--bg);
-}
-/* Korea (behind the halves) must not show during the intro, only once the halves are closed and start to part */
-html[data-intro="play"] .korea-reveal,
-html[data-intro="glide"] .korea-reveal {
-  visibility: hidden;
 }
 html[data-intro="play"] :is(.header-in, .split-panel) {
   opacity: 0;
@@ -962,14 +952,6 @@ body::after {
 .display .text-accent {
   text-shadow: -0.03em -0.02em 0 color-mix(in srgb, var(--ink) 38%, transparent);
 }
-/* the Korean photo as a two-ink print: grey values in blue-black and red */
-.duotone {
-  filter: grayscale(1) contrast(1.25) brightness(0.92);
-}
-.duotone-tint {
-  background: linear-gradient(160deg, rgba(8, 24, 62, 0.82), rgba(201, 32, 27, 0.5));
-  mix-blend-mode: multiply;
-}
 /* torn edge between sections */
 .cut-bottom {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 38px), 0 100%);
@@ -1154,11 +1136,6 @@ html[data-intro="glide"] .emblem-img {
 
 .font-display {
   font-weight: 700;
-}
-@media (prefers-reduced-motion: reduce) {
-  .korea-reveal {
-    display: none;
-  }
 }
 
 /* ===== BACKDROP: the dot field sits behind the whole page and takes no clicks ===== */

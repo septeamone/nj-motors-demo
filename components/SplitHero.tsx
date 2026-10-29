@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { EASE_CSS as EASE } from "@/lib/motion";
-import { Markets } from "./Markets";
 
 // Wheel discs cut from the logo itself (centres measured on the 1254px original), as fractions of the logo.
 const WHEELS = [
@@ -358,7 +357,6 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     <>
       <section id="top" className="relative -mb-[90svh] h-[165svh]">
         <div ref={stage} className="split-stage pointer-events-none sticky top-0 z-10 h-svh overflow-hidden">
-          <Markets />
           <div ref={artHalf} aria-hidden className="split-panel split-art" />
           <div ref={textHalf} className="split-panel split-text grain">
             {children}
