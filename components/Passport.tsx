@@ -15,7 +15,7 @@ const PAY_NOTE: Record<number, string> = { 0: "Платить пока не ну
 const STEP_ICON: IconName[] = ["form", "car", "inspect", "rub", "ship", "key"];
 const STATUS = ["ПРИНЯТО", "ПОДОБРАНО", "ПРОВЕРЕНО", "ВЫКУПЛЕНО", "В ПУТИ", "ВЫДАНО"];
 
-const TOP = 92; // px from the top where the first card sticks
+const TOP = 112; // px from the top where the first card sticks
 const TAB = 58; // px of every earlier card that stays visible
 
 function Page({ i, className = "" }: { i: number; className?: string }) {

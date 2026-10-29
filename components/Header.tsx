@@ -70,7 +70,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
         aria-label="Основная навигация"
         className="relative border-b border-line bg-[color-mix(in_srgb,var(--bg)_95%,transparent)]"
       >
-        <div className="mx-auto grid h-[68px] max-w-[var(--page)] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:h-[76px] sm:px-8 lg:px-12 xl:px-20">
+        <div className="mx-auto grid h-[68px] max-w-[var(--page)] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:h-[76px] sm:px-8 lg:h-[100px] lg:px-12 xl:px-20">
           <div className="flex items-center">
             <a href={`${prefix}#top`} aria-label="NJ Motors — на главную" className="font-display text-[15px] tracking-[0.02em] whitespace-nowrap text-ink uppercase sm:text-[18px] lg:hidden">
               NJ Motors
@@ -79,7 +79,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
           </div>
 
           {/* the emblem, flown here from the hero by SplitHero, spins in this gap */}
-          <div aria-hidden className="w-[76px] sm:w-[96px] lg:w-[120px]" />
+          <div aria-hidden className="w-[60px] sm:w-[72px] lg:w-[96px]" />
 
           <div className="flex items-center justify-end gap-3">
             <NavList items={NAV.slice(3)} prefix={prefix} active={active} />

@@ -26,7 +26,7 @@ const loaded = () =>
     const t0 = performance.now();
     const check = async () => {
       await document.fonts.ready;
-      if (done() || performance.now() - t0 > 25000) return resolve();
+      if (done() || performance.now() - t0 > 3000) return resolve();
       setTimeout(check, 120);
     };
     check();
@@ -62,10 +62,12 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     const html = document.documentElement;
     em.style.opacity = "1";
 
+    const header = () => document.querySelector<HTMLElement>(".header-in");
     let s0 = 1;
     let slotCx = 0;
     let slotCy = 0;
     let endSize = 64;
+    let endTop = 4;
     const pose = (cx: number, cy: number, k: number, deg = 0) =>
       `translate3d(${cx - s0 / 2}px, ${cy - s0 / 2}px, 0) scale(${k}) rotate(${deg}deg)`;
 
@@ -75,8 +77,10 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       s0 = r.width;
       slotCx = r.left - sr.left + r.width / 2;
       slotCy = r.top - sr.top + r.height / 2;
-      // the miniature in the header: big enough to read as the logo, and to show the wheels turning
-      endSize = innerWidth >= 1024 ? 120 : innerWidth >= 640 ? 96 : 76;
+      // the miniature in the header: as big as fits inside the bar (it never hangs over the content below), still
+      // big enough to read as the logo and to show the wheels turning
+      endSize = innerWidth >= 1024 ? 96 : innerWidth >= 640 ? 72 : 60;
+      endTop = ((header()?.offsetHeight ?? 68) - endSize) / 2;
       em.style.width = em.style.height = `${s0}px`;
     };
 
@@ -114,10 +118,13 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     const update = () => {
       raf = 0;
       const e = smooth(clamp(scrollY / (innerHeight * PART)));
-      st.style.setProperty("--p", String(e));
+      // written straight onto the two panels (a custom property on the stage would be inherited by the whole hero subtree)
+      const lgNow = innerWidth >= 1024;
+      tx.style.transform = lgNow ? `translateX(calc(${e} * (-100% - 8px)))` : `translateY(calc(${e} * (100% + 8px)))`;
+      ar.style.transform = lgNow ? `translateX(calc(${e} * (100% + 8px)))` : `translateY(calc(${e} * (-100% - 8px)))`;
       const k = 1 + (endSize / s0 - 1) * e;
       const cx = slotCx + (innerWidth / 2 - slotCx) * e;
-      const cy = slotCy + (6 + endSize / 2 - slotCy) * e;
+      const cy = slotCy + (endTop + endSize / 2 - slotCy) * e;
       em.style.transform = pose(cx, cy, k);
     };
     const onScroll = () => {
@@ -134,7 +141,6 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     window.addEventListener("resize", onResize);
 
     const anims: Animation[] = [];
-    const header = () => document.querySelector<HTMLElement>(".header-in");
     const cleanup = () => {
       anims.forEach((a) => a.cancel());
       cancelAnimationFrame(raf);
@@ -230,18 +236,25 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     // g chases the target gt a little every frame, so wheel clicks and swipes glide instead of jumping
     let gt = 0;
     let loop = 0;
-    const frame = () => {
+    let frameT = 0;
+    const frame = (now = performance.now()) => {
       loop = 0;
       if (finished) return;
+      // 0.14 per frame at 60 Hz, the same speed on 120 Hz screens
+      const k = 1 - Math.pow(1 - 0.14, Math.min(64, now - (frameT || now - 16.7)) / 16.7);
+      frameT = now;
       const d = gt - g;
-      g = Math.abs(d) < 0.0008 ? gt : g + d * 0.14;
+      g = Math.abs(d) < 0.0008 ? gt : g + d * k;
       apply();
       if (g >= 0.998 && gt >= 1) return finish();
       if (g === gt && gt === 0 && !pulse) startPulse();
       if (g !== gt) loop = requestAnimationFrame(frame);
     };
     const kick = () => {
-      if (!loop && !finished) loop = requestAnimationFrame(frame);
+      if (!loop && !finished) {
+        frameT = 0;
+        loop = requestAnimationFrame(frame);
+      }
     };
     const goTo = (target: number) => {
       gt = target;
@@ -358,9 +371,9 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         ref={emblem}
         href="#top"
         aria-label="NJ Motors — Cars from Korea, est. 2023"
-        className="fixed top-0 left-0 z-[55] block opacity-0 drop-shadow-[0_14px_22px_var(--shadow)] will-change-transform"
+        className="fixed top-0 left-0 z-[55] block opacity-0 will-change-transform"
       >
-        <Image src={asset("/brand/nj-logo-full.webp")} alt="" width={1254} height={1254} sizes="(min-width:1024px) 580px, 60vw" priority className="block size-full" />
+        <Image src={asset("/brand/nj-logo-full.webp")} alt="" width={1254} height={1254} sizes="(min-width:1024px) 580px, 60vw" priority className="emblem-img block size-full drop-shadow-[0_14px_22px_var(--shadow)]" />
         {WHEELS.map((w) => (
           <span key={w.f} aria-hidden className="wheel-spin absolute block aspect-square w-[10.2%]" style={{ left: w.left, top: w.top }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -738,7 +738,7 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   opacity: 0;
 }
 
-/* Hero halves: --p (0 → 1, set from the scroll) slides them apart. Wide screens split left/right, phones top/bottom. */
+/* Hero halves: slid apart from the scroll by SplitHero (inline transform on each panel). Wide screens split left/right, phones top/bottom. */
 .split-panel {
   position: absolute;
   pointer-events: auto;
@@ -753,11 +753,9 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   .split-text {
     inset: 0 50% 0 0;
     border-right: 6px solid var(--accent);
-    transform: translateX(calc(var(--p, 0) * (-100% - 8px)));
   }
   .split-art {
     inset: 0 0 0 50%;
-    transform: translateX(calc(var(--p, 0) * (100% + 8px)));
   }
   .split-slot {
     position: absolute;
@@ -772,11 +770,9 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   .split-text {
     inset: 42% 0 0 0;
     border-top: 5px solid var(--accent);
-    transform: translateY(calc(var(--p, 0) * (100% + 8px)));
   }
   .split-art {
     inset: 0 0 58% 0;
-    transform: translateY(calc(var(--p, 0) * (-100% - 8px)));
   }
   .split-slot {
     position: absolute;
@@ -984,14 +980,15 @@ body::after {
   color: var(--accent);
 }
 
-/* The wheels turn every frame: give each its own layer so the big emblem under them is not repainted, and drop the
-   emblem's soft shadow while it is full screen (a filter on a huge layer is what made the intro stutter). */
+/* The wheels turn every frame: give each its own layer so the big emblem under them is not repainted. The soft
+   shadow sits on the still picture only (never on the parent of the turning wheels) and is dropped while the emblem
+   is full screen (a filter on a huge layer is what made the intro stutter). */
 .wheel-spin {
   will-change: transform;
   backface-visibility: hidden;
 }
-html[data-intro="play"] a[aria-label^="NJ Motors — Cars"],
-html[data-intro="glide"] a[aria-label^="NJ Motors — Cars"] {
+html[data-intro="play"] .emblem-img,
+html[data-intro="glide"] .emblem-img {
   filter: none !important;
 }
 
