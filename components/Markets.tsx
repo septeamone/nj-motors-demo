@@ -4,7 +4,6 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import Image from "next/image";
 import { asset } from "@/lib/asset";
 import { COUNTRIES } from "@/lib/data";
-import { Bolt } from "./ui";
 
 const KR = COUNTRIES[0];
 /** Brands running endlessly, ending with "any other brand": the choice is wider than the list. */
@@ -15,11 +14,11 @@ function BrandRow({ brands }: { brands: string[] }) {
       {set.map((b, i) => (
         <span key={`${b}-${i}`} className="flex items-center gap-[0.55em]">
           <span className="text-white/90">{b}</span>
-          <Bolt size={22} className="text-[#ff5a4d]" />
+          <i className="block size-[0.2em] rounded-full bg-[#ff5a4d]" />
         </span>
       ))}
       <span className="text-[#ff5a4d]">и любой другой бренд</span>
-      <Bolt size={22} className="text-[#ff5a4d]" />
+      <i className="block size-[0.2em] rounded-full bg-[#ff5a4d]" />
     </div>
   );
   return (

@@ -2,7 +2,6 @@
 
 import Lenis from "lenis";
 import { useEffect } from "react";
-import { Backdrop } from "./Backdrop";
 import { Tactile } from "./Tactile";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -21,7 +20,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Backdrop />
       <Tactile />
       {children}
     </>

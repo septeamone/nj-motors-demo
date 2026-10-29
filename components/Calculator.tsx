@@ -217,18 +217,18 @@ export function Calculator() {
             </div>
 
             <div className="mt-3 border-y border-line-strong py-4" aria-live="polite">
-              <p className="text-[14px] font-bold tracking-[0.1em] uppercase opacity-70">Итого, ориентир</p>
+              <p className="text-[16px] font-bold opacity-75">Итого, ориентир</p>
               <div className="mt-3 text-[clamp(30px,3.6vw,46px)] leading-[1.08]" aria-label={`Итого ${totalText}`}>
                 {!priceKrw ? (
                   "—"
                 ) : (
                   <>
-                    <span className="mr-2 text-[0.42em] font-bold tracking-[0.1em] uppercase opacity-60">от</span>
+                    <span className="mr-2 text-[0.42em] font-bold opacity-60">от</span>
                     <Odometer text={rub(total.lo)} />
                     {!total.open && (
                       <>
                         <br />
-                        <span className="mr-2 text-[0.42em] font-bold tracking-[0.1em] uppercase opacity-60">до</span>
+                        <span className="mr-2 text-[0.42em] font-bold opacity-60">до</span>
                         <Odometer text={rub(total.hi)} />
                       </>
                     )}
@@ -309,7 +309,7 @@ export function Calculator() {
             transition={{ duration: DUR, ease: EASE }}
             className="fixed inset-x-3 bottom-[84px] z-40 flex items-center justify-between gap-3 rounded-[8px] bg-[var(--paper)] px-4 py-3 text-[var(--paper-ink)] shadow-[0_14px_30px_var(--shadow)] lg:hidden"
           >
-            <span className="text-[13px] font-bold tracking-[0.08em] uppercase opacity-70">Итого</span>
+            <span className="text-[15px] font-bold opacity-75">Итого</span>
             <span className="num text-[22px] leading-none">{totalText}</span>
           </motion.a>
         )}

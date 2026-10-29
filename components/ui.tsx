@@ -29,7 +29,7 @@ export function Wordmark({ className = "", tagline = true }: { className?: strin
       <span className="leading-none">
         <span className="font-display block text-[22px] font-semibold tracking-[0.06em] text-ink uppercase">NJ Motors</span>
         {tagline && (
-          <span className="mono mt-1 hidden !text-[16px] !tracking-[0.2em] text-ink-3 sm:block">Cars from Korea · est. 2023</span>
+          <span className="mono mt-1 hidden text-ink-3 sm:block">Автомобили из Кореи с 2023 года</span>
         )}
       </span>
     </span>

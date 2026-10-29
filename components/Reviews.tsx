@@ -277,7 +277,7 @@ export function Reviews() {
   const next = ITEMS[(i + 1) % ITEMS.length];
 
   return (
-    <section id="reviews" className="cut-top border-t border-line pb-10 lg:pb-14" style={{ ["--cut" as string]: "3.5rem" }}>
+    <section id="reviews" className="cut-top pb-14 lg:pb-20" style={{ ["--cut" as string]: "3.5rem" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           title="Что говорят клиенты"
@@ -293,7 +293,7 @@ export function Reviews() {
                 role="group"
                 aria-label={`Видеоплеер: ${cur.title}. Пробел: пауза, M: звук, F: во весь экран, стрелки влево и вправо: перемотка, вверх и вниз: громкость`}
                 onKeyDown={onKey}
-                className={`group relative overflow-hidden rounded-[20px] border border-line-strong bg-black shadow-[0_40px_80px_-36px_var(--shadow)] outline-none transition-[width,max-width] duration-500 focus-visible:ring-2 focus-visible:ring-accent ${
+                className={`group relative overflow-hidden rounded-[6px] bg-black outline-none transition-[width,max-width] duration-500 focus-visible:ring-2 focus-visible:ring-accent ${
                   cur.wide ? "aspect-video w-full max-w-[600px]" : "aspect-[9/16] h-[min(70svh,600px)] max-w-full"
                 } ${fs ? "!h-full !w-full !max-w-none !rounded-none" : ""}`}
               >

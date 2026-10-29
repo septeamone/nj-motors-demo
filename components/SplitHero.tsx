@@ -388,7 +388,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         style={{ visibility: "hidden", opacity: 0 }}
         className="intro-hint fixed bottom-6 left-1/2 z-[56] flex -translate-x-1/2 cursor-pointer flex-col items-center gap-2 rounded-[10px] bg-[var(--bg)]/85 px-5 py-3 text-ink transition-opacity duration-500"
       >
-        <span className="text-[15px] font-bold tracking-[0.2em] uppercase">Листайте</span>
+        <span className="text-[16px] font-bold">Листайте</span>
         <span aria-hidden className="intro-hint-mouse relative block h-9 w-6 rounded-full border-2 border-current">
           <i className="absolute top-1.5 left-1/2 block h-2 w-[3px] -translate-x-1/2 rounded-full bg-accent" />
         </span>

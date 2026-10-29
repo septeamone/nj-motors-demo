@@ -14,7 +14,7 @@ export function Owner() {
   ].filter((r): r is [string, string] => !!r[1]);
 
   return (
-    <section id="about" className="border-t border-line bg-bg-2 py-8 lg:py-12">
+    <section id="about" className="bg-bg-2 py-14 lg:py-20">
       <div className="mx-auto grid max-w-[var(--page)] gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20 lg:px-12 xl:grid-cols-[minmax(0,3.6fr)_minmax(0,4.5fr)_minmax(0,4.9fr)] xl:gap-12 xl:px-20">
         <Reveal>
           <figure className="plate relative mx-auto w-full max-w-[400px] overflow-hidden lg:mx-0 lg:-mr-10 lg:-rotate-[1.4deg]">

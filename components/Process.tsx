@@ -10,7 +10,7 @@ import { Reveal, SectionHead } from "./ui";
 /** The deal: six steps on the route, four payments, and the sample contract they are written into. */
 export function Process() {
   return (
-    <section id="process" className="halftone border-t-[6px] border-accent bg-bg-2 pt-8 pb-10 lg:pt-12 lg:pb-16" style={{ ["--ht-dir" as string]: "80deg" }}>
+    <section id="process" className="bg-bg-2 pt-14 pb-14 lg:pt-24 lg:pb-20">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           title="Паспорт вашей сделки"

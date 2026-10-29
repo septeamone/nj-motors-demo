@@ -8,7 +8,7 @@ import { DUR, EASE } from "@/lib/motion";
 import { channels, SITE } from "@/lib/site";
 import { NjIcon, type IconName } from "./NjIcon";
 import { Select } from "./Select";
-import { Bolt, Reveal, SectionHead } from "./ui";
+import { Reveal, SectionHead } from "./ui";
 
 type Form = { name: string; contact: string; budget: string; message: string; consent: boolean; body: string; engine: string; age: string };
 const F0: Form = { name: "", contact: "", budget: "", message: "", consent: false, body: "", engine: "", age: "" };
@@ -120,7 +120,6 @@ ${text}` : text }));
     <section ref={sec} id="contact" className="drench relative isolate overflow-hidden !bg-transparent py-12 lg:py-16">
       <motion.span aria-hidden style={calm ? undefined : { x: leftX }} className="halftone !absolute inset-y-0 left-0 -z-10 w-[51%] bg-accent-fill" />
       <motion.span aria-hidden style={calm ? undefined : { x: rightX }} className="halftone !absolute inset-y-0 right-0 -z-10 w-[51%] bg-accent-fill" />
-      <Bolt size={520} className="pointer-events-none absolute -right-10 -bottom-10 -z-10 hidden rotate-[12deg] text-[#040c14] opacity-[0.12] lg:block" />
       <motion.div style={calm ? undefined : { opacity: rise }} className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <motion.div style={calm ? undefined : { x: textX }}>
@@ -130,16 +129,11 @@ ${text}` : text }));
               lead="Опишите задачу, пришлём подборку и расчёт."
             />
             <Reveal delay={0.1} className="mt-10">
-              <ol className="grid gap-5 border-t border-line pt-8">
-                {NEXT.map(([t, d], i) => (
-                  <li key={t} className="flex gap-4">
-                    <span className="num w-8 shrink-0 text-[26px] leading-none text-accent-ink">
-                      0{i + 1}
-                    </span>
-                    <span>
-                      <span className="block text-[15.5px] font-bold text-ink">{t}</span>
-                      <span className="block text-[16px] text-ink-2">{d}</span>
-                    </span>
+              <ol className="grid gap-6">
+                {NEXT.map(([t, d]) => (
+                  <li key={t}>
+                    <span className="font-display block text-[clamp(22px,2vw,28px)] leading-none tracking-wide text-ink uppercase">{t}</span>
+                    <span className="mt-1.5 block text-[17px] text-ink-2">{d}</span>
                   </li>
                 ))}
               </ol>

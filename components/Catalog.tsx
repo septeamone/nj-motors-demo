@@ -9,12 +9,12 @@ import { CARS, FUEL_NAME, type Car } from "@/lib/data";
 import { km, rub } from "@/lib/format";
 import { PRICE_LABEL } from "@/lib/site";
 import { NjIcon } from "./NjIcon";
-import { Bolt, Reveal, SectionHead } from "./ui";
+import { Reveal, SectionHead } from "./ui";
 
 export function Catalog() {
   const [open, setOpen] = useState<Car | null>(null);
   return (
-    <section id="catalog" className="cut-bottom halftone border-t border-line bg-bg-2 pt-10 lg:pt-14" style={{ ["--cut" as string]: "5.5rem", ["--ht-dir" as string]: "280deg" }}>
+    <section id="catalog" className="cut-bottom bg-bg-2 pt-10 lg:pt-14" style={{ ["--cut" as string]: "5.5rem", ["--ht-dir" as string]: "280deg" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           title="Примеры из Кореи"
@@ -61,7 +61,7 @@ export function Catalog() {
                       </dd>
                     </div>
                   </dl>
-                  <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-4">
+                  <div className="mt-auto flex items-end justify-between gap-3 pt-2">
                     <div>
                       <p className="label">{PRICE_LABEL}</p>
                       <p className="num mt-1 text-[24px] leading-none">{rub(car.price)}</p>
@@ -75,9 +75,11 @@ export function Catalog() {
         </ul>
 
         <Reveal delay={0.1} className="mt-10">
-          <p className="flex items-start gap-3 text-[16px] leading-snug text-ink-3">
-            <Bolt size={12} className="mt-[3px] shrink-0 text-accent-ink" />
-            Нужной модели нет? Подберём любую с корейского рынка.
+          <p className="text-[clamp(19px,1.6vw,22px)] leading-snug font-medium text-ink">
+            Нужной модели нет? Подберём любую с корейского рынка.{" "}
+            <a href="#contact" className="font-bold text-accent-ink underline decoration-2 underline-offset-[6px]">
+              Описать задачу
+            </a>
           </p>
         </Reveal>
       </div>
