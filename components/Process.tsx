@@ -4,11 +4,10 @@ import { Download } from "lucide-react";
 import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
 import { NjIcon } from "./NjIcon";
-import { Passport } from "./Passport";
-import { Route } from "./Route";
+import { Deal } from "./Deal";
 import { Reveal, SectionHead } from "./ui";
 
-/** One list: six steps, and on four of them the payment that belongs to that step. */
+/** The deal: six steps on the route, four payments, and the sample contract they are written into. */
 export function Process() {
   return (
     <section id="process" className="halftone border-t-[6px] border-accent bg-bg-2 pt-8 pb-10 lg:pt-12 lg:pb-16" style={{ ["--ht-dir" as string]: "80deg" }}>
@@ -18,17 +17,13 @@ export function Process() {
           lead="Платите по ходу дела: каждый платёж идёт после результата, который вы видите."
         />
 
-        <Route />
+        <Deal />
 
-        <Passport />
-
-        <Reveal className="mt-4 border-t border-line-strong pt-8 lg:grid lg:grid-cols-12 lg:gap-x-6 lg:pt-10">
-          <div className="lg:col-span-10">
+        <Reveal className="mt-12 rounded-[6px] bg-surface p-6 sm:p-8 lg:mt-16 lg:grid lg:grid-cols-12 lg:gap-x-6 lg:p-10">
+          <div className="lg:col-span-12">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-5">
-                <span className="grid size-14 shrink-0 place-items-center rounded-[4px] border border-line-strong text-accent-ink">
-                  <NjIcon name="contract" className="size-8" />
-                </span>
+                <NjIcon name="contract" className="size-12 shrink-0 text-accent-ink" />
                 <div>
                   <p className="font-display text-[clamp(26px,3vw,36px)] leading-tight tracking-wide uppercase">Образец договора</p>
                   <p className="mt-2 max-w-[48ch] text-[18px] leading-snug text-ink-2">Этапы оплаты, сроки, возврат аванса, приёмка. Образец без сумм и подписей.</p>
