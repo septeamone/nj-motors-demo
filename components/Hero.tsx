@@ -1,6 +1,5 @@
 import { ArrowRight } from "lucide-react";
 import { SplitHero } from "./SplitHero";
-import { Bolt } from "./ui";
 
 const FACTS = [
   { k: "Маршрут", v: "Корея → Владивосток → ваш город" },
@@ -14,20 +13,15 @@ export function Hero() {
   return (
     <SplitHero>
       <div className="flex h-full flex-col justify-center px-5 pt-5 pb-6 sm:px-8 lg:pt-[96px] lg:pr-10 lg:pb-8 lg:pl-[max(2rem,calc((100vw-var(--page))/2+3rem))]">
-        <p className="eyebrow flex items-center gap-3">
-          <Bolt size={14} className="text-accent-ink" />
-          Автомобили из Кореи · с 2023 года
-        </p>
-
-        <h1 className="display mt-4 text-[clamp(46px,12.5vw,64px)] !leading-[0.92] lg:mt-6 lg:text-[clamp(62px,6vw,108px)]">
+        <h1 className="display text-[clamp(46px,12.5vw,64px)] !leading-[0.92] lg:text-[clamp(62px,6vw,108px)]">
           <span className="block">Из Кореи</span>
           <span className="block">
-            в ваш <span className="text-accent-ink">город.</span>
+            в ваш город.
           </span>
         </h1>
 
         <p className="lead mt-4 !max-w-[40ch] max-sm:!text-[16px] lg:mt-6 lg:text-[18px]">
-          Подбираем, проверяем, привозим. Цену и каждый этап вы видите до оплаты.
+          С 2023 года подбираем, проверяем, привозим. Цену и каждый этап вы видите до оплаты.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 lg:mt-8">

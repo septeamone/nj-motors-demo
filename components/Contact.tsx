@@ -125,7 +125,6 @@ ${text}` : text }));
           <motion.div style={calm ? undefined : { x: textX }}>
             <SectionHead
               stacked
-              eyebrow="Заявка" n="07"
               title="Расскажите, какую машину ищете"
               lead="Опишите задачу, пришлём подборку и расчёт."
             />

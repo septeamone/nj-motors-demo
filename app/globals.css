@@ -1041,21 +1041,6 @@ html[data-intro="glide"] .emblem-img {
   white-space: pre;
 }
 
-/* ---------- Magazine: big section numbers hanging off the screen edge ---------- */
-.sect-num {
-  font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
-  font-size: clamp(150px, 24vw, 380px);
-  line-height: 0.8;
-  color: transparent;
-  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--ink) 16%, transparent);
-  letter-spacing: -0.04em;
-}
-@media (max-width: 1023.98px) {
-  .sect-num {
-    font-size: clamp(110px, 34vw, 190px);
-    top: -0.08em;
-  }
-}
 .h2,
 .display {
   text-align: left;
@@ -1087,23 +1072,6 @@ html[data-intro="glide"] .emblem-img {
 /* ===== MOTION: scroll-driven, no JavaScript. Where unsupported or reduced motion is asked for, nothing moves ===== */
 @view-transition {
   navigation: auto;
-}
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .sect-num {
-      animation: num-drift linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 100%;
-    }
-    @keyframes num-drift {
-      from {
-        translate: -3% 14%;
-      }
-      to {
-        translate: 3% -14%;
-      }
-    }
-  }
 }
 
 /* ===== CURSOR: small, close to the system one, but drawn like the icon set: round line and an offset red plate ===== */

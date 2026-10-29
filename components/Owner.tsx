@@ -45,7 +45,6 @@ export function Owner() {
         <div className="flex flex-col justify-center">
           <SectionHead
             stacked
-            eyebrow="С кем вы работаете" n="05"
             title="С кем вы будете работать"
             lead={`С ${SITE.brand.since} года. Вашу сделку ведёт один человек.`}
           />

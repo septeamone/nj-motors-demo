@@ -17,7 +17,6 @@ export function Catalog() {
     <section id="catalog" className="cut-bottom halftone border-t border-line bg-bg-2 pt-10 lg:pt-14" style={{ ["--cut" as string]: "5.5rem", ["--ht-dir" as string]: "280deg" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
-          eyebrow="Автомобили" n="01" shift={0}
           title="Примеры из Кореи"
           lead="Примеры. Реальный автомобиль подбираем под вашу задачу, цену считаем до заказа."
         />

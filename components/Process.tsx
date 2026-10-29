@@ -14,7 +14,6 @@ export function Process() {
     <section id="process" className="halftone border-t-[6px] border-accent bg-bg-2 pt-8 pb-10 lg:pt-12 lg:pb-16" style={{ ["--ht-dir" as string]: "80deg" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
-          eyebrow="Сделка" n="03" shift={1}
           title="Паспорт вашей сделки"
           lead="Платите по ходу дела: каждый платёж идёт после результата, который вы видите."
         />
@@ -24,7 +23,6 @@ export function Process() {
         <Passport />
 
         <Reveal className="mt-4 border-t border-line-strong pt-8 lg:grid lg:grid-cols-12 lg:gap-x-6 lg:pt-10">
-          <p className="eyebrow mb-4 lg:col-span-2 lg:mb-0 lg:pt-2">Документ</p>
           <div className="lg:col-span-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-5">

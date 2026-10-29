@@ -92,61 +92,16 @@ export function Lines({
   );
 }
 
-/**
- * Section heading on the 12-column grid: a note in the margin (columns 1-2), the headline from column 3 + shift,
- * a huge section number hanging off the left edge of the screen. Everything flush left.
- */
-export function SectionHead({
-  title,
-  lead,
-  stacked,
-  eyebrow,
-  n,
-  shift = 0,
-}: {
-  title: string;
-  lead?: React.ReactNode;
-  stacked?: boolean;
-  eyebrow?: string;
-  n?: string;
-  shift?: 0 | 1 | 2 | 3;
-}) {
-  const start = [3, 4, 5, 6][shift];
+/** Section heading: the headline, flush left on the page grid, with its lead sentence underneath. */
+export function SectionHead({ title, lead, stacked }: { title: string; lead?: React.ReactNode; stacked?: boolean }) {
   return (
-    <div className="relative">
-      {n && (
-        <span
-          aria-hidden
-          className="sect-num pointer-events-none absolute top-[-0.16em] left-[calc(50%-50vw-0.06em)] -z-0 select-none"
-        >
-          {n}
-        </span>
+    <div className={`flex flex-col gap-5 ${stacked ? "" : "lg:max-w-[calc(100%*10/12)]"}`}>
+      <Lines text={title} className="h2 max-w-[18ch]" />
+      {lead && (
+        <Reveal delay={0.1}>
+          <p className="lead">{typeof lead === "string" ? nb(lead) : lead}</p>
+        </Reveal>
       )}
-      <div className={stacked ? "relative" : "relative lg:grid lg:grid-cols-12 lg:gap-x-6"}>
-        {eyebrow && !stacked && (
-          <p className="eyebrow mb-4 lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mb-0 lg:pt-4">
-            <Bolt size={13} />
-            {eyebrow}
-          </p>
-        )}
-        <div
-          className={stacked ? "flex flex-col gap-5" : "flex flex-col gap-5 lg:row-start-1"}
-          style={stacked ? undefined : { gridColumn: `${start} / span ${12 - start + 1}`, paddingTop: shift ? `${shift * 14}px` : undefined }}
-        >
-          {eyebrow && stacked && (
-            <p className="eyebrow">
-              <Bolt size={13} />
-              {eyebrow}
-            </p>
-          )}
-          <Lines text={title} className="h2 max-w-[18ch]" />
-          {lead && (
-            <Reveal delay={0.1}>
-              <p className="lead">{typeof lead === "string" ? nb(lead) : lead}</p>
-            </Reveal>
-          )}
-        </div>
-      </div>
     </div>
   );
 }

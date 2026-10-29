@@ -10,7 +10,7 @@ export function Faq() {
   return (
     <section id="faq" className="border-t-[3px] border-line-strong pt-14 pb-16 lg:pt-20 lg:pb-24">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
-        <SectionHead eyebrow="Вопросы" n="06" shift={2} title="Вопросы до заявки" />
+        <SectionHead title="Вопросы до заявки" />
         <Reveal className="mt-8 lg:mt-10">
           <Accordion.Root type="single" collapsible defaultValue="item-0" className="grid items-start gap-x-12 border-t border-line-strong lg:grid-cols-2">
             {FAQ.map((f, i) => (

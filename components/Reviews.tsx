@@ -280,7 +280,6 @@ export function Reviews() {
     <section id="reviews" className="cut-top border-t border-line pb-10 lg:pb-14" style={{ ["--cut" as string]: "3.5rem" }}>
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
-          eyebrow="Отзывы" n="04" shift={3}
           title="Что говорят клиенты"
           lead="Видео клиентов и фото автомобилей. Начинает Андрей."
         />
