@@ -4,6 +4,7 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { DUR, EASE } from "@/lib/motion";
 import { useEffect, useState } from "react";
+import { SoundToggle } from "./SoundToggle";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
@@ -85,6 +86,8 @@ export function Header({ prefix = "" }: { prefix?: string }) {
           <div className="flex items-center gap-3">
             <NavList items={NAV.slice(3)} prefix={prefix} active={active} />
             <span className="ml-auto" />
+            {/* phones: the sound switch lives in the menu, the bar has no room for it */}
+            <SoundToggle className="hidden sm:grid" />
             <ThemeToggle />
             <a href={`${prefix}#contact`} className="btn btn-primary btn-sm hidden 2xl:inline-flex">
               Рассчитать стоимость
@@ -131,7 +134,8 @@ export function Header({ prefix = "" }: { prefix?: string }) {
               </motion.li>
             ))}
           </ul>
-          <div className="mt-2 flex items-center justify-end gap-3 p-3 pt-4">
+          <div className="mt-2 flex items-center justify-between gap-3 p-3 pt-4">
+            <SoundToggle />
             <a href={`${prefix}#contact`} onClick={() => setOpen(false)} className="btn btn-primary btn-sm">
               Рассчитать
             </a>

@@ -1,9 +1,10 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
 import { asset } from "@/lib/asset";
+import { play } from "@/lib/sound";
 
 type Kind = "container" | "porthole" | "emblem";
 
@@ -84,6 +85,15 @@ export function Portal({ kind, from, to }: { kind: Kind; from: string; to: strin
   const doorR = useTransform(p, [0.01, 0.13], [0, 104]);
   const fade = useTransform(p, [0.26, 0.32], [1, 0]);
   const frameFade = useTransform(p, [0.3, 0.33], [1, 0]);
+  // the container doors groan as they start to open
+  const groaned = useRef(false);
+  useMotionValueEvent(p, "change", (v) => {
+    if (kind !== "container") return;
+    if (v > 0.02 && !groaned.current) {
+      groaned.current = true;
+      play("doors");
+    } else if (v <= 0) groaned.current = false;
+  });
   if (calm) return null;
 
   const shape = kind === "container" ? "aspect-[240/256] w-[min(58vw,52svh)]" : "aspect-square w-[min(64vw,58svh)]";

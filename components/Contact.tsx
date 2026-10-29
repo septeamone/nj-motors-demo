@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { QUIZ } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
+import { play } from "@/lib/sound";
 import { channels, SITE } from "@/lib/site";
 import { NjIcon, type IconName } from "./NjIcon";
 import { Select } from "./Select";
@@ -84,6 +85,7 @@ ${text}` : text }));
       // a production build says honestly that nothing was delivered. `npm run check:publish` blocks the release.
       if (process.env.NODE_ENV !== "production") timer.current = setTimeout(() => {
           navigator.vibrate?.([20, 60, 35]);
+          play("stamp");
           setStatus("success");
         }, 1200);
       else setStatus("error");
@@ -98,6 +100,7 @@ ${text}` : text }));
       });
       if (!r.ok) throw new Error(String(r.status));
       navigator.vibrate?.([20, 60, 35]);
+          play("stamp");
       setStatus("success");
     } catch {
       setStatus("error");
