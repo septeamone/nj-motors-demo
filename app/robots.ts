@@ -6,5 +6,6 @@ const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").repla
 const path = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function robots(): MetadataRoute.Robots {
-  return { rules: { userAgent: "*", allow: "/" }, sitemap: `${base}${path}/sitemap.xml` };
+  // mockup: closed to search engines (open with allow: "/" when the site goes live)
+  return { rules: { userAgent: "*", disallow: "/" }, sitemap: `${base}${path}/sitemap.xml` };
 }
