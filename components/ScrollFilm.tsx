@@ -9,11 +9,17 @@ import { asset } from "@/lib/asset";
  * back. The frames are pictures drawn on a canvas (seeking a video by scroll stutters, on iPhones most of all);
  * phones load a smaller set. The frames load only when the film gets near, the first one right away.
  * The next section is pulled up over the last screen of the track, so it rises over the film's final frame.
+ *
+ * Smoothness: between two frames of the clip the next one is blended in by how far the scroll has got, so the
+ * picture flows instead of stepping. The frames are kept as small compressed files and only the ones around the
+ * current position are unpacked in the background (createImageBitmap), so a frame never has to be unpacked at the
+ * moment it is shown and a phone never holds the whole film unpacked in memory.
  */
 export function ScrollFilm({ name, count, from, to }: { name: string; count: number; from: string; to: string }) {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const frames = useRef<HTMLImageElement[]>([]);
+  const files = useRef<(Blob | undefined)[]>([]);
+  const bitmaps = useRef(new Map<number, ImageBitmap | "pending">());
   const shown = useRef(-1);
   const calm = useReducedMotion();
   const { scrollYProgress: p } = useScroll({ target: box, offset: ["start start", "end end"] });
@@ -21,34 +27,81 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
   // the film plays over the first part of the pinned scroll; the next section rises over the rest
   // (track 320svh, 220svh of it pinned; the next section starts rising 120svh in, at 120/220 ≈ 0.55)
   const PLAY = 0.54;
+  const AHEAD = 10; // frames unpacked on each side of the current one
+  const at = (v: number) => Math.min(count - 1, Math.max(0, (v / PLAY) * (count - 1)));
+
+  // unpack the frames around the current one, let go of the far ones
+  const keep = (center: number) => {
+    const map = bitmaps.current;
+    for (let i = Math.max(0, center - AHEAD); i <= Math.min(count - 1, center + AHEAD); i++) {
+      const f = files.current[i];
+      if (!f || map.has(i)) continue;
+      map.set(i, "pending");
+      createImageBitmap(f).then(
+        (bm) => {
+          if (map.get(i) !== "pending") return bm.close();
+          map.set(i, bm);
+          if (Math.abs(i - at(p.get())) < 2) {
+            shown.current = -1;
+            draw(p.get());
+          }
+        },
+        () => map.delete(i),
+      );
+    }
+    for (const [i, bm] of map) {
+      if (Math.abs(i - center) <= AHEAD + 4) continue;
+      if (bm !== "pending") bm.close();
+      map.delete(i);
+    }
+  };
 
   const draw = (v: number) => {
     const c = canvas.current;
     if (!c) return;
-    const want = Math.min(count - 1, Math.max(0, Math.round((v / PLAY) * (count - 1))));
-    // the nearest frame that has arrived, so a fast scroll never shows an empty canvas
-    let i = want;
-    while (i > 0 && !frames.current[i]?.complete) i--;
-    const img = frames.current[i];
-    if (!img?.complete || !img.naturalWidth || i === shown.current) return;
-    shown.current = i;
+    const x = at(v);
+    const i = Math.floor(x);
+    keep(i);
+    // redraw only when the picture really changes (a hundredth of a frame)
+    const key = Math.round(x * 100);
+    if (key === shown.current) return;
+    const map = bitmaps.current;
+    // the nearest unpacked frame at or before this point, so a fast scroll never shows an empty canvas
+    let j = i;
+    while (j > 0 && !(map.get(j) instanceof ImageBitmap)) j--;
+    const a = map.get(j);
+    if (!(a instanceof ImageBitmap)) return;
+    shown.current = key;
     const g = c.getContext("2d");
     if (!g) return;
     // cover the canvas like object-fit: cover
-    const k = Math.max(c.width / img.naturalWidth, c.height / img.naturalHeight);
-    const w = img.naturalWidth * k;
-    const h = img.naturalHeight * k;
-    g.drawImage(img, (c.width - w) / 2, (c.height - h) / 2, w, h);
+    const k = Math.max(c.width / a.width, c.height / a.height);
+    const w = a.width * k;
+    const h = a.height * k;
+    const dx = (c.width - w) / 2;
+    const dy = (c.height - h) / 2;
+    g.globalAlpha = 1;
+    g.drawImage(a, dx, dy, w, h);
+    // the next frame laid over it by how far the scroll is between the two
+    const b = map.get(j + 1);
+    const t = j === i ? x - i : 0;
+    if (t > 0.02 && b instanceof ImageBitmap) {
+      g.globalAlpha = t;
+      g.drawImage(b, dx, dy, w, h);
+      g.globalAlpha = 1;
+    }
   };
 
   useMotionValueEvent(p, "change", draw);
 
   useEffect(() => {
     const c = canvas.current;
-    const b = box.current;
-    if (!c || !b || calm) return;
+    const bx = box.current;
+    if (!c || !bx || calm) return;
     const small = innerWidth < 768;
     const dir = asset(`/films/${name}/${small ? "m" : "d"}`);
+    const map = bitmaps.current;
+    let alive = true;
     const fit = () => {
       const dpr = Math.min(devicePixelRatio || 1, small ? 2 : 1.5);
       c.width = Math.round(c.clientWidth * dpr);
@@ -56,20 +109,28 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
       shown.current = -1;
       draw(p.get());
     };
-    const load = (i: number) => {
-      if (frames.current[i]) return;
-      const img = new Image();
-      img.decoding = "async";
-      img.onload = () => {
-        if (Math.abs(i - Math.round((p.get() / PLAY) * (count - 1))) < 3 || shown.current < 0) {
-          shown.current = -1;
-          draw(p.get());
-        }
-      };
-      img.src = `${dir}/${String(i + 1).padStart(3, "0")}.webp`;
-      frames.current[i] = img;
+    const fetchFrame = async (i: number) => {
+      if (files.current[i]) return;
+      const r = await fetch(`${dir}/${String(i + 1).padStart(3, "0")}.webp`);
+      if (!r.ok || !alive) return;
+      files.current[i] = await r.blob();
+      if (Math.abs(i - at(p.get())) <= AHEAD) {
+        shown.current = -1;
+        draw(p.get());
+      }
     };
-    load(0);
+    // all frames, a few at a time, starting from where the scroll is
+    const fetchAll = async () => {
+      const from0 = Math.floor(at(p.get()));
+      const order = Array.from({ length: count }, (_, i) => i).sort((a, b) => Math.abs(a - from0) - Math.abs(b - from0));
+      const next = () => order.shift();
+      await Promise.all(
+        Array.from({ length: 6 }, async () => {
+          for (let i = next(); i !== undefined && alive; i = next()) await fetchFrame(i).catch(() => {});
+        }),
+      );
+    };
+    void fetchFrame(0);
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(c);
@@ -77,18 +138,21 @@ export function ScrollFilm({ name, count, from, to }: { name: string; count: num
       (e) => {
         if (!e[0].isIntersecting) return;
         io.disconnect();
-        for (let i = 1; i < count; i++) load(i);
+        void fetchAll();
       },
       { rootMargin: "150% 0px" },
     );
     // not during the hero intro: it is busy loading the page, and the film is still far below
-    const start = () => io.observe(b);
+    const start = () => io.observe(bx);
     if (document.documentElement.dataset.intro === "play") window.addEventListener("intro-end", start, { once: true });
     else start();
     return () => {
+      alive = false;
       ro.disconnect();
       io.disconnect();
       window.removeEventListener("intro-end", start);
+      for (const bm of map.values()) if (bm !== "pending") bm.close();
+      map.clear();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calm, name, count]);
