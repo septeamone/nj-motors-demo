@@ -1,6 +1,6 @@
 "use client";
 
-import { useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
@@ -50,7 +50,13 @@ const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
  */
 export function SplitHero({ children }: { children: React.ReactNode }) {
   const { scrollY: pageY } = useScroll();
-  const film = useTransform(pageY, (v) => (typeof window === "undefined" ? 0 : Math.min(1, Math.max(0, (v - PART * innerHeight) / (FILM * innerHeight)))));
+  const at = (v: number, from: number, len: number) =>
+    typeof window === "undefined" ? 0 : Math.min(1, Math.max(0, (v - from * innerHeight) / (len * innerHeight)));
+  const film = useTransform(pageY, (v) => at(v, PART, FILM));
+  // the film never just stops: when the clip is over the camera keeps creeping in, and the picture settles into
+  // shade as the catalog rises over it (scroll-linked, so linear: the scroll is the easing)
+  const push = useTransform(pageY, (v) => `scale(${1 + 0.14 * at(v, PART + FILM - 0.15, 1.5)})`);
+  const shade = useTransform(pageY, (v) => 0.6 * at(v, PART + FILM - 0.1, 1.1));
   const stage = useRef<HTMLDivElement>(null);
   const slot = useRef<HTMLDivElement>(null);
   const emblem = useRef<HTMLAnchorElement>(null);
@@ -366,9 +372,12 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       <section id="top" className="relative -mb-[100svh] h-[400svh]">
         <div ref={stage} className="split-stage pointer-events-none sticky top-0 h-svh overflow-hidden">
           {/* behind the halves: the NJ Motors container, which opens as you scroll on */}
-          <div aria-hidden className="absolute inset-0 bg-[#05080c]">
-            <FilmCanvas name="container" count={91} progress={film} />
+          <div aria-hidden className="absolute inset-0 overflow-hidden bg-[#05080c]">
+            <motion.div style={{ transform: push }} className="absolute inset-0 will-change-transform">
+              <FilmCanvas name="container" count={91} progress={film} />
+            </motion.div>
             <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_18vmin_6vmin_#05080c]" />
+            <motion.span style={{ opacity: shade }} className="pointer-events-none absolute inset-0 bg-[#05080c]" />
           </div>
           <div ref={artHalf} aria-hidden className="split-panel split-art" />
           <div ref={textHalf} className="split-panel split-text grain">

@@ -34,17 +34,24 @@ export function Process() {
     scrollYProgress,
     (v) => clamp((depth(v) - 0.8) / 0.55) * 0.86,
   );
+  // The film comes in as a rounded window in the page that opens to the whole screen while the section rises
+  // (the picture never arrives as a hard-edged block), and afterwards the sea keeps drifting slowly under the shade.
+  const { scrollYProgress: rise } = useScroll({ target: sec, offset: ["start end", "start start"] });
+  const clip = useTransform(rise, (e) => `inset(${(1 - e) * 6}vh ${(1 - e) * 7}vw round ${(1 - e) * 36}px)`);
+  const lens = useTransform([rise, scrollYProgress], ([e, v]: number[]) => `scale(${1.12 - 0.12 * e + 0.08 * clamp((depth(v) - 1.3) / 4)})`);
 
   return (
-    <section ref={sec} id="process" className="relative bg-bg-2 pb-14 lg:pb-20">
+    <section ref={sec} id="process" className="relative bg-bg pb-14 lg:pb-20">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="sticky top-0 h-svh overflow-hidden bg-[#05080c]">
-          <FilmCanvas name="porthole" count={91} progress={film} />
+        <motion.div style={{ clipPath: clip }} className="sticky top-0 h-svh overflow-hidden bg-[#05080c]">
+          <motion.div style={{ transform: lens }} className="absolute inset-0 will-change-transform">
+            <FilmCanvas name="porthole" count={91} progress={film} />
+          </motion.div>
           <motion.span
             style={{ opacity: dim }}
             className="absolute inset-0 bg-bg-2"
           />
-        </div>
+        </motion.div>
       </div>
       {/* first the camera goes out through the porthole; the heading arrives over the open sea */}
       <div aria-hidden className="h-[150svh]" />
