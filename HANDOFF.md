@@ -6,6 +6,7 @@
 - Режим разработки: `npm run dev -- -p 3100` (медленнее, нужен для правок).
 - Готовая версия: `npm run build`, затем `node scripts/serve.mjs 8772 out` (сервер умеет Range, нужен для перемотки видео). Адрес http://localhost:8772/. Перед сборкой остановить сервер на 8772.
 - Телефон в той же сети: `Открыть на телефоне.bat`.
+- **Ссылка для клиента:** https://septeamone.github.io/nj-motors-demo/ (репозиторий septeamone/nj-motors-demo, публичный, закрыт от поисковиков). Обновить после правок: `bash scripts/publish-pages.sh` (собирает и выкладывает ветку gh-pages; GitHub Actions на этом аккаунте не запускаются, поэтому сборка локальная).
 - Git есть. Работа над вау-версией в ветке `skills-polish`, тег `before-skills-2026-10-29` = версия до неё (откат: `git checkout master`). Старая копия: `sites/njmotors-backup-2026-10-19/`.
 
 ## Правила Jack (важно)
