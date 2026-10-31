@@ -1,0 +1,4 @@
+User-Agent: *
+Disallow: /
+
+Sitemap: https://septeamone.github.io/nj-motors-demo/sitemap.xml
