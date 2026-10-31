@@ -8,6 +8,8 @@ import { useNear, useVideoSrc } from "@/lib/video";
 import { Reveal, SectionHead } from "./ui";
 
 // Videos compressed from the owner's originals (public/reviews). Andrey's own video lives in the block above (Owner).
+// Any number of videos, upright or wide: the player reads each video's own shape when it loads (`wide` is only the
+// first guess before that), and the list scrolls sideways when there are more than fit.
 const ITEMS = [
   { id: "review-1", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 82 },
   { id: "review-2", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 102 },
@@ -42,8 +44,8 @@ function Bars({ on }: { on: boolean }) {
 
 type Shelf = { rows: number; cols: number; show?: number };
 // how many rows and columns each shelf shows at a given screen width (show: columns' worth of width, a little more than cols peeks the next page)
-const VIDEO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 1, cols: 1, show: 1.22 } : { rows: w < 1024 ? 1 : 2, cols: 2 });
-const PHOTO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 2, cols: 2, show: 2.25 } : w < 1024 ? { rows: 2, cols: 3 } : { rows: 2, cols: 5 });
+const VIDEO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 1, cols: 1, show: 1.4 } : { rows: w < 1024 ? 1 : 2, cols: 2 });
+const PHOTO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 1, cols: 2, show: 2.4 } : w < 1024 ? { rows: 2, cols: 3 } : { rows: 2, cols: 5 });
 
 /**
  * A compact shelf: a fixed number of rows that scrolls sideways, so ten or fifty items take the same room.
@@ -140,6 +142,12 @@ export function Reviews() {
   const cur = ITEMS[i];
   const idxRef = useRef(0);
   const pick = useVideoSrc();
+  // width / height of the current video: a first guess from the list, then the video's own size once it has loaded
+  const [ratio, setRatio] = useState<number>(ITEMS[0].wide ? 16 / 9 : 9 / 16);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setRatio(ITEMS[i].wide ? 16 / 9 : 9 / 16);
+  }, [i]);
   const near = useNear(box);
 
   // volume and mute are properties of the video element, not attributes: the element follows the state
@@ -287,7 +295,7 @@ export function Reviews() {
           lead="Видео от клиентов Андрея. Имена, машины и города добавим с их согласия."
         />
 
-        <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-10 xl:gap-14">
+        <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-10 xl:gap-14">
           <Reveal delay={0.08} className="min-w-0">
             <div className="mx-auto flex min-h-[480px] items-center justify-center lg:min-h-[600px]">
               <div
@@ -296,13 +304,15 @@ export function Reviews() {
                 role="group"
                 aria-label={`Видеоплеер: ${cur.title}. Пробел: пауза, M: звук, F: во весь экран, стрелки влево и вправо: перемотка, вверх и вниз: громкость`}
                 onKeyDown={onKey}
-                className={`group relative overflow-hidden rounded-[6px] bg-black outline-none transition-[width,max-width] duration-500 focus-visible:ring-2 focus-visible:ring-accent ${
-                  cur.wide ? "aspect-video w-full max-w-[600px]" : "aspect-[9/16] h-[min(70svh,600px)] max-w-full"
+                style={fs ? undefined : { aspectRatio: String(ratio) }}
+                className={`group relative overflow-hidden rounded-[6px] bg-black outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                  ratio >= 1 ? "w-full max-w-[600px]" : "h-[min(70svh,600px)] max-w-full"
                 } ${fs ? "!h-full !w-full !max-w-none !rounded-none" : ""}`}
               >
                 <video
                   ref={video}
                   key={cur.id}
+                  aria-label={`Видеоотзыв: ${cur.title}`}
                   src={pick(asset(`/reviews/${cur.id}.mp4`))}
                   poster={near ? asset(`/reviews/${cur.id}-poster.webp`) : undefined}
                   playsInline
@@ -315,6 +325,8 @@ export function Reviews() {
                   onCanPlay={() => setWaiting(false)}
                   onLoadedMetadata={(e) => {
                     setDur(e.currentTarget.duration);
+                    const v = e.currentTarget;
+                    if (v.videoWidth && v.videoHeight) setRatio(v.videoWidth / v.videoHeight);
                     e.currentTarget.volume = volume;
                     e.currentTarget.muted = muted || volume === 0;
                   }}
@@ -448,7 +460,7 @@ export function Reviews() {
                         on ? "border-accent bg-accent-soft" : "border-line-strong hover:border-ink-3"
                       }`}
                     >
-                      <span className={`relative shrink-0 overflow-hidden rounded-[6px] bg-black ${it.wide ? "aspect-video w-[100px]" : "aspect-[9/16] w-[56px]"}`}>
+                      <span className="relative aspect-[3/4] w-[48px] shrink-0 overflow-hidden rounded-[6px] bg-black sm:w-[64px]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={asset(`/reviews/${it.id}-poster.webp`)} alt="" loading="lazy" className="size-full object-cover" />
                         <span aria-hidden className="absolute inset-0 grid place-items-center bg-black/25">
@@ -457,7 +469,7 @@ export function Reviews() {
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block text-[16px] leading-tight font-bold text-ink">{it.title}</span>
-                        <span className="mt-0.5 block text-[14px] text-ink-2">{it.sub}</span>
+                        <span className="mt-0.5 line-clamp-2 block text-[14px] text-ink-2 max-sm:line-clamp-1">{it.sub}</span>
                       </span>
                       <span className="num shrink-0 text-[15px] text-ink-3">{mmss(it.dur)}</span>
                     </button>

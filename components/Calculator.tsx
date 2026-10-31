@@ -19,7 +19,6 @@ import {
 import { fmt, rub } from "@/lib/format";
 import { DUR, EASE } from "@/lib/motion";
 import { NjIcon, type IconName } from "./NjIcon";
-import { Odometer } from "./Odometer";
 import { Select } from "./Select";
 import { Reveal, SectionHead } from "./ui";
 
@@ -41,18 +40,28 @@ function Segmented<T extends string>({
   value,
   onChange,
   options,
+  even = false,
 }: {
   label: string;
   value: T;
   onChange: (v: T) => void;
   options: { value: T; label: string; icon?: IconName }[];
+  /** phones: all options in one row of equal cells (short labels, e.g. the fuel) */
+  even?: boolean;
 }) {
   return (
     <div>
       <span className="label">{label}</span>
-      <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-2">
+      <div role="radiogroup" aria-label={label} className={even ? "grid grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:gap-2" : "flex flex-wrap gap-2"}>
         {options.map((o) => (
-          <button key={o.value} type="button" role="radio" aria-checked={value === o.value} onClick={() => onChange(o.value)} className="pill inline-flex items-center gap-2.5 text-left">
+          <button
+            key={o.value}
+            type="button"
+            role="radio"
+            aria-checked={value === o.value}
+            onClick={() => onChange(o.value)}
+            className={`pill inline-flex items-center gap-2.5 text-left ${even ? "justify-center !px-1 !text-[15px] sm:!px-[18px] sm:!text-[16px]" : ""}`}
+          >
             {o.icon && <NjIcon name={o.icon} className="size-6" />}
             {o.label}
           </button>
@@ -87,6 +96,8 @@ export function Calculator() {
   const [opened, setOpened] = useState<Group | null>(null);
   // phones: the delivery choice is folded into one line until tapped
   const [route, setRoute] = useState(false);
+  // phones: the line-by-line breakdown of the receipt is folded too; the total stays in sight
+  const [lines, setLines] = useState(false);
 
   const priceKrw = +price || 0;
   const r = useMemo(
@@ -136,7 +147,7 @@ export function Calculator() {
     );
 
   return (
-    <section ref={section} id="calc" className="mx-auto max-w-[var(--page)] px-5 pt-14 pb-10 sm:px-8 lg:px-12 lg:pt-20 lg:pb-14 xl:px-20">
+    <section ref={section} id="calc" className="mx-auto max-w-[var(--page)] px-5 pt-8 pb-10 sm:px-8 lg:px-12 lg:pt-20 lg:pb-14 xl:px-20">
       <SectionHead
         title="Сколько это стоит"
         lead="Итог пересчитывается сразу. Ставки и курсы на октябрь 2026."
@@ -161,8 +172,8 @@ export function Calculator() {
             <p className="hint">≈ {rub(priceKrw * RATES.krw)} по курсу ЦБ на {RATES.date}</p>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-3">
-            <div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
+            <div className="col-span-2 sm:col-span-1">
               <span className="label">Год выпуска</span>
               <Select aria-label="Год выпуска" value={year} onChange={setYear} options={YEARS.map((y) => ({ value: y, label: y }))} />
             </div>
@@ -193,6 +204,7 @@ export function Calculator() {
           </div>
           <Segmented
             label="Тип двигателя"
+            even
             value={fuel}
             onChange={setFuel}
             options={(["petrol", "diesel", "hybrid", "electric"] as const).map((f) => ({ value: f, label: FUEL_LABEL[f] }))}
@@ -257,12 +269,12 @@ export function Calculator() {
                 ) : (
                   <>
                     <span className="mr-2 text-[0.42em] font-bold opacity-60">от</span>
-                    <Odometer text={rub(total.lo)} />
+                    <span className="num">{rub(total.lo)}</span>
                     {!total.open && (
                       <>
                         <br />
                         <span className="mr-2 text-[0.42em] font-bold opacity-60">до</span>
-                        <Odometer text={rub(total.hi)} />
+                        <span className="num">{rub(total.hi)}</span>
                       </>
                     )}
                   </>
@@ -274,6 +286,17 @@ export function Calculator() {
               </p>
             </div>
 
+            <button
+              type="button"
+              onClick={() => setLines((v) => !v)}
+              aria-expanded={lines}
+              aria-controls="c-lines"
+              className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 border-b border-line text-left text-[16px] font-bold lg:hidden"
+            >
+              Из чего складывается сумма
+              <ChevronDown className={`size-5 shrink-0 opacity-70 transition-transform ${lines ? "rotate-180" : ""}`} strokeWidth={2} />
+            </button>
+            <div id="c-lines" className={lines ? "" : "max-lg:hidden"}>
             <ul>
               {GROUPS.map((g) => {
                 const rows = r.parts.filter((p) => p.group === g.id);
@@ -322,6 +345,7 @@ export function Calculator() {
               Сюда не входит вознаграждение NJ Motors: это фиксированная сумма, Андрей называет её до подписания и вписывает в договор
               {total.missing.length ? `. Не посчитаны строки «уточнит Андрей» (${total.missing.join(", ")})` : ""}.
             </p>
+            </div>
 
             <a href="#lead-form" onClick={request} className="btn btn-primary mt-4 w-full">
               Получить точный расчёт

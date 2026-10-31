@@ -12,6 +12,7 @@ export function OwnerVideo({ src, poster }: { src: string; poster?: string }) {
     <video
       ref={ref}
       controls
+      aria-label="Видео: Андрей, владелец NJ Motors, о своей работе"
       preload="none"
       playsInline
       poster={near ? poster : undefined}

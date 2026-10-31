@@ -4,8 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
-import { finish } from "@/lib/loading";
-import { slowNet } from "@/lib/net";
+import { lightLoad } from "@/lib/net";
 
 // three.js is heavy: it is fetched only when the phone is about to come on screen.
 const loadScene = () => import("./PhoneScene");
@@ -64,32 +63,49 @@ export function PhoneMock() {
     setCalm(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     if (!hasWebGL()) {
       setFlat(true);
-      (window as unknown as { __phoneReady?: boolean }).__phoneReady = true;
-      finish("phone");
       return;
     }
     const el = box.current;
     if (!el) return;
-    // build the 3D at once: the intro (SplitHero) keeps the pulsing emblem on screen until window.__phoneReady is true
-    // on a slow connection the loader does not wait for the 3D phone: it is built when the visitor scrolls near it
-    const slow = slowNet();
-    if (slow) finish("phone");
-    const idle: (f: () => void) => number = slow ? () => 0 : (window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 50)));
-    const id = idle(() => {
-      loadScene();
-      SCREENS.forEach((_, k) => {
-        const im = new Image();
-        im.src = asset(`/mockup/tg-${k + 1}.webp`);
-      });
-      setNear(true);
-    });
-    const off = () => window.cancelIdleCallback?.(id as number);
-    const far = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "1800px" }); // fallback if idle never fires
+    // The usual way with heavy 3D: the page opens without waiting for it; once it is open and the browser is idle,
+    // the 3D code and the screen pictures download in the background; the scene itself is built (WebGL, shaders)
+    // only when the phone is about a screen and a half away. Until it is ready, a flat picture of the phone stands
+    // in its place, and the 3D fades in over it. A slow connection skips the background download.
+    const slow = lightLoad();
+    let idleId = 0;
+    const prefetch = () => {
+      const idle = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 300));
+      idleId = idle(
+        () => {
+          void loadScene();
+          SCREENS.forEach((_, k) => {
+            const im = new Image();
+            im.src = asset(`/mockup/tg-${k + 1}.webp`);
+          });
+        },
+        { timeout: 4000 },
+      );
+    };
+    const intro = () => ["play", "glide"].includes(document.documentElement.dataset.intro ?? "");
+    if (!slow) {
+      if (intro()) window.addEventListener("intro-end", prefetch, { once: true });
+      else prefetch();
+    }
+    const far = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        far.disconnect();
+        void loadScene();
+        setNear(true);
+      },
+      { rootMargin: "150% 0px" },
+    );
     const vis = new IntersectionObserver(([e]) => setSeen(e.isIntersecting));
     far.observe(el);
     vis.observe(el);
     return () => {
-      off();
+      window.removeEventListener("intro-end", prefetch);
+      window.cancelIdleCallback?.(idleId);
       far.disconnect();
       vis.disconnect();
     };
@@ -105,28 +121,24 @@ export function PhoneMock() {
   return (
     <div className="mx-auto flex w-full max-w-[460px] flex-col items-start xl:mx-0">
       <div ref={box} className="relative aspect-[0.64] w-full">
-        {flat && (
-          <div className="absolute top-1/2 left-1/2 aspect-[1/2.08] w-[62%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[17%/8%] border-[5px] border-[#6a1c2a] bg-black">
+        {/* the flat phone: the picture where there is no WebGL, and the stand-in until the 3D is ready */}
+        {(flat || !ready) && (
+          <div
+            aria-hidden={!flat}
+            className={`absolute top-1/2 left-1/2 aspect-[1/2.08] w-[62%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[17%/8%] border-[5px] border-[#6a1c2a] bg-black transition-opacity duration-700 ${!flat && near ? "opacity-90" : ""}`}
+          >
             {SCREENS.map((alt, k) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 key={alt}
                 src={asset(`/mockup/tg-${k + 1}.webp`)}
-                alt={k === i ? `Скриншот Telegram-канала NJ Motors: ${alt}` : ""}
+                alt={flat && k === i ? `Скриншот Telegram-канала NJ Motors: ${alt}` : ""}
                 width={864}
                 height={1920}
                 loading="lazy"
                 className={`absolute inset-0 size-full object-cover transition-opacity duration-700 ${k === i ? "opacity-100" : "opacity-0"}`}
               />
             ))}
-          </div>
-        )}
-        {!flat && (
-          <div aria-hidden className={`phone-loader absolute top-1/2 left-1/2 w-[50%] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 ${ready ? "opacity-0" : "opacity-100"}`}>
-            <div className="relative aspect-[1/2.08] overflow-hidden rounded-[17%/8%] border border-line-strong bg-bg-2/40">
-              <span className="phone-loader-bar absolute inset-x-0 bottom-0 h-[3px] bg-accent" />
-            </div>
-            <p className="mono mt-4 text-center !text-[16px] text-ink-3">Загружаю телефон</p>
           </div>
         )}
         {near && !flat && (
@@ -137,11 +149,7 @@ export function PhoneMock() {
               active={i}
               run={seen}
               calm={calm}
-              onReady={() => {
-                setReady(true);
-                (window as unknown as { __phoneReady?: boolean }).__phoneReady = true;
-                finish("phone"); // the opening loader counts the 3D phone
-              }}
+              onReady={() => setReady(true)}
             />
           </div>
         )}

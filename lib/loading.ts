@@ -1,6 +1,6 @@
 /**
  * What the opening loader waits for, and how far each part has got. The heavy parts report in (the hero film frame by
- * frame, the 3D phone once built, the fonts, the page itself); the loader ring shows the weighted sum as a real
+ * frame, the fonts, the page itself; the 3D phone loads later, in the background); the loader ring shows the weighted sum as a real
  * percentage, not a looping animation.
  */
 type Part = { weight: number; total: number; done: number };
@@ -8,8 +8,7 @@ type Part = { weight: number; total: number; done: number };
 const parts: Record<string, Part> = {
   page: { weight: 10, total: 1, done: 0 },
   fonts: { weight: 5, total: 1, done: 0 },
-  film: { weight: 60, total: 0, done: 0 },
-  phone: { weight: 25, total: 1, done: 0 },
+  film: { weight: 85, total: 0, done: 0 },
 };
 
 /** How many steps a part has (the film: its frames). */

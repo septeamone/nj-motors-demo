@@ -4,7 +4,7 @@ import { useMotionValueEvent, useReducedMotion, type MotionValue } from "motion/
 import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { expect, finish, step } from "@/lib/loading";
-import { slowNet } from "@/lib/net";
+import { lightLoad } from "@/lib/net";
 
 /**
  * A rendered film played by a progress value (0 → 1, from the scroll): the frames of the clip follow it, forwards
@@ -39,7 +39,7 @@ export function FilmCanvas({
   const shown = useRef(-1);
   const calm = useReducedMotion();
   // frames the opening loader waits for (a slow connection waits for fewer: the rest arrive while the visitor scrolls)
-  const PRELOAD = typeof window !== "undefined" && slowNet() ? 16 : 40;
+  const PRELOAD = typeof window !== "undefined" && lightLoad() ? 16 : 40;
   // frames unpacked on each side of the current one (phones keep fewer: less decoding at a time, less memory)
   const AHEAD = typeof window !== "undefined" && innerWidth < 768 ? 6 : 10;
   // reduced motion: the film stands still on its last frame
@@ -160,8 +160,10 @@ export function FilmCanvas({
       if (cur.current < 0) cur.current = at(p.get());
       render();
     };
+    const asked = new Set<number>(); // each frame is fetched once, even when two loaders ask for it
     const fetchFrame = async (i: number) => {
-      if (files.current[i]) return;
+      if (files.current[i] || asked.has(i)) return;
+      asked.add(i);
       const r = await fetch(`${dir}/${String(i + 1).padStart(3, "0")}.webp`);
       if (!r.ok || !alive) return;
       files.current[i] = await r.blob();
@@ -203,7 +205,7 @@ export function FilmCanvas({
     // down downloads in the background; on a slow connection it waits until it is three screens away
     let later = 0;
     const start = () => {
-      if (slowNet()) io.observe(c);
+      if (lightLoad()) io.observe(c);
       else later = window.setTimeout(() => !calm && void fetchAll(), 1500);
     };
     if (preload && !calm) {

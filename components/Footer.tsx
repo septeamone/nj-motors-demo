@@ -1,7 +1,7 @@
 import credits from "@/lib/credits.json";
-import { CARS } from "@/lib/data";
 import { asset } from "@/lib/asset";
-import { channels, SITE } from "@/lib/site";
+import { CARS } from "@/lib/data";
+import { channels } from "@/lib/site";
 import { Wordmark } from "./ui";
 
 const NAMES: Record<string, string> = {
@@ -10,84 +10,65 @@ const NAMES: Record<string, string> = {
 
 type Credit = { file: string; lic: string; artist: string; page: string };
 
-/** Footer: contacts are shown only when NJ Motors has confirmed them (non-null in site.json). */
+/**
+ * A compact footer: the mark, the contacts (only those NJ Motors has confirmed, non-null in site.json), one line of
+ * legal links, and the photo credits folded away.
+ */
 export function Footer() {
   const contacts = channels();
   const rows = Object.entries(credits as Record<string, Credit>).filter(([slug]) => slug in NAMES);
   return (
     <footer className="bg-bg-2">
-      <div className="mx-auto max-w-[var(--page)] px-5 py-12 sm:px-8 lg:px-12 xl:px-20">
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,6fr)_minmax(0,4fr)]">
-          <div>
-            <Wordmark />
-            <p className="mt-5 max-w-[34ch] text-[16px] leading-relaxed text-ink-2">
-              Подбираем, проверяем и привозим автомобили из Южной Кореи.
-              {/* from 640 px the emblem above already says "since 2023" */}
-              <span className="sm:hidden"> Работаем с {SITE.brand.since} года.</span>
-            </p>
-          </div>
-          <div>
-            <p className="label">Контакты</p>
-            {contacts.length ? (
-              <ul className="mt-4 grid gap-4 text-[16px]">
-                {contacts.map((c) => (
-                  <li key={c.key}>
-                    <span className="block text-[16px] text-ink-3">{c.label}</span>
-                    {c.href ? (
-                      <a href={c.href} className="font-semibold text-ink hover:text-accent-ink">
-                        {c.value}
-                      </a>
-                    ) : (
-                      <span className="font-semibold text-ink">{c.value}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <>
-                {/* макет: контакты ещё не подтверждены владельцем, места под них показаны честно */}
-                <ul className="mt-4 grid gap-4 text-[16px]">
-                  {["Телефон", "Эл. почта"].map((k) => (
-                    <li key={k}>
-                      <span className="block text-ink-3">{k}</span>
-                      <span className="font-semibold text-ink-2">Появится после подтверждения</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-4 max-w-[30ch] text-[16px] leading-snug text-ink-2">Пока можно оставить заявку в форме выше: Андрей свяжется сам.</p>
-              </>
-            )}
-          </div>
+      <div className="mx-auto max-w-[var(--page)] px-5 py-7 sm:px-8 lg:px-12 xl:px-20">
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <Wordmark />
+          {contacts.length ? (
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[16px]">
+              {contacts.map((c) => (
+                <li key={c.key}>
+                  {c.href ? (
+                    <a href={c.href} className="font-semibold text-ink hover:text-accent-ink">
+                      {c.value}
+                    </a>
+                  ) : (
+                    <span className="font-semibold text-ink">{c.value}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            // макет: контакты ещё не подтверждены владельцем
+            <p className="text-[16px] leading-snug text-ink-2">Телефон и почта появятся после подтверждения. Пока: заявка в форме выше.</p>
+          )}
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-line pt-7 text-[16px] text-ink-3 md:flex-row md:items-start md:justify-between">
-          <p>© 2026 NJ Motors. Сайт находится в разработке: фото, цены и сроки на нём ориентировочные.</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
+        <div className="mt-6 flex flex-col gap-3 border-t border-line pt-5 text-[15px] text-ink-3 lg:flex-row lg:items-start lg:justify-between">
+          <p>© 2026 NJ Motors. Сайт в разработке: фото, цены и сроки ориентировочные.</p>
+          <div className="flex flex-wrap items-start gap-x-6 gap-y-2">
             <a href={asset("/privacy/")} className="font-semibold hover:text-ink">
               Политика конфиденциальности
             </a>
             <a href={asset("/terms/")} className="font-semibold hover:text-ink">
               Пользовательское соглашение
             </a>
+            {rows.length > 0 && (
+              <details className="basis-full lg:basis-auto">
+                <summary className="cursor-pointer font-semibold hover:text-ink">Источники фото</summary>
+                <ul className="mt-2 grid gap-1">
+                  {rows.map(([slug, c]) => (
+                    <li key={slug}>
+                      <span className="font-semibold text-ink-2">{NAMES[slug]}</span>
+                      {": "}
+                      <a href={c.page} target="_blank" rel="noopener noreferrer" className="underline decoration-line-strong underline-offset-4 hover:text-accent-ink">
+                        {c.artist || "Автор не указан"} · {c.lic}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
           </div>
         </div>
-
-        {rows.length > 0 && (
-          <details className="mt-6 text-[16px] text-ink-3">
-            <summary className="cursor-pointer font-semibold hover:text-ink">Источники фото</summary>
-            <ul className="mt-3 grid gap-1.5">
-              {rows.map(([slug, c]) => (
-                <li key={slug}>
-                  <span className="font-semibold text-ink-2">{NAMES[slug]}</span>
-                  {": "}
-                  <a href={c.page} target="_blank" rel="noopener noreferrer" className="underline decoration-line-strong underline-offset-4 hover:text-accent-ink">
-                    {c.artist || "Автор не указан"} · {c.lic}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </details>
-        )}
       </div>
     </footer>
   );

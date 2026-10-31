@@ -1,10 +1,10 @@
 "use client";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { ArrowRight, ArrowUpRight, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { asset } from "@/lib/asset";
 import { CARS, FUEL_NAME, type Car } from "@/lib/data";
@@ -20,6 +20,34 @@ export function Catalog() {
   // the card's picture flows into the dialog (View Transitions), where the browser can do it
   // only the clicked card carries the transition name, and only for the moment of the switch
   const [morph, setMorph] = useState<string | null>(null);
+  // the car pictures wait until the opening is over: under the intro they only took the line from the page's code
+  const [pics, setPics] = useState(false);
+  useEffect(() => {
+    const go = () => setPics(true);
+    if (["play", "glide"].includes(document.documentElement.dataset.intro ?? "")) {
+      window.addEventListener("intro-end", go, { once: true });
+      return () => window.removeEventListener("intro-end", go);
+    }
+    go();
+  }, []);
+  // the sideways row: arrows appear only when the cars do not all fit; the smooth page scroll leaves the row alone then
+  const rail = useRef<HTMLUListElement>(null);
+  const [more, setMore] = useState(false);
+  useEffect(() => {
+    const el = rail.current;
+    if (!el) return;
+    const check = () => {
+      const over = el.scrollWidth > el.clientWidth + 2;
+      setMore(over);
+      if (over) el.setAttribute("data-lenis-prevent", "");
+      else el.removeAttribute("data-lenis-prevent");
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const slide = (dir: number) => rail.current?.scrollBy({ left: dir * rail.current.clientWidth * 0.9, behavior: "smooth" });
   const show = (car: Car) => {
     const d = document as Document & { startViewTransition?: (cb: () => void) => unknown };
     if (calm || !d.startViewTransition) return setOpen(car);
@@ -38,7 +66,7 @@ export function Catalog() {
     <section
       id="catalog"
       className="cut-bottom pt-[30svh]"
-      style={{ ["--cut" as string]: "5.5rem", background: "linear-gradient(180deg, transparent 0, transparent calc(30svh + 140px), var(--bg-2) calc(30svh + 380px))" }}
+      style={{ ["--cut" as string]: "clamp(1.25rem, 4vw, 4rem)", background: "linear-gradient(180deg, transparent 0, transparent calc(30svh + 140px), var(--bg-2) calc(30svh + 380px))" }}
     >
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div data-theme="dark" className="on-film">
@@ -48,10 +76,24 @@ export function Catalog() {
           />
         </div>
 
-        <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:items-stretch">
+        {/* any number of cars: one row that scrolls sideways (4 in view on a wide screen, 2 on a tablet), arrows when
+            there are more than fit, so a long catalogue never makes the page longer */}
+        <div className="mt-9 flex items-center justify-end gap-1.5 lg:mt-12">
+          {more && (
+            <>
+              <button type="button" aria-label="Предыдущие машины" onClick={() => slide(-1)} className="grid size-11 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
+                <ChevronLeft className="size-5" strokeWidth={2} />
+              </button>
+              <button type="button" aria-label="Следующие машины" onClick={() => slide(1)} className="grid size-11 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
+                <ChevronRight className="size-5" strokeWidth={2} />
+              </button>
+            </>
+          )}
+        </div>
+        <ul ref={rail} className="-mx-5 mt-3 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto overscroll-x-contain px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:scroll-px-0 sm:px-0">
           {CARS.map((car, i) => (
-            <Reveal as="li" key={car.slug} delay={i * 0.05} className="w-[80%] shrink-0 snap-start sm:w-auto">
-              <CarCard car={car} morph={morph === car.slug} onOpen={() => show(car)} />
+            <Reveal as="li" key={car.slug} delay={Math.min(i, 4) * 0.05} className="w-[80%] shrink-0 snap-start sm:w-[calc((100%-16px)/2)] lg:w-[calc((100%-48px)/4)]">
+              <CarCard car={car} morph={morph === car.slug} pics={pics} onOpen={() => show(car)} />
             </Reveal>
           ))}
         </ul>
@@ -88,7 +130,7 @@ const want = (car: Car) =>
  * A car card: the picture grows a little under the mouse; a click opens the details (the picture flows into them).
  * Under it, the plain action: "I want one like this" puts the car into the request.
  */
-function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () => void }) {
+function CarCard({ car, morph, pics, onOpen }: { car: Car; morph: boolean; pics: boolean; onOpen: () => void }) {
   return (
     <div className="plate flex h-full w-full flex-col overflow-hidden">
     <button
@@ -100,13 +142,13 @@ function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () 
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-2" style={{ viewTransitionName: morph ? `car-${car.slug}` : undefined, viewTransitionClass: "car" } as React.CSSProperties}>
         <div className="absolute inset-0">
-        <Image
+        {pics && <Image
           src={asset(`/cars/${car.slug}.webp`)}
           alt={`${car.brand} ${car.model}`}
           fill
           sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 92vw"
           className="car-ink object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
-        />
+        />}
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-4 p-5">

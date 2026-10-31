@@ -27,31 +27,10 @@ export function Wordmark({ className = "", tagline = true }: { className?: strin
   );
 }
 
-/** Heading sprayed on through a stencil: the paint edge sweeps across it once, ragged and speckled (.spray). */
-export function Lines({
-  text,
-  className,
-  as = "h2",
-  delay = 0,
-}: {
-  text: string;
-  className?: string;
-  as?: "h1" | "h2" | "h3" | "p";
-  delay?: number;
-}) {
-  const reduce = useReducedMotion();
-  const Tag = motion[as];
-  return (
-    <Tag
-      className={`spray ${className ?? ""}`}
-      initial={reduce ? false : { "--a": "-20%" }}
-      whileInView={{ "--a": "120%" }}
-      viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-      transition={{ duration: 1.1, ease: [0.45, 0, 0.25, 1], delay }}
-    >
-      {text}
-    </Tag>
-  );
+/** A section heading (plain: the paint-spray reveal was dropped to keep the page calm and the text clean for search). */
+export function Lines({ text, className, as = "h2" }: { text: string; className?: string; as?: "h1" | "h2" | "h3" | "p" }) {
+  const Tag = as;
+  return <Tag className={className}>{text}</Tag>;
 }
 
 /** Section heading: the headline, flush left on the page grid, with its lead sentence underneath. */

@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { EASE_CSS as EASE } from "@/lib/motion";
 import { finish as partDone, progress } from "@/lib/loading";
-import { slowNet } from "@/lib/net";
+import { lightLoad } from "@/lib/net";
 import { FilmCanvas } from "./FilmCanvas";
 
 // Wheel discs cut from the logo itself (centres measured on the 1254px original), as fractions of the logo.
@@ -181,8 +181,8 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     const tickLoad = () => {
       const v = progress();
       if (ring.current) ring.current.style.strokeDashoffset = String(RING * (1 - v));
-      if (percent.current) percent.current.textContent = `${Math.round(v * 100)}%`;
-      if (v >= 0.999 || performance.now() - loadStart > (slowNet() ? LOAD_LIMIT_MS * 0.6 : LOAD_LIMIT_MS)) return loadingDone();
+      if (percent.current) percent.current.dataset.p = `${Math.round(v * 100)}%`;
+      if (v >= 0.999 || performance.now() - loadStart > (lightLoad() ? LOAD_LIMIT_MS * 0.6 : LOAD_LIMIT_MS)) return loadingDone();
       loadTimer = window.setTimeout(tickLoad, 100);
     };
     tickLoad();
@@ -492,23 +492,22 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
             className="transition-[stroke-dashoffset] duration-300 ease-out"
           />
         </svg>
-        <p className="absolute inset-x-0 bottom-[max(3svh,20px)] flex flex-col items-center gap-1 text-ink">
-          <span className="text-[16px] font-semibold text-ink">Загружаем сайт</span>
-          <span ref={percent} className="num text-[clamp(30px,4vw,44px)] leading-none">
-            0%
-          </span>
+        {/* the words are drawn by CSS (content), so search engines never take "loading 0%" for the page's text */}
+        <p aria-hidden className="absolute inset-x-0 bottom-[max(3svh,20px)] flex flex-col items-center gap-1 text-ink">
+          <span className="loader-label text-[16px] font-semibold text-ink" />
+          <span ref={percent} data-p="0%" className="loader-pct num text-[clamp(30px,4vw,44px)] leading-none" />
         </p>
       </div>
 
       <button
         ref={hint}
         type="button"
+        aria-label="Открыть сайт"
         style={{ visibility: "hidden", opacity: 0 }}
         className="intro-hint fixed bottom-6 left-1/2 z-[56] flex -translate-x-1/2 cursor-pointer flex-col items-center gap-2 rounded-[10px] bg-[var(--bg)]/85 px-5 py-3 text-ink transition-opacity duration-500"
       >
         {/* mouse: the wheel; touch screens: a finger swiping up */}
-        <span className="text-[16px] font-bold pointer-coarse:hidden">Листайте</span>
-        <span className="hidden text-[16px] font-bold pointer-coarse:inline">Проведите вверх</span>
+        <span aria-hidden className="hint-label text-[16px] font-bold" />
         <span aria-hidden className="intro-hint-mouse relative block h-9 w-6 rounded-full border-2 border-current pointer-coarse:hidden">
           <i className="absolute top-1.5 left-1/2 block h-2 w-[3px] -translate-x-1/2 rounded-full bg-accent" />
         </span>
