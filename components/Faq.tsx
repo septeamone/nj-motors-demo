@@ -2,7 +2,10 @@
 
 import * as Accordion from "@radix-ui/react-accordion";
 import { Plus } from "lucide-react";
-import { FAQ } from "@/lib/data";
+import { FAQ as BASE, IF_CASES } from "@/lib/data";
+
+// the owner's "what if" commitments join the questions once they are filled in (lib/data)
+const FAQ = [...BASE, ...IF_CASES.filter((x) => x.a.trim())];
 import { nb } from "@/lib/typo";
 import { Reveal, SectionHead } from "./ui";
 

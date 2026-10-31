@@ -11,6 +11,7 @@ import { CARS, FUEL_NAME, type Car } from "@/lib/data";
 import { km, rub } from "@/lib/format";
 import { PRICE_LABEL } from "@/lib/site";
 import { NjIcon } from "./NjIcon";
+import { Quiz } from "./Quiz";
 import { Reveal, SectionHead } from "./ui";
 
 export function Catalog() {
@@ -55,13 +56,12 @@ export function Catalog() {
           ))}
         </ul>
 
-        <Reveal delay={0.1} className="mt-10">
-          <p className="text-[clamp(19px,1.6vw,22px)] leading-snug font-medium text-ink">
-            Нужной модели нет? Подберём любую с корейского рынка.{" "}
-            <a href="#contact" className="font-bold text-accent-ink underline decoration-2 underline-offset-[6px]">
-              Описать задачу
-            </a>
+        {/* no model to your taste here: four taps and a phone instead of a long message */}
+        <Reveal delay={0.1} className="mt-10 grid items-center gap-6 lg:mt-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
+          <p className="font-display text-[clamp(26px,3vw,40px)] leading-[1.05] tracking-wide text-ink uppercase">
+            Нужной модели нет? Подберём любую с&nbsp;корейского рынка.
           </p>
+          <Quiz />
         </Reveal>
       </div>
 
@@ -80,14 +80,23 @@ export function Catalog() {
   );
 }
 
-/** A car card: the picture grows a little under the mouse; a click opens the details (the picture flows into them). */
+/** The car goes into the request form and the page goes to it. */
+const want = (car: Car) =>
+  window.dispatchEvent(new CustomEvent<string>("lead-prefill", { detail: `Интересует: ${car.brand} ${car.model}, ${car.year}` }));
+
+/**
+ * A car card: the picture grows a little under the mouse; a click opens the details (the picture flows into them).
+ * Under it, the plain action: "I want one like this" puts the car into the request.
+ */
 function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () => void }) {
   return (
+    <div className="plate flex h-full w-full flex-col overflow-hidden">
     <button
       type="button"
       onClick={onOpen}
       aria-haspopup="dialog"
-      className="plate group flex h-full w-full flex-col overflow-hidden text-left"
+      aria-label={`${car.brand} ${car.model}, ${car.year}: подробнее`}
+      className="group flex w-full flex-1 cursor-pointer flex-col text-left"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-2" style={{ viewTransitionName: morph ? `car-${car.slug}` : undefined, viewTransitionClass: "car" } as React.CSSProperties}>
         <div className="absolute inset-0">
@@ -125,12 +134,19 @@ function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () 
         <div className="mt-auto flex items-end justify-between gap-3 pt-2">
           <div>
             <p className="label">{PRICE_LABEL}</p>
-            <p className="num mt-1 text-[24px] leading-none">{rub(car.price)}</p>
+            <p className="num mt-1.5 text-[28px] leading-none">{rub(car.price)}</p>
           </div>
           <ArrowUpRight className="size-6 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={1.75} />
         </div>
       </div>
     </button>
+      <div className="px-5 pb-5">
+        <a href="#lead-form" onClick={() => want(car)} className="btn btn-primary btn-sm w-full">
+          Хочу такую
+          <ArrowRight className="size-[16px]" strokeWidth={2} />
+        </a>
+      </div>
+    </div>
   );
 }
 
@@ -172,9 +188,9 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
           <p className="mt-2 text-[16px] leading-snug text-ink-3">Примерная сумма под ключ. Точную Андрей считает по таможенным ставкам на дату сделки.</p>
         </div>
         <a
-          href="#contact"
+          href="#lead-form"
           onClick={() => {
-            window.dispatchEvent(new CustomEvent<string>("lead-prefill", { detail: `Интересует: ${name}, ${car.year}` }));
+            want(car);
             onDone();
           }}
           className="btn btn-primary mt-6 w-full sm:w-auto sm:self-start"

@@ -323,7 +323,7 @@ export function Calculator() {
               {total.missing.length ? `. Не посчитаны строки «уточнит Андрей» (${total.missing.join(", ")})` : ""}.
             </p>
 
-            <a href="#contact" onClick={request} className="btn btn-primary mt-4 w-full">
+            <a href="#lead-form" onClick={request} className="btn btn-primary mt-4 w-full">
               Получить точный расчёт
               <ArrowUpRight className="size-[18px]" strokeWidth={2} />
             </a>
@@ -335,7 +335,7 @@ export function Calculator() {
       <AnimatePresence>
         {pill && (
           <motion.a
-            href="#contact"
+            href="#lead-form"
             onClick={request}
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

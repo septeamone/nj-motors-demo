@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowRight, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
 import { NjIcon } from "./NjIcon";
+import { QuickLead } from "./QuickLead";
 import { Deal } from "./Deal";
 import { FilmCanvas } from "./FilmCanvas";
 import { Reveal, SectionHead } from "./ui";
@@ -113,13 +114,13 @@ export function Process() {
           </div>
         </Reveal>
 
-        {/* the most reassuring moment of the page ends with the action */}
-        <Reveal className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
-          <a href="#contact" className="btn btn-primary">
-            Оставить заявку
-            <ArrowRight className="size-[18px]" strokeWidth={2} />
-          </a>
-          <p className="text-[17px] font-medium text-ink">Первый шаг бесплатный: платить пока не нужно.</p>
+        {/* the most reassuring moment of the page ends with the action: a phone is enough */}
+        <Reveal className="mt-10 grid items-center gap-6 rounded-[6px] bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 lg:p-10">
+          <div>
+            <p className="font-display text-[clamp(24px,2.6vw,34px)] leading-tight tracking-wide text-ink uppercase">Первый шаг бесплатный</p>
+            <p className="mt-2 max-w-[40ch] text-[17px] leading-snug text-ink-2">Оставьте телефон: Андрей свяжется, расспросит о задаче и пришлёт расчёт. Платить пока не нужно.</p>
+          </div>
+          <QuickLead form="deal" />
         </Reveal>
       </div>
     </section>

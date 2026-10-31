@@ -6,14 +6,16 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { QUIZ } from "@/lib/data";
+import { phoneOk, sendError, sendLead, type Via } from "@/lib/lead";
 import { DUR, EASE } from "@/lib/motion";
-import { channels, SITE } from "@/lib/site";
+import { channels } from "@/lib/site";
+import { ViaPicker } from "./LeadBits";
 import { NjIcon, type IconName } from "./NjIcon";
 import { Select } from "./Select";
 import { Reveal, SectionHead } from "./ui";
 
-type Form = { name: string; contact: string; budget: string; message: string; consent: boolean; body: string; engine: string; age: string };
-const F0: Form = { name: "", contact: "", budget: "", message: "", consent: false, body: "", engine: "", age: "" };
+type Form = { name: string; contact: string; via: Via; budget: string; message: string; consent: boolean; body: string; engine: string; age: string };
+const F0: Form = { name: "", contact: "", via: "Звонок", budget: "", message: "", consent: false, body: "", engine: "", age: "" };
 
 // the three optional "what are you looking for" questions (the old separate quiz): body, engine, age
 const PREFS = QUIZ.filter((q) => ["body", "engine", "age"].includes(q.key)) as { key: "body" | "engine" | "age"; q: string; options: string[] }[];
@@ -30,10 +32,8 @@ const BUDGETS = [
 function validate(f: Form) {
   const er: Partial<Record<keyof Form, string>> = {};
   if (f.name.trim().length < 2) er.name = "Укажите имя";
-  const c = f.contact.trim();
-  if (!c) er.contact = "Укажите телефон или эл. почту";
-  else if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c) || c.replace(/\D/g, "").length >= 10))
-    er.contact = "Телефон с кодом (+7 900 000-00-00) или эл. почта (name@mail.ru)";
+  if (!f.contact.trim()) er.contact = "Укажите телефон";
+  else if (!phoneOk(f.contact)) er.contact = "Телефон с кодом: +7 900 000-00-00";
   if (!f.consent) er.consent = "Нужно согласие на обработку данных";
   return er;
 }
@@ -43,21 +43,19 @@ export function Contact() {
   const [f, setF] = useState<Form>(F0);
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // the optional part (budget, wishes, message) stays folded; a pre-filled message unfolds it
+  const [wish, setWish] = useState(false);
 
   // Car cards and the calculator can pre-fill the message.
   useEffect(() => {
     const h = (e: Event) => {
       const text = (e as CustomEvent<string>).detail;
       setStatus("idle");
-      setF((p) => ({ ...p, message: p.message.trim() ? `${p.message.trim()}
-${text}` : text }));
+      setWish(true);
+      setF((p) => ({ ...p, message: p.message.trim() ? `${p.message.trim()}\n${text}` : text }));
     };
     window.addEventListener("lead-prefill", h);
-    return () => {
-      window.removeEventListener("lead-prefill", h);
-      clearTimeout(timer.current);
-    };
+    return () => window.removeEventListener("lead-prefill", h);
   }, []);
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => {
@@ -75,30 +73,7 @@ ${text}` : text }));
       return;
     }
     setStatus("loading");
-    const endpoint = SITE.form.endpoint;
-    if (!endpoint) {
-      // No receiver is connected yet (site.json). Only the local preview pretends to send;
-      // a production build says honestly that nothing was delivered. `npm run check:publish` blocks the release.
-      if (process.env.NODE_ENV !== "production") timer.current = setTimeout(() => {
-          navigator.vibrate?.([20, 60, 35]);
-          setStatus("success");
-        }, 1200);
-      else setStatus("error");
-      return;
-    }
-    try {
-      const r = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        signal: AbortSignal.timeout(10000),
-        body: JSON.stringify({ ...f, source: "njmotors-landing" }),
-      });
-      if (!r.ok) throw new Error(String(r.status));
-      navigator.vibrate?.([20, 60, 35]);
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
+    setStatus(await sendLead({ ...f, form: "main" }));
   };
 
   const sec = useRef<HTMLElement>(null);
@@ -160,7 +135,7 @@ ${text}` : text }));
           </motion.div>
 
           <motion.div style={calm ? undefined : { x: plateX }}><Reveal delay={0.08}>
-            <div className="plate overflow-hidden p-6 sm:p-9">
+            <div id="lead-form" className="plate overflow-hidden p-6 sm:p-9">
               <AnimatePresence mode="wait" initial={false}>
                 {status === "success" ? (
                   <motion.div
@@ -209,12 +184,14 @@ ${text}` : text }));
                       </div>
                       <div>
                         <label htmlFor="f-contact" className="label">
-                          Телефон или эл. почта
+                          Телефон
                         </label>
                         <div className="field" data-invalid={!!errors.contact}>
                           <input
                             id="f-contact"
-                            autoComplete="tel email"
+                            type="tel"
+                            inputMode="tel"
+                            autoComplete="tel"
                             value={f.contact}
                             onChange={(e) => set("contact", e.target.value)}
                             placeholder="+7 900 000-00-00"
@@ -224,20 +201,21 @@ ${text}` : text }));
                         </div>
                         {errors.contact && <p id="f-contact-err" role="alert" className="mt-2 text-[16px] text-[var(--danger)]">{errors.contact}</p>}
                       </div>
-                      <div className="sm:col-span-2">
-                        <label htmlFor="f-budget" className="label">Бюджет</label>
-                        <Select id="f-budget" aria-label="Бюджет" value={f.budget} onChange={(v) => set("budget", v)} options={BUDGETS} />
-                      </div>
                     </div>
-                    {/* the optional wishes stay folded until asked for, so the form reads as name, contact, send */}
-                    <details className="group/w border-t border-line pt-5">
-                      <summary className="label flex cursor-pointer list-none items-center justify-between [&::-webkit-details-marker]:hidden">
+                    <ViaPicker id="f-via" value={f.via} onChange={(v) => set("via", v)} />
+                    {/* the optional part stays folded, so the form reads as name, phone, where to talk, send */}
+                    <details open={wish} onToggle={(e) => setWish(e.currentTarget.open)} className="group/w border-t border-line pt-5">
+                      <summary className="label flex min-h-11 cursor-pointer list-none items-center justify-between [&::-webkit-details-marker]:hidden">
                         <span>
-                          Добавить пожелания <span className="font-medium text-ink-3">· кузов, двигатель, возраст</span>
+                          Добавить пожелания <span className="font-medium text-ink-3">· бюджет, кузов, сообщение</span>
                         </span>
                         <Plus aria-hidden className="size-5 shrink-0 text-accent-ink transition-transform duration-300 group-open/w:rotate-45" strokeWidth={3} />
                       </summary>
                       <div className="mt-4 grid gap-4">
+                      <div>
+                        <label htmlFor="f-budget" className="label">Бюджет</label>
+                        <Select id="f-budget" aria-label="Бюджет" value={f.budget} onChange={(v) => set("budget", v)} options={BUDGETS} />
+                      </div>
                       {PREFS.map((q) => (
                         <div key={q.key} role="radiogroup" aria-label={q.q} className="flex flex-wrap gap-2">
                           {q.options.map((o) => (
@@ -254,22 +232,22 @@ ${text}` : text }));
                           ))}
                         </div>
                       ))}
+                      <div>
+                        <label htmlFor="f-msg" className="label">
+                          Сообщение
+                        </label>
+                        <div className="field field-area">
+                          <textarea
+                            id="f-msg"
+                            rows={4}
+                            value={f.message}
+                            onChange={(e) => set("message", e.target.value)}
+                            placeholder="Модель, комплектация, цвет, сроки — всё, что важно"
+                          />
+                        </div>
+                      </div>
                       </div>
                     </details>
-                    <div>
-                      <label htmlFor="f-msg" className="label">
-                        Сообщение <span className="font-medium text-ink-3">· необязательно</span>
-                      </label>
-                      <div className="field field-area">
-                        <textarea
-                          id="f-msg"
-                          rows={4}
-                          value={f.message}
-                          onChange={(e) => set("message", e.target.value)}
-                          placeholder="Модель, комплектация, цвет, сроки — всё, что важно"
-                        />
-                      </div>
-                    </div>
                     <div>
                       <label className="flex cursor-pointer items-start gap-3 text-[16px] leading-snug text-ink-2">
                         <input
@@ -293,7 +271,7 @@ ${text}` : text }));
                     {status === "error" && (
                       <p role="alert" className="flex gap-3 rounded-[4px] border border-[var(--danger)] p-4 text-[16px] leading-snug text-ink">
                         <TriangleAlert className="mt-0.5 size-4 shrink-0 text-[var(--danger)]" strokeWidth={1.75} />
-                        {SITE.form.endpoint ? "Не получилось отправить заявку. Проверьте соединение и попробуйте ещё раз" : "Заявка не отправлена: приём заявок ещё не подключён"}{contacts.length ? " или свяжитесь с нами напрямую" : ""}.
+                        {sendError(contacts.length > 0)}
                       </p>
                     )}
                     <button type="submit" disabled={status === "loading"} className="btn btn-primary h-14 w-full">

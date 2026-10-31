@@ -38,7 +38,7 @@ export function MobileBar() {
           className="hide-on-menu mobile-cta fixed inset-x-3 bottom-3 z-40 mx-auto max-w-[480px] lg:hidden"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
-          <a href="#contact" className="plate flex h-14 items-center justify-between rounded-full pr-1.5 pl-6 text-[16px] font-bold text-ink shadow-[0_14px_30px_var(--shadow)]">
+          <a href="#lead-form" className="plate flex h-14 items-center justify-between rounded-full pr-1.5 pl-6 text-[16px] font-bold text-ink shadow-[0_14px_30px_var(--shadow)]">
             Оставить заявку
             <span className="grid size-11 place-items-center rounded-full bg-accent-fill text-on-accent">
               <ArrowUpRight className="size-5" strokeWidth={2} />

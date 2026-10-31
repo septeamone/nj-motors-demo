@@ -27,7 +27,7 @@ export function Hero() {
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 lg:mt-8">
-          <a href="#contact" className="btn btn-primary">
+          <a href="#lead-form" className="btn btn-primary">
             Оставить заявку
             <ArrowRight className="size-[18px]" strokeWidth={2} />
           </a>

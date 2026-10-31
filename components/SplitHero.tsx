@@ -20,8 +20,7 @@ const PART = 0.5;
 // The container standing behind the halves opens with the scroll (the film, made with Higgsfield): it starts while the
 // halves are still parting (FILM_FROM) and runs over FILM screens, its last frames already under the catalog heading
 // rising over it, so the film costs almost no scroll of its own. The section is 100svh + the pinned scroll
-// (PART + HOLD) + 100svh pulled back by the negative margin.
-const HOLD = 0.3;
+// (PART + 0.3 screens of hold, 280svh in all) + 100svh pulled back by the negative margin.
 const FILM_FROM = 0.25;
 const FILM = 0.9;
 // Intro scrub: how much wheel / swipe it takes to open the site (1 = the whole way)

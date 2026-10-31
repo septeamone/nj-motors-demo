@@ -74,7 +74,7 @@ export function PhoneMock() {
     // on a slow connection the loader does not wait for the 3D phone: it is built when the visitor scrolls near it
     const slow = slowNet();
     if (slow) finish("phone");
-    const idle = slow ? (_f: () => void) => 0 : (window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 50)));
+    const idle: (f: () => void) => number = slow ? () => 0 : (window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 50)));
     const id = idle(() => {
       loadScene();
       SCREENS.forEach((_, k) => {
