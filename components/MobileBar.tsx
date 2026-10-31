@@ -5,22 +5,22 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { DUR, EASE } from "@/lib/motion";
 
-/** Sticky call-to-action on phones: appears after the hero, hides at the form and at the very end of the page (footer links). */
+/** Sticky call-to-action on phones: appears after the hero, hides at the form and at the footer (its links). */
 export function MobileBar() {
   const [past, setPast] = useState(false);
   const [atForm, setAtForm] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      const end = document.documentElement.scrollHeight - window.innerHeight - 240;
-      setPast(y > window.innerHeight * 0.8 && y < end);
-    };
+    const onScroll = () => setPast(window.scrollY > window.innerHeight * 0.8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    const form = document.getElementById("contact");
-    const io = new IntersectionObserver(([e]) => setAtForm(e.isIntersecting), { threshold: 0.15 });
-    if (form) io.observe(form);
+    // hidden while the form or the footer (its links) is on screen
+    const seen = new Map<Element, boolean>();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => seen.set(e.target, e.isIntersecting && (e.target.tagName === "FOOTER" || e.intersectionRatio >= 0.15)));
+      setAtForm([...seen.values()].some(Boolean));
+    }, { threshold: [0, 0.15] });
+    document.querySelectorAll("#contact, footer").forEach((el) => io.observe(el));
     return () => {
       window.removeEventListener("scroll", onScroll);
       io.disconnect();

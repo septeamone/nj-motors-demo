@@ -124,15 +124,20 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
 
     // after the intro: scroll drives the parting of the halves and the flight into the header
     let raf = 0;
+    let lastE = -1;
     const update = () => {
       raf = 0;
       const e = smooth(clamp(scrollY / (innerHeight * PART)));
+      // below the hero nothing changes any more: skip the writes (they made every scroll frame lay the page out again)
+      if (e === lastE) return;
+      lastE = e;
+      const pageW = html.clientWidth; // read before the writes below, so the browser does not lay out twice
       // written straight onto the two panels (a custom property on the stage would be inherited by the whole hero subtree)
       const lgNow = innerWidth >= 1024;
       tx.style.transform = lgNow ? `translateX(calc(${e} * (-100% - 8px)))` : `translateY(calc(${e} * (100% + 8px)))`;
       ar.style.transform = lgNow ? `translateX(calc(${e} * (100% + 8px)))` : `translateY(calc(${e} * (-100% - 8px)))`;
       const k = 1 + (endSize / s0 - 1) * e;
-      const cx = slotCx + (html.clientWidth / 2 - slotCx) * e; // the middle of the page, not counting the scrollbar
+      const cx = slotCx + (pageW / 2 - slotCx) * e; // the middle of the page, not counting the scrollbar
       const cy = slotCy + (endTop + endSize / 2 - slotCy) * e;
       em.style.transform = pose(cx, cy, k);
     };
@@ -141,6 +146,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     };
     const onResize = () => {
       measure();
+      lastE = -1;
       if (html.dataset.intro !== "play" && html.dataset.intro !== "glide") update();
     };
 

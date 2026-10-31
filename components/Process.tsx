@@ -2,7 +2,7 @@
 
 import { ArrowRight, Download } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
 import { NjIcon } from "./NjIcon";
@@ -24,11 +24,20 @@ export function Process() {
     target: sec,
     offset: ["start start", "end start"],
   });
-  // how many screens deep into the section the visitor is
+  // how many screens deep into the section the visitor is; the height is kept, not read every frame (reading it
+  // there made the browser lay the page out again on each scroll frame)
+  const secH = useRef(0);
+  useEffect(() => {
+    const el = sec.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => (secH.current = el.offsetHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const depth = (v: number) =>
     typeof window === "undefined"
       ? 0
-      : (v * (sec.current?.offsetHeight ?? 0)) / innerHeight;
+      : (v * (secH.current || (sec.current?.offsetHeight ?? 0))) / innerHeight;
   const film = useTransform(scrollYProgress, (v) => clamp(depth(v) / 1.3));
   const dim = useTransform(
     scrollYProgress,
