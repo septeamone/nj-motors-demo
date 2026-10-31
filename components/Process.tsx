@@ -14,7 +14,7 @@ const clamp = (v: number) => Math.min(1, Math.max(0, v));
 
 /**
  * The deal: six steps on the route, four payments, and the sample contract they are written into.
- * The whole section stands on the sea: it opens as a rounded window into a ship's cabin, the camera goes out through
+ * The whole section stands on the sea: it comes up out of the dark, feathered, into a ship's cabin, the camera goes out through
  * the porthole (a film made with Higgsfield, played by the scroll) while the heading rises over it, and then the sea
  * dims into the section's ground and stays behind the route, the pages and the payments.
  */
@@ -38,7 +38,7 @@ export function Process() {
     typeof window === "undefined"
       ? 0
       : (v * (secH.current || (sec.current?.offsetHeight ?? 0))) / innerHeight;
-  // The porthole film comes in as a rounded window in the page that opens to the whole screen while the section rises;
+  // The porthole film comes up out of the page (feathered edges) and fills the screen while the section rises;
   // the camera goes out through the porthole to the sea as you scroll, the heading already rising over the flight
   // (the film has no empty screens of its own), and then the sea dims under the route, the pages and the payments.
   const { scrollYProgress: rise } = useScroll({ target: sec, offset: ["start end", "start start"] });
@@ -46,13 +46,18 @@ export function Process() {
   const way = (e: number, v: number) => e + depth(v);
   const film = useTransform([rise, scrollYProgress], ([e, v]: number[]) => clamp((way(e, v) - 0.25) / 1.1));
   const dim = useTransform([rise, scrollYProgress], ([e, v]: number[]) => 0.12 + clamp((way(e, v) - 1.2) / 0.4) * 0.74);
-  const clip = useTransform(rise, (e) => `inset(${(1 - e) * 6}vh ${(1 - e) * 7}vw round ${(1 - e) * 36}px)`);
+  // no hard edge: the picture comes up out of the page's dark ground, feathered at the top and the sides, and the
+  // feathering melts away as the section reaches the top
+  const fade = useTransform(rise, (e) => {
+    const f = 1 - e;
+    return `linear-gradient(to bottom, transparent 0, #000 ${f * 55}vh), linear-gradient(to right, transparent 0, #000 ${f * 14}vw, #000 calc(100% - ${f * 14}vw), transparent 100%)`;
+  });
   const lens = useTransform([rise, scrollYProgress], ([e, v]: number[]) => `scale(${1.12 - 0.12 * e + 0.08 * clamp(depth(v) / 4)})`);
 
   return (
     <section ref={sec} id="process" className="relative bg-bg pb-14 lg:pb-20">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <motion.div style={{ clipPath: clip }} className="sticky top-0 h-svh overflow-hidden bg-[#05080c]">
+        <motion.div style={{ maskImage: fade, WebkitMaskImage: fade, maskComposite: "intersect", WebkitMaskComposite: "source-in" }} className="sticky top-0 h-svh overflow-hidden bg-bg">
           <motion.div style={{ transform: lens }} className="absolute inset-0 will-change-transform">
             <FilmCanvas name="porthole" count={91} progress={film} />
           </motion.div>

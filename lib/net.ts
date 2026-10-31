@@ -7,5 +7,7 @@ type Conn = { saveData?: boolean; effectiveType?: string; downlink?: number };
 export function slowNet() {
   if (typeof navigator === "undefined") return false;
   const c = (navigator as Navigator & { connection?: Conn }).connection;
-  return !!c && (!!c.saveData || /2g|3g/.test(c.effectiveType ?? "") || (!!c.downlink && c.downlink < 3));
+  // the browser's speed estimate (downlink) is rough and often low on a good line, so only data saver or a 2G/3G
+  // class connection counts: a computer on a normal line always gets the full-quality videos
+  return !!c && (!!c.saveData || /2g|3g/.test(c.effectiveType ?? ""));
 }
