@@ -9,6 +9,13 @@
 - **Ссылка для клиента:** https://septeamone.github.io/nj-motors-demo/ (репозиторий septeamone/nj-motors-demo, публичный, закрыт от поисковиков). Обновить после правок: `bash scripts/publish-pages.sh` (собирает и выкладывает ветку gh-pages; GitHub Actions на этом аккаунте не запускаются, поэтому сборка локальная).
 - Git есть. Работа над вау-версией в ветке `skills-polish`, тег `before-skills-2026-10-29` = версия до неё (откат: `git checkout master`). Старая копия: `sites/njmotors-backup-2026-10-19/`.
 
+## Откат и пробная ссылка (с 31.10)
+- **Ссылка клиента** = ветка `master`, выкладка `bash scripts/publish-pages.sh` → https://septeamone.github.io/nj-motors-demo/
+- **Пробная ссылка Jack** = рабочая ветка (сейчас `compact`), выкладка `bash scripts/publish-preview.sh` → https://septeamone.github.io/nj-motors-demo/preview/ . Клиентскую ссылку не трогает. Обе живут в одной ветке gh-pages (scripts/pages-lib.sh заменяет только свою часть).
+- **Точки отката** — метки git: `before-compact-2026-10-31` (версия у клиента до переделки «компактный сайт»), `before-skills-2026-10-29`.
+- Jack говорит «откати» → вернуть ссылку клиента к метке: `git checkout master && git reset --hard <метка> && git push -f origin master && bash scripts/publish-pages.sh` (перед этим спросить, к какой метке). Пробную версию можно просто не переносить. «Переносим» → `git checkout master && git merge --ff-only compact && git push && bash scripts/publish-pages.sh`.
+- Перед каждой крупной переделкой: новая метка `before-<что>-<дата>` на master и отдельная ветка.
+
 ## Правила Jack (важно)
 - Отвечать по-русски, просто, без жаргона. Jack новичок: всё делать самому, кроме логинов.
 - Работать по гайду `C:\Users\Jack\Desktop\Конвейер-сайта.pdf` (9 этапов, на каждом «да» от Jack). Референсы: `references/REFERENCES.md` (там пока только Solen).
