@@ -9,8 +9,7 @@ import { QUIZ } from "@/lib/data";
 import { phoneOk, sendError, sendLead, type Via } from "@/lib/lead";
 import { DUR, EASE } from "@/lib/motion";
 import { channels } from "@/lib/site";
-import { ViaPicker } from "./LeadBits";
-import { NjIcon, type IconName } from "./NjIcon";
+import { DirectContacts, ViaPicker } from "./LeadBits";
 import { Select } from "./Select";
 import { Reveal, SectionHead } from "./ui";
 
@@ -101,27 +100,8 @@ export function Contact() {
               lead="Опишите задачу: Андрей пришлёт подборку и расчёт. Платить пока ничего не нужно."
             />
             <Reveal delay={0.1} className="mt-8">
-              {contacts.length > 0 && (
-                <ul className="mt-8 flex flex-wrap gap-3">
-                  {contacts.map((c) => {
-                    const Icon = { phone: "phone", telegram: "plane", whatsapp: "message", email: "mail", address: "pin" }[c.key] as IconName;
-                    const cls = "btn btn-ghost btn-sm";
-                    return (
-                      <li key={c.key}>
-                        {c.href ? (
-                          <a href={c.href} className={cls}>
-                            <NjIcon name={Icon} className="size-5" /> {c.value}
-                          </a>
-                        ) : (
-                          <span className={`${cls} cursor-default`}>
-                            <NjIcon name={Icon} className="size-5" /> {c.value}
-                          </span>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+              {/* a call opens the dialler with Andrey's number, the messengers open the chat (lib/site.json contacts) */}
+              <DirectContacts />
               {/* the brand's muscle car poster, keyed out of its own red so it stands straight on the section's red */}
               <Image
                 src={asset("/brand/car-poster.webp")}

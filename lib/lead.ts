@@ -3,6 +3,8 @@ import { SITE } from "./site";
 /** How the visitor wants to be contacted (every form offers the same choice). */
 export const VIA = ["Звонок", "WhatsApp", "Telegram", "MAX"] as const;
 export type Via = (typeof VIA)[number];
+/** The brand each choice wears (colour and icon, components/BrandIcon). */
+export const VIA_BRAND = { Звонок: "call", WhatsApp: "whatsapp", Telegram: "telegram", MAX: "max" } as const satisfies Record<Via, string>;
 
 /** A phone number with at least 10 digits (+7 900 000-00-00). */
 export const phoneOk = (v: string) => v.replace(/\D/g, "").length >= 10;

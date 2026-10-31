@@ -9,6 +9,7 @@
     "phone": null,
     "telegram": null,
     "whatsapp": null,
+    "max": null,
     "email": null,
     "address": null
   },
