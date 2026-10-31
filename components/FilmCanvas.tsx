@@ -20,7 +20,8 @@ export function FilmCanvas({ name, count, progress: p, className = "" }: { name:
   const bitmaps = useRef(new Map<number, ImageBitmap | "pending">());
   const shown = useRef(-1);
   const calm = useReducedMotion();
-  const AHEAD = 10; // frames unpacked on each side of the current one
+  // frames unpacked on each side of the current one (phones keep fewer: less decoding at a time, less memory)
+  const AHEAD = typeof window !== "undefined" && innerWidth < 768 ? 6 : 10;
   // reduced motion: the film stands still on its last frame
   const at = (v: number) => (calm ? count - 1 : Math.min(count - 1, Math.max(0, v * (count - 1))));
 
@@ -96,7 +97,7 @@ export function FilmCanvas({ name, count, progress: p, className = "" }: { name:
     const map = bitmaps.current;
     let alive = true;
     const fit = () => {
-      const dpr = Math.min(devicePixelRatio || 1, small ? 2 : 1.5);
+      const dpr = Math.min(devicePixelRatio || 1, 1.5);
       c.width = Math.round(c.clientWidth * dpr);
       c.height = Math.round(c.clientHeight * dpr);
       shown.current = -1;
@@ -118,7 +119,7 @@ export function FilmCanvas({ name, count, progress: p, className = "" }: { name:
       const order = Array.from({ length: count }, (_, i) => i).sort((a, b) => Math.abs(a - from0) - Math.abs(b - from0));
       const next = () => order.shift();
       await Promise.all(
-        Array.from({ length: 6 }, async () => {
+        Array.from({ length: small ? 3 : 6 }, async () => {
           for (let i = next(); i !== undefined && alive; i = next()) await fetchFrame(i).catch(() => {});
         }),
       );
@@ -135,15 +136,16 @@ export function FilmCanvas({ name, count, progress: p, className = "" }: { name:
       },
       { rootMargin: "150% 0px" },
     );
-    // not during the hero intro: it is busy loading the page, and the film is still far below
+    // once the page itself has loaded: the hero film then downloads while the intro is still on screen, so the
+    // first scroll does not have to fetch and unpack at the same moment (a film further down waits for its margin)
     const start = () => io.observe(c);
-    if (document.documentElement.dataset.intro === "play") window.addEventListener("intro-end", start, { once: true });
-    else start();
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
     return () => {
       alive = false;
       ro.disconnect();
       io.disconnect();
-      window.removeEventListener("intro-end", start);
+      window.removeEventListener("load", start);
       for (const bm of map.values()) if (bm !== "pending") bm.close();
       map.clear();
     };

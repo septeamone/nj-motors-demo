@@ -63,6 +63,9 @@ export function Header({ prefix = "" }: { prefix?: string }) {
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+    // the emblem (fixed, above the header) steps aside while the phone menu is open
+    if (open) document.documentElement.dataset.menu = "open";
+    else delete document.documentElement.dataset.menu;
   }, [open]);
 
   return (

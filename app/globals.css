@@ -936,6 +936,11 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
 
 /* ---------- Print look (riso): three inks, paper grain, halftone, small misregistration ---------- */
 /* paper grain over the whole page: one static fixed layer, no blending */
+@media (hover: none) {
+  body::after {
+    display: none;
+  }
+}
 body::after {
   content: "";
   position: fixed;
@@ -1122,6 +1127,11 @@ html[data-intro="glide"] .emblem-img {
   li {
     cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4.5V19.5M8.6 4.5H15.4M8.6 19.5H15.4' transform='translate%281.3 1%29' stroke='%23d40404' stroke-width='2.4'/%3E%3Cpath d='M12 4.5V19.5M8.6 4.5H15.4M8.6 19.5H15.4' stroke='%23f3e8d6' stroke-width='4.6'/%3E%3Cpath d='M12 4.5V19.5M8.6 4.5H15.4M8.6 19.5H15.4' stroke='%23040c14' stroke-width='2.1'/%3E%3C/svg%3E") 10 10, text;
   }
+}
+
+/* the open phone menu: the header emblem steps aside so it never sits on the menu (see Header) */
+html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
+  visibility: hidden !important;
 }
 
 /* theme change: one instant repaint, no colour transitions on the way (see ThemeToggle) */

@@ -47,7 +47,8 @@ export function PhoneMock() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCalm(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    if (!hasWebGL()) {
+    // touch screens get the flat phone: the 3D model costs a phone more than it gives (three.js, a second GPU context)
+    if (!hasWebGL() || window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
       setFlat(true);
       (window as unknown as { __phoneReady?: boolean }).__phoneReady = true;
       return;
@@ -87,9 +88,19 @@ export function PhoneMock() {
     <div className="mx-auto flex w-full max-w-[460px] flex-col items-start xl:mx-0">
       <div ref={box} className="relative aspect-[0.64] w-full">
         {flat && (
-          <div className="absolute top-1/2 left-1/2 aspect-[1/2.08] w-[50%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[17%/8%] border-[5px] border-[#6a1c2a] bg-black">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset("/mockup/tg-1.webp")} alt="Скриншот Telegram-канала NJ Motors" width={864} height={1920} className="size-full object-cover" />
+          <div className="absolute top-1/2 left-1/2 aspect-[1/2.08] w-[62%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[17%/8%] border-[5px] border-[#6a1c2a] bg-black">
+            {SCREENS.map((alt, k) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={alt}
+                src={asset(`/mockup/tg-${k + 1}.webp`)}
+                alt={k === i ? `Скриншот Telegram-канала NJ Motors: ${alt}` : ""}
+                width={864}
+                height={1920}
+                loading="lazy"
+                className={`absolute inset-0 size-full object-cover transition-opacity duration-700 ${k === i ? "opacity-100" : "opacity-0"}`}
+              />
+            ))}
           </div>
         )}
         {!flat && (
@@ -130,7 +141,7 @@ export function PhoneMock() {
         ))}
       </div>
 
-      <p className="mono mt-5 text-center !text-[16px] text-ink-3">Потяните телефон, чтобы повернуть</p>
+      {!flat && <p className="mono mt-5 text-center !text-[16px] text-ink-3">Потяните телефон, чтобы повернуть</p>}
       <p className="mono mt-1 text-center !text-[16px] text-ink-3">Настоящий канал · скриншоты от 18.10.2026</p>
       <a href={CHANNEL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm mt-4">
         Открыть канал в Telegram
