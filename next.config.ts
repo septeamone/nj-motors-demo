@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   output: "export",
   images: { unoptimized: true },
   basePath,
+  // /privacy/ and /terms/ become folders with index.html, so the links work on any static host
+  trailingSlash: true,
 };
 
 export default nextConfig;

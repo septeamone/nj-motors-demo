@@ -439,7 +439,11 @@ html.lenis body {
   mask-size: 100% 100%, 120px 120px, 100% 100%;
 }
 
-/* text standing on a film (catalog over the container, the deal heading over the sea): a soft shade keeps it legible */
+/* text standing on a film (catalog over the container, the deal heading over the sea): a soft shade keeps it legible.
+   The wrapper switches the tokens to the dark theme; the colour itself has to be set again, or it is inherited from the page */
+.on-film {
+  color: var(--ink);
+}
 .on-film .h2 {
   text-shadow:
     0.032em 0.026em 0 color-mix(in srgb, var(--accent) 78%, transparent),
@@ -779,8 +783,8 @@ html[data-intro="glide"] .split-stage {
   background: var(--bg);
 }
 /* the hero film stands behind the halves; while the intro plays the halves are not there yet, so it waits unseen */
-html[data-intro="play"] .split-stage canvas,
-html[data-intro="glide"] .split-stage canvas {
+html[data-intro="play"] .split-stage .hero-film,
+html[data-intro="glide"] .split-stage .hero-film {
   visibility: hidden;
 }
 html:not([data-intro="play"]):not([data-intro="glide"]) .intro-loader {
@@ -908,6 +912,21 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.2s;
+}
+/* a finger needs about 44 px; phones set the volume with their own buttons, so the slider goes */
+@media (pointer: coarse) {
+  .vp-btn {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+  }
+  .vp-range {
+    display: none;
+  }
+}
+/* the open phone menu covers the page: the floating bars at the bottom wait until it closes */
+html[data-menu] .hide-on-menu {
+  visibility: hidden;
 }
 @media (hover: hover) and (pointer: fine) {
   .vp-btn:hover {

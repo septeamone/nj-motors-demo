@@ -84,10 +84,10 @@ function Rail({ label, hint, shelf, listRef, children }: { label: string; hint: 
         </p>
         {more && (
           <span className="flex gap-1.5">
-            <button type="button" aria-label="Назад" onClick={() => slide(-1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
+            <button type="button" aria-label="Назад" onClick={() => slide(-1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent pointer-coarse:size-11">
               <ChevronLeft className="size-4" strokeWidth={2} />
             </button>
-            <button type="button" aria-label="Вперёд" onClick={() => slide(1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
+            <button type="button" aria-label="Вперёд" onClick={() => slide(1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent pointer-coarse:size-11">
               <ChevronRight className="size-4" strokeWidth={2} />
             </button>
           </span>
@@ -328,7 +328,7 @@ export function Reviews() {
                       type="button"
                       aria-label={`Видео ${n + 1}: ${it.title}`}
                       onClick={() => go(n)}
-                      className="pointer-events-auto h-5 flex-1 cursor-pointer py-2"
+                      className="pointer-events-auto h-5 flex-1 cursor-pointer py-2 pointer-coarse:h-11 pointer-coarse:pt-2 pointer-coarse:pb-[22px]"
                     >
                       <span className="block h-[3px] overflow-hidden rounded-full bg-white/30">
                         <span ref={(el) => { segs.current[n] = el; }} className="block h-full origin-left bg-white" style={{ transform: `scaleX(${n < i ? 1 : 0})` }} />
@@ -454,7 +454,6 @@ export function Reviews() {
                         </span>
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="num block text-[13px] text-accent-ink">{String(n + 1).padStart(2, "0")}</span>
                         <span className="block text-[16px] leading-tight font-bold text-ink">{it.title}</span>
                         <span className="mt-0.5 block text-[14px] text-ink-2">{it.sub}</span>
                       </span>
@@ -490,7 +489,16 @@ export function Reviews() {
       <Dialog.Root open={photo !== null} onOpenChange={(v) => !v && setPhoto(null)}>
         <Dialog.Portal>
           <Dialog.Overlay className="dlg-fade fixed inset-0 z-[100] bg-[rgba(4,12,20,0.92)]" />
-          <Dialog.Content aria-describedby={undefined} className="dlg-pop fixed inset-0 z-[101] grid place-items-center p-3 outline-none sm:p-6" onClick={(e) => e.target === e.currentTarget && setPhoto(null)}>
+          <Dialog.Content
+            aria-describedby={undefined}
+            className="dlg-pop fixed inset-0 z-[101] grid place-items-center p-3 outline-none sm:p-6"
+            onClick={(e) => e.target === e.currentTarget && setPhoto(null)}
+            onKeyDown={(e) => {
+              if (photo === null || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
+              e.preventDefault();
+              setPhoto((photo + (e.key === "ArrowRight" ? 1 : PHOTOS.length - 1)) % PHOTOS.length);
+            }}
+          >
             <Dialog.Title className="sr-only">{photo !== null ? PHOTOS[photo].title : ""}</Dialog.Title>
             {photo !== null && (
               <figure className="relative flex max-h-full max-w-full flex-col items-center gap-3">

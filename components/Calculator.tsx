@@ -93,7 +93,9 @@ export function Calculator() {
   );
   const { total, days } = r;
   const weeks = [Math.round(days.lo / 7), Math.round(days.hi / 7)];
-  const totalText = !priceKrw ? "—" : total.open ? `от ${rub(total.lo)}` : `${fmt(total.lo)}–${fmt(total.hi)} ₽`;
+  // nothing to count without a price, an engine size (unless electric) and a power
+  const ready = priceKrw > 0 && +hp > 0 && (fuel === "electric" || +volume > 0);
+  const totalText = !ready ? "—" : total.open ? `от ${rub(total.lo)}` : `${fmt(total.lo)}–${fmt(total.hi)} ₽`;
 
   // on phones the receipt is far below the fields: show the running total at the bottom while the fields are on screen
   const section = useRef<HTMLElement>(null);
@@ -116,7 +118,7 @@ export function Calculator() {
       new CustomEvent<string>("lead-prefill", {
         detail:
           `Расчёт на сайте: автомобиль ${fmt(priceKrw)} ₩, ${year} г., ${FUEL_LABEL[fuel].toLowerCase()}` +
-          `${fuel === "electric" ? "" : `, ${volume} см³`}, ${hp} л.с.; море: ${SEA_LABEL[sea].toLowerCase()}; ${INLAND_LABEL[inland].toLowerCase()}. ` +
+          `${fuel === "electric" ? "" : `, ${volume} см³`}, ${hp} л.с.; море: ${SEA_LABEL[sea].toLowerCase()}; по России: ${INLAND_LABEL[inland].replace(/^(Заберу|Другой)/, (w) => w.toLowerCase())}. ` +
           `Ориентир ${totalText} без вознаграждения NJ Motors.`,
       }),
     );
@@ -219,8 +221,10 @@ export function Calculator() {
             <div className="mt-3 border-y border-line-strong py-4" aria-live="polite">
               <p className="text-[16px] font-bold opacity-75">Итого, ориентир</p>
               <div className="mt-3 text-[clamp(30px,3.6vw,46px)] leading-[1.08]" aria-label={`Итого ${totalText}`}>
-                {!priceKrw ? (
-                  "—"
+                {!ready ? (
+                  <>
+                    —<span className="mt-1 block text-[15px] font-bold opacity-75">Укажите цену, объём и мощность</span>
+                  </>
                 ) : (
                   <>
                     <span className="mr-2 text-[0.42em] font-bold opacity-60">от</span>
@@ -257,7 +261,7 @@ export function Calculator() {
                     >
                       <ChevronDown className={`size-4 shrink-0 opacity-60 transition-transform ${open ? "rotate-180" : ""}`} strokeWidth={2} />
                       <span className="flex-1 text-[16px] leading-tight font-bold">{g.title}</span>
-                      <span className={`text-[16px] font-bold whitespace-nowrap ${s ? "" : "text-[var(--accent-fill)]"}`}>{s ? label(s) : "по договору"}</span>
+                      <span className={`text-[16px] font-bold whitespace-nowrap ${s ? "" : "text-[var(--accent-fill)]"}`}>{!ready ? "—" : s ? label(s) : g.id === "contract" ? "по договору" : "уточнит Андрей"}</span>
                     </button>
                     <AnimatePresence initial={false}>
                       {open && (
@@ -272,7 +276,7 @@ export function Calculator() {
                             <li key={p.key} className="pb-3 pl-6">
                               <div className="flex items-baseline justify-between gap-3">
                                 <span className="text-[15px] font-bold">{p.label}</span>
-                                <span className="text-[15px] font-bold whitespace-nowrap">{one(p)}</span>
+                                <span className="text-[15px] font-bold whitespace-nowrap">{ready || p.lo === null ? one(p) : "—"}</span>
                               </div>
                               <p className="mt-0.5 text-[14.5px] leading-snug opacity-70">{p.note}</p>
                             </li>
@@ -300,7 +304,7 @@ export function Calculator() {
 
       {/* phones: the total follows the fields */}
       <AnimatePresence>
-        {inSection && !receiptSeen && priceKrw > 0 && (
+        {inSection && !receiptSeen && ready && (
           <motion.a
             href="#contact"
             onClick={request}
@@ -308,7 +312,7 @@ export function Calculator() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
             transition={{ duration: DUR, ease: EASE }}
-            className="fixed inset-x-3 bottom-[84px] z-40 flex items-center justify-between gap-3 rounded-[8px] bg-[var(--paper)] px-4 py-3 text-[var(--paper-ink)] shadow-[0_14px_30px_var(--shadow)] lg:hidden"
+            className="hide-on-menu fixed inset-x-3 bottom-[84px] z-40 flex items-center justify-between gap-3 rounded-[8px] bg-[var(--paper)] px-4 py-3 text-[var(--paper-ink)] shadow-[0_14px_30px_var(--shadow)] lg:hidden"
           >
             <span className="text-[15px] font-bold opacity-75">Итого</span>
             <span className="num text-[22px] leading-none">{totalText}</span>

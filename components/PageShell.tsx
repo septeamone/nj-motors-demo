@@ -11,7 +11,7 @@ export function PageShell({ children }: { children: React.ReactNode }) {
       <main id="main" className="pt-[68px] sm:pt-[76px]">
         {children}
       </main>
-      <Footer prefix={home} />
+      <Footer />
     </>
   );
 }

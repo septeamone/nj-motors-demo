@@ -472,7 +472,9 @@ function Phone({ screens, logo, active, calm, onReady }: Pick<Props, "screens" |
 }
 
 export default function PhoneScene({ screens, logo, active, run, calm, onReady }: Props) {
-  const [dpr, setDpr] = useState(1.5);
+  // sharp on phone screens (DPR 2-3) as well; if frames drop, step down to 1.5, never to a blurry 1
+  const [top] = useState(() => Math.min(typeof window === "undefined" ? 1.5 : window.devicePixelRatio || 1, 2));
+  const [dpr, setDpr] = useState(top);
   return (
     <Canvas
       dpr={dpr}
@@ -482,7 +484,7 @@ export default function PhoneScene({ screens, logo, active, run, calm, onReady }
       style={{ touchAction: "pan-y" }}
       aria-label="3D-модель телефона с Telegram-каналом NJ Motors. Потяните, чтобы повернуть."
     >
-      <PerformanceMonitor onDecline={() => setDpr(1)} onIncline={() => setDpr(1.5)} flipflops={3} />
+      <PerformanceMonitor onDecline={() => setDpr(Math.min(top, 1.5))} onIncline={() => setDpr(top)} flipflops={3} />
       <ambientLight intensity={0.22} />
       <Suspense fallback={null}>
         <Phone screens={screens} logo={logo} active={active} calm={calm} onReady={onReady} />

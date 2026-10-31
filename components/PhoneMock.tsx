@@ -143,8 +143,8 @@ export function PhoneMock() {
         ))}
       </div>
 
-      {!flat && <p className="mono mt-5 text-center !text-[16px] text-ink-3">Потяните телефон, чтобы повернуть</p>}
-      <p className="mono mt-1 text-center !text-[16px] text-ink-3">Настоящий канал · скриншоты от 18.10.2026</p>
+      {!flat && <p className="mono mt-5 !text-[16px] text-ink-3">Потяните телефон, чтобы повернуть</p>}
+      <p className="mono mt-1 !text-[16px] text-ink-3">Настоящий канал · скриншоты от 18.10.2026</p>
       <a href={CHANNEL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm mt-4">
         Открыть канал в Telegram
         <ArrowUpRight className="size-4" strokeWidth={2} />

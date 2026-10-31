@@ -71,7 +71,7 @@ export function Process() {
               <div className="flex items-start gap-5">
                 <NjIcon
                   name="contract"
-                  className="size-12 shrink-0 text-accent-ink"
+                  className="size-12 shrink-0 text-ink"
                 />
                 <div>
                   <p className="font-display text-[clamp(26px,3vw,36px)] leading-tight tracking-wide uppercase">

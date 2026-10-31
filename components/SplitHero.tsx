@@ -397,7 +397,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       <section id="top" className="relative -mb-[100svh] h-[400svh]">
         <div ref={stage} className="split-stage pointer-events-none sticky top-0 h-svh overflow-hidden">
           {/* behind the halves: the NJ Motors container, which opens as you scroll on */}
-          <div aria-hidden className="absolute inset-0 overflow-hidden bg-[#05080c]">
+          <div aria-hidden className="hero-film absolute inset-0 overflow-hidden bg-[#05080c]">
             <motion.div style={{ transform: push }} className="absolute inset-0 will-change-transform">
               <FilmCanvas name="container" count={91} progress={film} preload />
             </motion.div>

@@ -174,7 +174,7 @@ ${text}` : text }));
                     <CheckCircle2 className="size-14 text-[var(--ok)]" strokeWidth={1.25} />
                     <p className="font-display mt-6 text-[26px] tracking-wide uppercase text-ink">Заявка принята</p>
                     <p className="mt-3 max-w-[40ch] text-[16px] text-ink-2">
-                      Менеджер свяжется с вами и уточнит детали.
+                      Андрей свяжется с вами и уточнит детали.
                     </p>
                     <button
                       type="button"
@@ -281,7 +281,12 @@ ${text}` : text }));
                           onChange={(e) => set("consent", e.target.checked)}
                           className="mt-0.5 size-[18px] shrink-0 cursor-pointer accent-[var(--accent)]"
                         />
-                        <span>Согласен на обработку персональных данных и с политикой конфиденциальности</span>
+                        <span>
+                          Согласен на обработку персональных данных и с{" "}
+                          <a href={asset("/privacy/")} target="_blank" rel="noopener" className="underline decoration-line-strong underline-offset-4 hover:text-ink">
+                            политикой конфиденциальности
+                          </a>
+                        </span>
                       </label>
                       {errors.consent && <p id="f-consent-err" role="alert" className="mt-2 text-[16px] text-[var(--danger)]">{errors.consent}</p>}
                     </div>

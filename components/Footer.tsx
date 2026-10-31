@@ -1,5 +1,6 @@
 import credits from "@/lib/credits.json";
 import { CARS } from "@/lib/data";
+import { asset } from "@/lib/asset";
 import { channels, SITE } from "@/lib/site";
 import { Wordmark } from "./ui";
 
@@ -10,7 +11,7 @@ const NAMES: Record<string, string> = {
 type Credit = { file: string; lic: string; artist: string; page: string };
 
 /** Footer: contacts are shown only when NJ Motors has confirmed them (non-null in site.json). */
-export function Footer({ prefix = "" }: { prefix?: string }) {
+export function Footer() {
   const contacts = channels();
   const rows = Object.entries(credits as Record<string, Credit>).filter(([slug]) => slug in NAMES);
   return (
@@ -20,7 +21,9 @@ export function Footer({ prefix = "" }: { prefix?: string }) {
           <div>
             <Wordmark />
             <p className="mt-5 max-w-[34ch] text-[16px] leading-relaxed text-ink-2">
-              Подбираем, проверяем и привозим автомобили из Южной Кореи. Работаем с {SITE.brand.since} года.
+              Подбираем, проверяем и привозим автомобили из Южной Кореи.
+              {/* from 640 px the emblem above already says "since 2023" */}
+              <span className="sm:hidden"> Работаем с {SITE.brand.since} года.</span>
             </p>
           </div>
           <div>
@@ -60,10 +63,10 @@ export function Footer({ prefix = "" }: { prefix?: string }) {
         <div className="mt-14 flex flex-col gap-4 border-t border-line pt-7 text-[16px] text-ink-3 md:flex-row md:items-start md:justify-between">
           <p>© 2026 NJ Motors. Сайт находится в разработке: фото, цены и сроки на нём ориентировочные.</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <a href={`${prefix === "" ? "/" : prefix}privacy/`} className="font-semibold hover:text-ink">
+            <a href={asset("/privacy/")} className="font-semibold hover:text-ink">
               Политика конфиденциальности
             </a>
-            <a href={`${prefix === "" ? "/" : prefix}terms/`} className="font-semibold hover:text-ink">
+            <a href={asset("/terms/")} className="font-semibold hover:text-ink">
               Пользовательское соглашение
             </a>
           </div>

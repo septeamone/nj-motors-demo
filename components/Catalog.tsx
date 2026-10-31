@@ -197,7 +197,14 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
           <p className="num mt-1 text-[30px] leading-none">{rub(car.price)}</p>
           <p className="mt-2 text-[16px] leading-snug text-ink-3">Примерная сумма под ключ. Точную Андрей считает по таможенным ставкам на дату сделки.</p>
         </div>
-        <a href="#contact" onClick={onDone} className="btn btn-primary mt-6 w-full sm:w-auto sm:self-start">
+        <a
+          href="#contact"
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent<string>("lead-prefill", { detail: `Интересует: ${name}, ${car.year}` }));
+            onDone();
+          }}
+          className="btn btn-primary mt-6 w-full sm:w-auto sm:self-start"
+        >
           Получить расчёт
           <ArrowRight className="size-[18px]" strokeWidth={2} />
         </a>

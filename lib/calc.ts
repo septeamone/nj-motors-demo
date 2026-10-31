@@ -157,7 +157,7 @@ export function calculate(i: CalcInput) {
   for (const p of parts) {
     if (p.group === "contract") continue;
     if (p.lo === null) {
-      missing.push(p.label.toLowerCase());
+      missing.push(p.label);
       continue;
     }
     lo += p.lo;
