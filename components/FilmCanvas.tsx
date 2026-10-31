@@ -3,6 +3,7 @@
 import { useMotionValueEvent, useReducedMotion, type MotionValue } from "motion/react";
 import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
+import { expect, finish, step } from "@/lib/loading";
 
 /**
  * A rendered film played by a progress value (0 → 1, from the scroll): the frames of the clip follow it, forwards
@@ -14,12 +15,27 @@ import { asset } from "@/lib/asset";
  * current position are unpacked in the background (createImageBitmap), so a frame never has to be unpacked at the
  * moment it is shown and a phone never holds the whole film unpacked in memory.
  */
-export function FilmCanvas({ name, count, progress: p, className = "" }: { name: string; count: number; progress: MotionValue<number>; className?: string }) {
+export function FilmCanvas({
+  name,
+  count,
+  progress: p,
+  className = "",
+  preload = false,
+}: {
+  name: string;
+  count: number;
+  progress: MotionValue<number>;
+  className?: string;
+  /** the opening loader waits for the start of this film: fetch every frame at once (in order) and report the first
+   * PRELOAD of them to lib/loading; the rest keep arriving while the visitor watches the first ones */
+  preload?: boolean;
+}) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const files = useRef<(Blob | undefined)[]>([]);
   const bitmaps = useRef(new Map<number, ImageBitmap | "pending">());
   const shown = useRef(-1);
   const calm = useReducedMotion();
+  const PRELOAD = 40;
   // frames unpacked on each side of the current one (phones keep fewer: less decoding at a time, less memory)
   const AHEAD = typeof window !== "undefined" && innerWidth < 768 ? 6 : 10;
   // reduced motion: the film stands still on its last frame
@@ -108,6 +124,7 @@ export function FilmCanvas({ name, count, progress: p, className = "" }: { name:
       const r = await fetch(`${dir}/${String(i + 1).padStart(3, "0")}.webp`);
       if (!r.ok || !alive) return;
       files.current[i] = await r.blob();
+      if (preload && i < PRELOAD) step("film");
       if (Math.abs(i - at(p.get())) <= AHEAD) {
         shown.current = -1;
         draw(p.get());
@@ -120,7 +137,10 @@ export function FilmCanvas({ name, count, progress: p, className = "" }: { name:
       const next = () => order.shift();
       await Promise.all(
         Array.from({ length: small ? 3 : 6 }, async () => {
-          for (let i = next(); i !== undefined && alive; i = next()) await fetchFrame(i).catch(() => {});
+          for (let i = next(); i !== undefined && alive; i = next())
+            await fetchFrame(i).catch(() => {
+              if (preload && i < PRELOAD) step("film"); // a frame that failed must not hold the loader
+            });
         }),
       );
     };
@@ -139,8 +159,15 @@ export function FilmCanvas({ name, count, progress: p, className = "" }: { name:
     // once the page itself has loaded: the hero film then downloads while the intro is still on screen, so the
     // first scroll does not have to fetch and unpack at the same moment (a film further down waits for its margin)
     const start = () => io.observe(c);
-    if (document.readyState === "complete") start();
-    else window.addEventListener("load", start, { once: true });
+    if (preload && !calm) {
+      // the opening loader counts these frames: start right away
+      expect("film", Math.min(count, PRELOAD));
+      void fetchAll();
+    } else {
+      if (preload) finish("film");
+      if (document.readyState === "complete") start();
+      else window.addEventListener("load", start, { once: true });
+    }
     return () => {
       alive = false;
       ro.disconnect();

@@ -778,6 +778,14 @@ html[data-intro="play"] .split-stage,
 html[data-intro="glide"] .split-stage {
   background: var(--bg);
 }
+/* the hero film stands behind the halves; while the intro plays the halves are not there yet, so it waits unseen */
+html[data-intro="play"] .split-stage canvas,
+html[data-intro="glide"] .split-stage canvas {
+  visibility: hidden;
+}
+html:not([data-intro="play"]):not([data-intro="glide"]) .intro-loader {
+  display: none;
+}
 html[data-intro="play"] :is(.header-in, .split-panel) {
   opacity: 0;
 }
@@ -926,6 +934,27 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   70%,
   100% {
     transform: translate(-50%, 12px);
+    opacity: 0;
+  }
+}
+/* touch screens: a finger slides up the track, again and again */
+.intro-hint-finger {
+  animation: hint-swipe 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+@keyframes hint-swipe {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -18px);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -22px);
     opacity: 0;
   }
 }

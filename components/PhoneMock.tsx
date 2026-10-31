@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
+import { finish } from "@/lib/loading";
 
 // three.js is heavy: it is fetched only when the phone is about to come on screen.
 const loadScene = () => import("./PhoneScene");
@@ -47,10 +48,10 @@ export function PhoneMock() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCalm(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    // touch screens get the flat phone: the 3D model costs a phone more than it gives (three.js, a second GPU context)
-    if (!hasWebGL() || window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    if (!hasWebGL()) {
       setFlat(true);
       (window as unknown as { __phoneReady?: boolean }).__phoneReady = true;
+      finish("phone");
       return;
     }
     const el = box.current;
@@ -122,6 +123,7 @@ export function PhoneMock() {
               onReady={() => {
                 setReady(true);
                 (window as unknown as { __phoneReady?: boolean }).__phoneReady = true;
+                finish("phone"); // the opening loader counts the 3D phone
               }}
             />
           </div>

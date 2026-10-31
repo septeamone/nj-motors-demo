@@ -1,10 +1,12 @@
 "use client";
 
+import { Pointer } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { EASE_CSS as EASE } from "@/lib/motion";
+import { finish as partDone, progress } from "@/lib/loading";
 import { FilmCanvas } from "./FilmCanvas";
 
 // Wheel discs cut from the logo itself (centres measured on the 1254px original), as fractions of the logo.
@@ -23,19 +25,10 @@ const FILM = 1.35;
 const WHEEL_PER_PX = 1 / 650;
 const AUTO_AFTER_MS = 6000;
 
-/** Resolves when fonts, the page and the 3D phone (PhoneMock sets window.__phoneReady) are ready, or after a safety limit. */
-const loaded = () =>
-  new Promise<void>((resolve) => {
-    const w = window as unknown as { __phoneReady?: boolean };
-    const done = () => document.readyState === "complete" && w.__phoneReady === true;
-    const t0 = performance.now();
-    const check = async () => {
-      await document.fonts.ready;
-      if (done() || performance.now() - t0 > 3000) return resolve();
-      setTimeout(check, 120);
-    };
-    check();
-  });
+// The opening loader waits until everything the first screens need has arrived (lib/loading), but never longer than
+// this from the moment the loader appears: then the site opens and the rest loads while the visitor scrolls.
+const LOAD_LIMIT_MS = 5000;
+const RING = 2 * Math.PI * 48; // circumference of the loader ring (r = 48 on a 100 × 100 drawing)
 
 const smooth = (t: number) => t * t * (3 - 2 * t);
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -63,6 +56,9 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
   const textHalf = useRef<HTMLDivElement>(null);
   const artHalf = useRef<HTMLDivElement>(null);
   const hint = useRef<HTMLButtonElement>(null);
+  const loader = useRef<HTMLDivElement>(null);
+  const ring = useRef<SVGCircleElement>(null);
+  const percent = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
     const st = stage.current;
@@ -162,9 +158,31 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       window.removeEventListener("resize", onResize);
       delete html.dataset.intro;
     };
+    // the loader: the ring and the number follow the real progress of what the first screens need
+    const ld = loader.current;
+    document.fonts.ready.then(() => partDone("fonts"));
+    if (document.readyState === "complete") partDone("page");
+    else window.addEventListener("load", () => partDone("page"), { once: true });
+    let loadTimer = 0;
+    const loadStart = performance.now();
+    let loadingDone = () => {};
+    const allLoaded = new Promise<void>((r) => (loadingDone = r));
+    const tickLoad = () => {
+      const v = progress();
+      if (ring.current) ring.current.style.strokeDashoffset = String(RING * (1 - v));
+      if (percent.current) percent.current.textContent = `${Math.round(v * 100)}%`;
+      if (v >= 0.999 || performance.now() - loadStart > LOAD_LIMIT_MS) return loadingDone();
+      loadTimer = window.setTimeout(tickLoad, 100);
+    };
+    tickLoad();
+
     if (calmMotion) {
+      if (ld) ld.style.display = "none";
       delete html.dataset.intro;
-      return cleanup;
+      return () => {
+        clearTimeout(loadTimer);
+        cleanup();
+      };
     }
 
     html.dataset.intro = "play";
@@ -183,7 +201,8 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     const holdTimer = window.setInterval(hold, 100);
 
     const lg = innerWidth >= 1024;
-    const fullK = (Math.min(innerWidth, innerHeight) * 0.94) / s0;
+    // while loading the emblem stands a little smaller, inside the loader ring
+    const fullK = (Math.min(innerWidth, innerHeight) * 0.66) / s0;
     const full = { cx: innerWidth / 2, cy: innerHeight / 2, k: fullK };
 
     // ---- the scrub: g runs 0 → 1; everything that moves in the intro is a function of g ----
@@ -347,7 +366,12 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         em.style.opacity = "1";
         arrive.cancel();
         startPulse();
-        await loaded();
+        await allLoaded;
+        // the ring closes, the loader steps back, and the invitation to scroll takes its place
+        if (ld) {
+          ld.style.opacity = "0";
+          window.setTimeout(() => (ld.style.display = "none"), 500);
+        }
         ready = true;
         hi.style.visibility = "visible";
         hi.style.opacity = "1";
@@ -358,6 +382,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
 
     return () => {
       detach();
+      clearTimeout(loadTimer);
       clearTimeout(autoTimer);
       clearTimeout(idle);
       cancelAnimationFrame(loop);
@@ -374,7 +399,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
           {/* behind the halves: the NJ Motors container, which opens as you scroll on */}
           <div aria-hidden className="absolute inset-0 overflow-hidden bg-[#05080c]">
             <motion.div style={{ transform: push }} className="absolute inset-0 will-change-transform">
-              <FilmCanvas name="container" count={91} progress={film} />
+              <FilmCanvas name="container" count={91} progress={film} preload />
             </motion.div>
             <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_18vmin_6vmin_#05080c]" />
             <motion.span style={{ opacity: shade }} className="pointer-events-none absolute inset-0 bg-[#05080c]" />
@@ -402,15 +427,47 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         ))}
       </a>
 
+      {/* the opening loader: a ring round the emblem filling with the real progress, and the number under it */}
+      <div ref={loader} aria-hidden className="intro-loader pointer-events-none fixed inset-0 z-[54] transition-opacity duration-500">
+        <svg viewBox="0 0 100 100" className="absolute top-1/2 left-1/2 size-[min(78vw,74svh)] -translate-x-1/2 -translate-y-1/2 -rotate-90">
+          <circle cx="50" cy="50" r="48" fill="none" stroke="var(--line-strong)" strokeWidth="0.8" />
+          <circle
+            ref={ring}
+            cx="50"
+            cy="50"
+            r="48"
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray={RING}
+            strokeDashoffset={RING}
+            className="transition-[stroke-dashoffset] duration-300 ease-out"
+          />
+        </svg>
+        <p className="absolute inset-x-0 bottom-[max(3svh,20px)] flex flex-col items-center gap-1 text-ink">
+          <span className="text-[16px] font-semibold text-ink">Загружаем сайт</span>
+          <span ref={percent} className="num text-[clamp(30px,4vw,44px)] leading-none">
+            0%
+          </span>
+        </p>
+      </div>
+
       <button
         ref={hint}
         type="button"
         style={{ visibility: "hidden", opacity: 0 }}
         className="intro-hint fixed bottom-6 left-1/2 z-[56] flex -translate-x-1/2 cursor-pointer flex-col items-center gap-2 rounded-[10px] bg-[var(--bg)]/85 px-5 py-3 text-ink transition-opacity duration-500"
       >
-        <span className="text-[16px] font-bold">Листайте</span>
-        <span aria-hidden className="intro-hint-mouse relative block h-9 w-6 rounded-full border-2 border-current">
+        {/* mouse: the wheel; touch screens: a finger swiping up */}
+        <span className="text-[16px] font-bold pointer-coarse:hidden">Листайте</span>
+        <span className="hidden text-[16px] font-bold pointer-coarse:inline">Проведите вверх</span>
+        <span aria-hidden className="intro-hint-mouse relative block h-9 w-6 rounded-full border-2 border-current pointer-coarse:hidden">
           <i className="absolute top-1.5 left-1/2 block h-2 w-[3px] -translate-x-1/2 rounded-full bg-accent" />
+        </span>
+        <span aria-hidden className="intro-hint-swipe relative hidden h-11 w-8 pointer-coarse:block">
+          <i className="absolute top-0 left-1/2 block h-full w-[3px] -translate-x-1/2 rounded-full bg-current opacity-25" />
+          <Pointer className="intro-hint-finger absolute bottom-0 left-1/2 size-7 -translate-x-1/2 text-accent" strokeWidth={2.2} />
         </span>
       </button>
     </>
