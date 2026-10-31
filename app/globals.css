@@ -194,12 +194,6 @@ html.lenis body {
 .plate::after {
   content: none;
 }
-.plate-paper {
-  background: var(--paper);
-  color: var(--paper-ink);
-  border-color: rgba(18, 16, 13, 0.4);
-}
-
 
 /* Small label in a shelf or a card: sentence case, readable size */
 .eyebrow {
@@ -267,15 +261,6 @@ html.lenis body {
   .btn-ghost:hover {
     border-color: var(--ink);
     background: var(--accent-soft);
-  }
-}
-.btn-paper {
-  background: var(--paper);
-  color: var(--paper-ink);
-}
-@media (hover: hover) and (pointer: fine) {
-  .btn-paper:hover {
-    background: color-mix(in srgb, var(--paper) 88%, white);
   }
 }
 
@@ -527,23 +512,11 @@ html.lenis body {
   z-index: 1;
   transition: transform 700ms var(--ease-out);
 }
-@media (hover: hover) and (pointer: fine) {
-  .card-hover:hover .stage img.car {
-    transform: translateX(-50%) scale(1.05);
-  }
-}
 
 }
 
 /* ---------- Misc ---------- */
-.hairline {
-  border-color: var(--line);
-}
-.rule-double {
-  height: 5px;
-  border-top: 1px solid var(--line-strong);
-  border-bottom: 1px solid var(--line);
-}
+
 .grain::after {
   content: "";
   position: absolute;
@@ -553,10 +526,6 @@ html.lenis body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 /* stroked (outline) display text */
-.outline-text {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--line-strong);
-}
 
 @keyframes acc-down {
   from {
@@ -568,71 +537,11 @@ html.lenis body {
     opacity: 1;
   }
 }
-@keyframes acc-up {
-  from {
-    height: var(--radix-accordion-content-height);
-    opacity: 1;
-  }
-  to {
-    height: 0;
-    opacity: 0;
-  }
-}
 .field[data-disabled="true"] {
   opacity: 0.5;
 }
 
 /* Entrance of the first screen runs in CSS, so it starts before JavaScript has loaded. */
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(40%);
-  }
-}
-@keyframes drive {
-  from {
-    opacity: 0;
-    transform: translateX(-180px);
-    filter: blur(14px);
-  }
-}
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes stamp {
-  from {
-    opacity: 0;
-    transform: scale(1.35) rotate(-14deg);
-  }
-}
-.anim-rise {
-  animation: rise 1s var(--ease-expo) both;
-  animation-delay: var(--d, 0s);
-}
-.anim-drive {
-  animation: drive 1.5s var(--ease-expo) both;
-  animation-delay: var(--d, 0s);
-}
-.anim-fade {
-  animation: fade-in 0.8s ease-out both;
-  animation-delay: var(--d, 0s);
-}
-.anim-stamp {
-  animation: stamp 0.7s var(--ease-expo) both;
-  animation-delay: var(--d, 0s);
-}
-
-@keyframes pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 10px transparent;
-  }
-}
-
 /* Theme switch: soft crossfade of the whole page (GPU, no per-element transitions) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -676,99 +585,14 @@ html.lenis body {
     --wheel-k: 19.6;
   }
 }
-@keyframes car-in {
-  from {
-    transform: translateX(-130vw) skewX(-8deg);
-  }
-  to {
-    transform: translateX(0) skewX(0);
-  }
-}
 /* same duration and easing as the car, so the wheels turn exactly as far as the car rolls */
-@keyframes wheel-in {
-  from {
-    transform: rotate(calc(var(--wheel-k) * -130deg));
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-@keyframes rumble {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-1.2px);
-  }
-}
-@keyframes flash {
-  0% {
-    opacity: 0;
-  }
-  6% {
-    opacity: 1;
-  }
-  11% {
-    opacity: 0.15;
-  }
-  17% {
-    opacity: 1;
-  }
-  25% {
-    opacity: 0.35;
-  }
-  34%,
-  100% {
-    opacity: 0.9;
-  }
-}
-@keyframes badge-in {
-  from {
-    opacity: 0;
-    transform: scale(0.55) rotate(-24deg);
-  }
-}
 @keyframes orbit {
   to {
     transform: rotate(360deg);
   }
 }
-@keyframes dash {
-  to {
-    background-position-x: -240px;
-  }
-}
-@keyframes streak-in {
-  0% {
-    opacity: 1;
-  }
-  70% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-.anim-car-in {
-  animation: car-in 2.3s cubic-bezier(0.12, 0.8, 0.2, 1) 0.25s both;
-}
-.anim-wheel-in {
-  animation: wheel-in 2.3s cubic-bezier(0.12, 0.8, 0.2, 1) 0.25s both;
-}
-.anim-rumble {
-  animation: rumble 0.14s ease-in-out 2.6s infinite alternate both;
-}
-.anim-flash {
-  animation: flash 1.6s ease-out var(--d, 0.35s) both;
-}
 /* Intro (see SplitHero): <html data-intro> is "play" while the emblem owns the screen, "glide" while it moves into its half
    and the halves close in, then "done". The halves and the header wait for "glide". */
-@keyframes header-in {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-}
 html[data-intro="play"],
 html[data-intro="glide"] {
   overflow: hidden;
@@ -836,39 +660,6 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
     transform: translate(-50%, -50%);
   }
 }
-.anim-badge {
-  animation: badge-in 1.3s var(--ease-expo) 0.15s both;
-}
-.orbit {
-  background: conic-gradient(from 0deg, transparent 0 58%, rgba(255, 74, 61, 0.95) 86%, transparent 100%);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
-  animation: orbit 9s linear infinite;
-}
-.road-dash {
-  background: repeating-linear-gradient(90deg, rgba(242, 231, 214, 0.55) 0 120px, transparent 120px 240px);
-  animation: dash 0.5s linear infinite;
-  animation-duration: 0.9s;
-}
-.streaks {
-  background:
-    linear-gradient(90deg, transparent, rgba(255, 74, 61, 0.85)) 0 12% / 100% 2px no-repeat,
-    linear-gradient(90deg, transparent, rgba(242, 231, 214, 0.7)) 20% 34% / 80% 2px no-repeat,
-    linear-gradient(90deg, transparent, rgba(255, 74, 61, 0.7)) 6% 52% / 94% 3px no-repeat,
-    linear-gradient(90deg, transparent, rgba(242, 231, 214, 0.55)) 30% 72% / 70% 2px no-repeat,
-    linear-gradient(90deg, transparent, rgba(255, 74, 61, 0.6)) 14% 90% / 86% 2px no-repeat;
-  -webkit-mask: linear-gradient(90deg, transparent, #000 40%);
-  mask: linear-gradient(90deg, transparent, #000 40%);
-  animation: streak-in 2.5s ease-out 0.25s both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .road-dash {
-    animation: none;
-  }
-  .orbit {
-    animation: none;
-  }
-}
 
 /* the only motion in the hero: the wheels turn inside the logo */
 .wheel-spin {
@@ -898,7 +689,6 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
     transform: none;
   }
 }
-
 
 /* Review player */
 .vp-btn {
@@ -955,6 +745,43 @@ html[data-calc-bar] .mobile-cta {
   }
 }
 /* touch screens: a finger slides up the track, again and again */
+/* echo rings round the emblem after loading (SplitHero): two thin rings go out and fade, in turn */
+.intro-echo {
+  display: none;
+  transition: opacity 0.3s;
+}
+.intro-echo[data-on] {
+  display: block;
+}
+.intro-echo span {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: intro-echo 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.intro-echo span + span {
+  animation-delay: 1.2s;
+}
+@keyframes intro-echo {
+  0% {
+    transform: scale(0.98);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-echo {
+    display: none !important;
+  }
+}
+html:not([data-intro="play"]) .intro-echo {
+  display: none;
+}
 .intro-hint-finger {
   animation: hint-swipe 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
@@ -978,7 +805,6 @@ html[data-calc-bar] .mobile-cta {
 .intro-hint-mouse i {
   animation: hint-wheel 1.4s ease-out infinite;
 }
-
 
 /* ---------- Print look (riso): three inks, paper grain, halftone, small misregistration ---------- */
 /* paper grain over the whole page: one static fixed layer, no blending */
@@ -1018,10 +844,7 @@ body::after {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 38px), 0 100%);
   padding-bottom: calc(var(--cut, 5rem) + 38px);
 }
-.cut-top {
-  clip-path: polygon(0 38px, 100% 0, 100% 100%, 0 100%);
-  padding-top: calc(var(--cut, 5rem) + 38px);
-}
+
 /* a section printed all in the red ink */
 .drench {
   background: var(--accent-fill);
@@ -1193,17 +1016,6 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
 }
 
 /* ===== BACKDROP: the dot field sits behind the whole page and takes no clicks ===== */
-.dot-field {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-.dot-field__canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
 
 /* ===== VIDEO VOLUME SLIDER ===== */
 .vp-range {

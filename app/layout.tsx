@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fira_Sans_Extra_Condensed, Onest, Russo_One } from "next/font/google";
 import { Providers } from "@/components/Providers";
+import { asset } from "@/lib/asset";
 import "./globals.css";
 
 // Two faces only: a heavy poster face for headings and numbers, a Cyrillic-first text face for everything else.
@@ -38,9 +39,10 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     type: "website",
     locale: "ru_RU",
-    images: [{ url: "og.png", width: 1200, height: 630, alt: "NJ Motors — Cars from Korea" }],
+    // with the base path: on GitHub Pages the site lives under /<repository>
+    images: [{ url: asset("/og.png"), width: 1200, height: 630, alt: "NJ Motors — автомобили из Кореи под ключ" }],
   },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: ["og.png"] },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [asset("/og.png")] },
 };
 
 export const viewport: Viewport = {

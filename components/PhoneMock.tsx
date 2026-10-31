@@ -32,6 +32,19 @@ const SCREENS = [
 
 const CHANNEL = "https://t.me/njmotorskorea2";
 
+/** The real channel link with the date of the screenshots; on wide screens it stands in the text beside the phone. */
+export function ChannelLink({ className = "" }: { className?: string }) {
+  return (
+    <div className={className}>
+      <p className="mono !text-[16px] text-ink-3">Настоящий канал · скриншоты от 18.10.2026</p>
+      <a href={CHANNEL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm mt-3">
+        Открыть канал в Telegram
+        <ArrowUpRight className="size-4" strokeWidth={2} />
+      </a>
+    </div>
+  );
+}
+
 /**
  * A real 3D phone (three.js): thick bevelled titanium frame, glass screen with reflections, camera back with the emblem.
  * Drag to spin it round, drag up/down to tip it; it eases back to face you. Until the 3D is ready the space stays empty; if WebGL is
@@ -134,25 +147,21 @@ export function PhoneMock() {
         )}
       </div>
 
-      <div className="mt-3 flex items-center gap-2" role="group" aria-label="Скриншоты канала">
-        {SCREENS.map((alt, k) => (
-          <button
-            key={alt}
-            type="button"
-            aria-label={`Показать: ${alt}`}
-            aria-current={k === i}
-            onClick={() => setI(k)}
-            className={`h-2 rounded-full transition-all duration-300 ${k === i ? "w-7 bg-accent" : "w-2 bg-line-strong hover:bg-ink-3"}`}
-          />
-        ))}
+      <div className="flex w-full items-center justify-between gap-2 lg:-mt-6 lg:justify-center">
+        <div className="flex items-center" role="group" aria-label="Скриншоты канала">
+          {SCREENS.map((alt, k) => (
+            <button key={alt} type="button" aria-label={`Показать: ${alt}`} aria-current={k === i} onClick={() => setI(k)} className="grid h-11 w-4 cursor-pointer place-items-center lg:w-5">
+              <span className={`block h-2 rounded-full transition-all duration-300 ${k === i ? "w-4 bg-accent" : "w-2 bg-line-strong hover:bg-ink-3"}`} />
+            </button>
+          ))}
+        </div>
+        {/* phones: the channel button in the same row as the dots (wide screens show it in the text column) */}
+        <a href={CHANNEL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm lg:hidden">
+          Канал в Telegram
+          <ArrowUpRight className="size-4" strokeWidth={2} />
+        </a>
       </div>
-
-      {!flat && <p className="mono mt-5 !text-[16px] text-ink-3">Потяните телефон, чтобы повернуть</p>}
-      <p className="mono mt-1 !text-[16px] text-ink-3">Настоящий канал · скриншоты от 18.10.2026</p>
-      <a href={CHANNEL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm mt-4">
-        Открыть канал в Telegram
-        <ArrowUpRight className="size-4" strokeWidth={2} />
-      </a>
+      <p className="mono mt-1 !text-[16px] text-ink-3 lg:hidden">Настоящий канал · скриншоты от 18.10.2026</p>
     </div>
   );
 }

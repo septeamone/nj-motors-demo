@@ -3,7 +3,7 @@ import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
 import { nb } from "@/lib/typo";
 import { OwnerVideo } from "./OwnerVideo";
-import { PhoneMock } from "./PhoneMock";
+import { ChannelLink, PhoneMock } from "./PhoneMock";
 import { Reveal, SectionHead } from "./ui";
 
 export function Owner() {
@@ -61,6 +61,8 @@ export function Owner() {
           <p className="mt-8 max-w-[44ch] text-[clamp(19px,1.7vw,23px)] leading-snug font-medium text-ink max-lg:hidden">
             {nb("До выкупа автомобиль проходит независимый осмотр, а цена, вознаграждение и этапы оплаты записаны в договоре до первого платежа.")}
           </p>
+
+          <ChannelLink className="mt-8 max-lg:hidden" />
 
           {rows.length > 0 && (
             <dl className="mt-10 grid grid-cols-[auto_1fr] gap-x-8 gap-y-3 border-t border-line pt-6">

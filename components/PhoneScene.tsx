@@ -482,7 +482,7 @@ export default function PhoneScene({ screens, logo, active, run, calm, onReady }
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       frameloop={run ? "always" : "demand"}
       style={{ touchAction: "pan-y" }}
-      aria-label="3D-модель телефона с Telegram-каналом NJ Motors. Потяните, чтобы повернуть."
+      aria-label="3D-модель телефона с Telegram-каналом NJ Motors"
     >
       <PerformanceMonitor onDecline={() => setDpr(Math.min(top, 1.5))} onIncline={() => setDpr(top)} flipflops={3} />
       <ambientLight intensity={0.22} />

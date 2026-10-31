@@ -26,7 +26,9 @@ const FILM_FROM = 0.25;
 const FILM = 0.9;
 // Intro scrub: how much wheel / swipe it takes to open the site (1 = the whole way)
 const WHEEL_PER_PX = 1 / 650;
-const AUTO_AFTER_MS = 6000;
+const AUTO_AFTER_MS = 3000;
+// any small gesture opens the site: past this share of the scrub it completes by itself
+const OPEN_AT = 0.06;
 
 // The opening loader waits until everything the first screens need has arrived (lib/loading), but never longer than
 // this from the moment the loader appears: then the site opens and the rest loads while the visitor scrolls.
@@ -59,6 +61,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
   const textHalf = useRef<HTMLDivElement>(null);
   const artHalf = useRef<HTMLDivElement>(null);
   const hint = useRef<HTMLButtonElement>(null);
+  const echo = useRef<HTMLDivElement>(null);
   const loader = useRef<HTMLDivElement>(null);
   const ring = useRef<SVGCircleElement>(null);
   const percent = useRef<HTMLSpanElement>(null);
@@ -246,6 +249,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         h.style.transform = `translateY(${(1 - smooth(hv)) * -100}%)`;
       }
       hi.style.opacity = String(g > 0 ? 0 : 1);
+      if (echo.current) echo.current.style.opacity = g > 0 ? "0" : "";
     };
 
     let detach = () => {};
@@ -265,6 +269,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         h.style.transform = "";
       }
       hi.style.display = "none";
+      echo.current?.remove();
       detach();
       window.removeEventListener("scroll", hold);
       window.clearInterval(holdTimer);
@@ -312,6 +317,8 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       pulse?.cancel();
       pulse = undefined;
       gt = clamp(gt + d);
+      // a short swipe or one wheel click is enough: the rest of the way runs by itself
+      if (gt >= OPEN_AT) return goTo(1);
       kick();
       clearTimeout(idle);
       // gesture over: past a third of the way it completes by itself, otherwise the emblem returns
@@ -345,12 +352,20 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
     const onHint = () => {
       if (ready && !finished) goTo(1);
     };
+    // a tap on the emblem opens the site too (it is a link to the top, so the jump is held back while the intro is on)
+    const onEmblem = (e: MouseEvent) => {
+      if (finished) return;
+      e.preventDefault();
+      if (ready) goTo(1);
+    };
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("keydown", onKey);
     hi.addEventListener("click", onHint);
+    em.addEventListener("click", onEmblem);
     detach = () => {
+      em.removeEventListener("click", onEmblem);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
@@ -384,6 +399,13 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         ready = true;
         hi.style.visibility = "visible";
         hi.style.opacity = "1";
+        // soft rings go out from the emblem: it can be tapped
+        const ec = echo.current;
+        if (ec) {
+          const d = s0 * full.k * 0.97;
+          Object.assign(ec.style, { left: `${full.cx - d / 2}px`, top: `${full.cy - d / 2}px`, width: `${d}px`, height: `${d}px` });
+          ec.dataset.on = "";
+        }
         autoTimer = window.setTimeout(() => goTo(1), AUTO_AFTER_MS);
       },
       () => {},
@@ -446,6 +468,12 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
           </span>
         ))}
       </a>
+
+      {/* echo rings round the emblem once the site is loaded: tap it or swipe to open */}
+      <div ref={echo} aria-hidden className="intro-echo pointer-events-none fixed z-[54]">
+        <span />
+        <span />
+      </div>
 
       {/* the opening loader: a ring round the emblem filling with the real progress, and the number under it */}
       <div ref={loader} aria-hidden className="intro-loader pointer-events-none fixed inset-0 z-[54] transition-opacity duration-500">
