@@ -2,9 +2,9 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { ArrowRight, ArrowUpRight, X } from "lucide-react";
-import { motion, useReducedMotion, useSpring } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { flushSync } from "react-dom";
 import { asset } from "@/lib/asset";
 import { CARS, FUEL_NAME, type Car } from "@/lib/data";
@@ -47,7 +47,7 @@ export function Catalog() {
           />
         </div>
 
-        <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
+        <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:items-stretch">
           {CARS.map((car, i) => (
             <Reveal as="li" key={car.slug} delay={i * 0.05} className="w-[80%] shrink-0 snap-start sm:w-auto">
               <CarCard car={car} morph={morph === car.slug} onOpen={() => show(car)} />
@@ -80,43 +80,17 @@ export function Catalog() {
   );
 }
 
-/**
- * A car card with depth: under the mouse the card tilts towards the pointer and the car shifts against it, as if it
- * stood a little in front of the card. Touch screens and reduced motion get the flat card.
- */
+/** A car card: the picture grows a little under the mouse; a click opens the details (the picture flows into them). */
 function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () => void }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const calm = useReducedMotion();
-  const spring = { stiffness: 220, damping: 22, mass: 0.6 };
-  const rx = useSpring(0, spring);
-  const ry = useSpring(0, spring);
-  const px = useSpring(0, spring);
-  const py = useSpring(0, spring);
-  const move = (e: React.PointerEvent) => {
-    const el = ref.current;
-    if (calm || e.pointerType !== "mouse" || !el) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    rx.set(-y * 7);
-    ry.set(x * 9);
-    px.set(x * -16);
-    py.set(y * -10);
-  };
-  const leave = () => [rx, ry, px, py].forEach((v) => v.set(0));
   return (
-    <motion.button
-      ref={ref}
+    <button
       type="button"
       onClick={onOpen}
-      onPointerMove={move}
-      onPointerLeave={leave}
       aria-haspopup="dialog"
-      style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
       className="plate group flex h-full w-full flex-col overflow-hidden text-left"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-2" style={{ viewTransitionName: morph ? `car-${car.slug}` : undefined, viewTransitionClass: "car" } as React.CSSProperties}>
-        <motion.div style={{ x: px, y: py }} className="absolute -inset-[4%]">
+        <div className="absolute inset-0">
         <Image
           src={asset(`/cars/${car.slug}.webp`)}
           alt={`${car.brand} ${car.model}`}
@@ -124,7 +98,7 @@ function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () 
           sizes="(min-width:1024px) 22vw, (min-width:640px) 45vw, 92vw"
           className="car-ink object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
         />
-        </motion.div>
+        </div>
       </div>
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div>
@@ -156,7 +130,7 @@ function CarCard({ car, morph, onOpen }: { car: Car; morph: boolean; onOpen: () 
           <ArrowUpRight className="size-6 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={1.75} />
         </div>
       </div>
-    </motion.button>
+    </button>
   );
 }
 

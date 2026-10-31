@@ -7,16 +7,14 @@ import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
 import { NjIcon } from "./NjIcon";
 import { Deal } from "./Deal";
-import { FilmCanvas } from "./FilmCanvas";
 import { Reveal, SectionHead } from "./ui";
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
 
 /**
  * The deal: six steps on the route, four payments, and the sample contract they are written into.
- * The whole section stands on the sea: it opens in a ship's cabin, the camera goes out through the porthole
- * (a film made with Higgsfield, played by the scroll), the heading arrives over the open water, and then the sea
- * dims into the section's ground and stays behind the route, the pages and the payments.
+ * The whole section stands on the sea (the last frame of the porthole film made with Higgsfield): it opens as a
+ * rounded window, dims under the heading and stays behind the route, the pages and the payments.
  */
 export function Process() {
   const sec = useRef<HTMLElement>(null);
@@ -38,23 +36,24 @@ export function Process() {
     typeof window === "undefined"
       ? 0
       : (v * (secH.current || (sec.current?.offsetHeight ?? 0))) / innerHeight;
-  const film = useTransform(scrollYProgress, (v) => clamp(depth(v) / 0.75));
-  const dim = useTransform(
-    scrollYProgress,
-    (v) => clamp((depth(v) - 0.45) / 0.4) * 0.86,
-  );
-  // The film comes in as a rounded window in the page that opens to the whole screen while the section rises
-  // (the picture never arrives as a hard-edged block), and afterwards the sea keeps drifting slowly under the shade.
+  // The sea (the last frame of the porthole film) comes in as a rounded window in the page that opens to the whole
+  // screen while the section rises, darkening under the heading; afterwards it drifts slowly under the shade.
+  // It is a quiet background, not a scene of its own: the heading follows at once.
   const { scrollYProgress: rise } = useScroll({ target: sec, offset: ["start end", "start start"] });
+  const dim = useTransform(rise, (e) => 0.4 + 0.46 * e);
   const clip = useTransform(rise, (e) => `inset(${(1 - e) * 6}vh ${(1 - e) * 7}vw round ${(1 - e) * 36}px)`);
-  const lens = useTransform([rise, scrollYProgress], ([e, v]: number[]) => `scale(${1.12 - 0.12 * e + 0.08 * clamp((depth(v) - 0.75) / 4)})`);
+  const lens = useTransform([rise, scrollYProgress], ([e, v]: number[]) => `scale(${1.12 - 0.12 * e + 0.08 * clamp(depth(v) / 4)})`);
 
   return (
     <section ref={sec} id="process" className="relative bg-bg pb-14 lg:pb-20">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <motion.div style={{ clipPath: clip }} className="sticky top-0 h-svh overflow-hidden bg-[#05080c]">
           <motion.div style={{ transform: lens }} className="absolute inset-0 will-change-transform">
-            <FilmCanvas name="porthole" count={91} progress={film} />
+            <picture>
+              <source media="(min-width: 768px)" srcSet={asset("/films/porthole/d/091.webp")} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={asset("/films/porthole/m/091.webp")} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
+            </picture>
           </motion.div>
           <motion.span
             style={{ opacity: dim }}
@@ -62,8 +61,7 @@ export function Process() {
           />
         </motion.div>
       </div>
-      {/* first the camera goes out through the porthole; the heading arrives over the open sea */}
-      <div aria-hidden className="h-[80svh]" />
+      <div aria-hidden className="h-[18svh]" />
       <div className="relative mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="on-film">
           <SectionHead

@@ -1,7 +1,7 @@
 "use client";
 
 import { Pointer } from "lucide-react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { animate, motion, useMotionValue, useScroll, useTransform } from "motion/react";
 import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { EASE_CSS as EASE } from "@/lib/motion";
@@ -17,10 +17,11 @@ const WHEELS = [
 
 // Scroll distance (in screen heights) over which the halves part and the emblem flies up into the header.
 const PART = 0.5;
-// After the halves have parted, the container standing behind them opens (the film, made with Higgsfield) over
-// FILM screens of scroll; the stage then holds its last frame while the catalog rises over it. The section is
-// 100svh + the pinned scroll (PART + FILM, 1.35 screens) + 100svh pulled back by the negative margin so the catalog overlaps.
-const FILM = 0.85;
+// As the halves part, the container standing behind them opens by itself (the film, made with Higgsfield, plays in
+// time, FILM_S seconds, it costs no scroll); the stage holds a little longer (HOLD screens) and the catalog rises over
+// it. The section is 100svh + the pinned scroll (PART + HOLD) + 100svh pulled back by the negative margin.
+const HOLD = 0.3;
+const FILM_S = 4.5;
 // Intro scrub: how much wheel / swipe it takes to open the site (1 = the whole way)
 const WHEEL_PER_PX = 1 / 650;
 const AUTO_AFTER_MS = 6000;
@@ -45,11 +46,12 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
   const { scrollY: pageY } = useScroll();
   const at = (v: number, from: number, len: number) =>
     typeof window === "undefined" ? 0 : Math.min(1, Math.max(0, (v - from * innerHeight) / (len * innerHeight)));
-  const film = useTransform(pageY, (v) => at(v, PART, FILM));
+  const film = useMotionValue(0);
+  const filmStarted = useRef(false);
   // the film never just stops: when the clip is over the camera keeps creeping in, and the picture settles into
   // shade as the catalog rises over it (scroll-linked, so linear: the scroll is the easing)
-  const push = useTransform(pageY, (v) => `scale(${1 + 0.14 * at(v, PART + FILM - 0.15, 1.5)})`);
-  const shade = useTransform(pageY, (v) => 0.6 * at(v, PART + FILM - 0.1, 1.1));
+  const push = useTransform(pageY, (v) => `scale(${1 + 0.14 * at(v, PART, 1.5)})`);
+  const shade = useTransform(pageY, (v) => 0.6 * at(v, PART + HOLD, 1.1));
   const stage = useRef<HTMLDivElement>(null);
   const slot = useRef<HTMLDivElement>(null);
   const emblem = useRef<HTMLAnchorElement>(null);
@@ -131,6 +133,11 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       // below the hero nothing changes any more: skip the writes (they made every scroll frame lay the page out again)
       if (e === lastE) return;
       lastE = e;
+      // the doors start to open once the halves are halfway apart
+      if (e > 0.5 && !filmStarted.current) {
+        filmStarted.current = true;
+        animate(film, 1, { duration: FILM_S, ease: [0.45, 0, 0.55, 1] });
+      }
       const pageW = html.clientWidth; // read before the writes below, so the browser does not lay out twice
       // written straight onto the two panels (a custom property on the stage would be inherited by the whole hero subtree)
       const lgNow = innerWidth >= 1024;
@@ -400,7 +407,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <section id="top" className="relative -mb-[100svh] h-[335svh]">
+      <section id="top" className="relative -mb-[100svh] h-[280svh]">
         <div ref={stage} className="split-stage pointer-events-none sticky top-0 h-svh overflow-hidden">
           {/* behind the halves: the NJ Motors container, which opens as you scroll on */}
           <div aria-hidden className="hero-film absolute inset-0 overflow-hidden bg-[#05080c]">

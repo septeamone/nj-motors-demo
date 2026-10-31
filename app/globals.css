@@ -922,7 +922,8 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   }
 }
 /* the open phone menu covers the page: the floating bars at the bottom wait until it closes */
-html[data-menu] .hide-on-menu {
+html[data-menu] .hide-on-menu,
+html[data-calc-bar] .mobile-cta {
   visibility: hidden;
 }
 @media (hover: hover) and (pointer: fine) {

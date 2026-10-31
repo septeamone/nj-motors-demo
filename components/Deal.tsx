@@ -318,6 +318,56 @@ function List({ className = "" }: { className?: string }) {
   );
 }
 
+/**
+ * Phones and tablets: the six pages side by side, swiped one at a time (a stack of tall cards took four screens).
+ * Each stamp is pressed as its page comes into view; the dots show where you are and jump to a page.
+ */
+function Swipe() {
+  const box = useRef<HTMLDivElement>(null);
+  const [at, setAt] = useState(0);
+  const onScroll = () => {
+    const el = box.current;
+    const first = el?.firstElementChild as HTMLElement | null;
+    if (!el || !first) return;
+    const k = Math.round(el.scrollLeft / (first.offsetWidth + 12));
+    setAt((c) => (c === k ? c : Math.min(N - 1, Math.max(0, k))));
+  };
+  const go = (k: number) => {
+    const el = box.current;
+    const card = el?.children[k] as HTMLElement | undefined;
+    if (el && card) el.scrollTo({ left: card.offsetLeft - el.offsetLeft - 20, behavior: "smooth" });
+  };
+  return (
+    <div className="mt-8 lg:hidden">
+      <div
+        ref={box}
+        onScroll={onScroll}
+        role="list"
+        aria-label="Паспорт сделки: шесть шагов, листайте вбок"
+        className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8"
+      >
+        {STEPS.map((s, i) => (
+          <div key={s.title} role="listitem" className="w-[86%] max-w-[520px] shrink-0 snap-start">
+            <Page i={i} className="h-full" />
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex items-center justify-between gap-3">
+        <p className="text-[15px] font-bold text-ink-2">
+          Шаг {at + 1} из {N}
+        </p>
+        <div className="flex" role="group" aria-label="Шаги сделки">
+          {STEPS.map((s, i) => (
+            <button key={s.title} type="button" aria-label={`Шаг ${i + 1}: ${s.title}`} aria-current={i === at} onClick={() => go(i)} className="grid h-11 w-7 cursor-pointer place-items-center">
+              <span className={`block h-2 rounded-full transition-all duration-300 ${i === at ? "w-5 bg-accent" : i < at ? "w-2 bg-accent/60" : "w-2 bg-line-strong"}`} />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Deal() {
   // read after mount, so the server and the first client render agree
   const [calm, setCalm] = useState(false);
@@ -327,8 +377,8 @@ export function Deal() {
   }, []);
   return (
     <>
-      <List className={calm ? "" : "lg:hidden"} />
-      {!calm && <Scene />}
+      <Swipe />
+      {calm ? <List className="hidden lg:flex" /> : <Scene />}
     </>
   );
 }

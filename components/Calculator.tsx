@@ -85,6 +85,8 @@ export function Calculator() {
   const [sea, setSea] = useState<Sea>("roro");
   const [inland, setInland] = useState<Inland>("truck");
   const [opened, setOpened] = useState<Group | null>(null);
+  // phones: the delivery choice is folded into one line until tapped
+  const [route, setRoute] = useState(false);
 
   const priceKrw = +price || 0;
   const r = useMemo(
@@ -114,6 +116,14 @@ export function Calculator() {
       b.disconnect();
     };
   }, []);
+
+  // phones show one bar at the bottom: while the total floats there, the "leave a request" bar steps aside
+  const pill = inSection && !receiptSeen && ready;
+  useEffect(() => {
+    const html = document.documentElement;
+    if (pill) html.dataset.calcBar = "";
+    else delete html.dataset.calcBar;
+  }, [pill]);
 
   const request = () =>
     window.dispatchEvent(
@@ -188,7 +198,23 @@ export function Calculator() {
             options={(["petrol", "diesel", "hybrid", "electric"] as const).map((f) => ({ value: f, label: FUEL_LABEL[f] }))}
           />
 
-          <div className="border-t border-line pt-8">
+          <div className="border-t border-line pt-6 lg:pt-8">
+            <button
+              type="button"
+              onClick={() => setRoute((v) => !v)}
+              aria-expanded={route}
+              aria-controls="c-route"
+              className="flex w-full cursor-pointer items-center justify-between gap-3 text-left lg:hidden"
+            >
+              <span>
+                <span className="label">Доставка</span>
+                <span className="mt-1 block text-[16px] leading-snug font-bold text-ink">
+                  {SEA_LABEL[sea]} · {INLAND_LABEL[inland]}
+                </span>
+              </span>
+              <ChevronDown className={`size-5 shrink-0 text-ink-2 transition-transform ${route ? "rotate-180" : ""}`} strokeWidth={2} />
+            </button>
+            <div id="c-route" className={`${route ? "mt-6" : "max-lg:hidden"} lg:mt-0`}>
             <p className="flex items-center gap-3 text-[17px] font-bold text-ink">
               <NjIcon name="ship" className="size-8" />
               Из Кореи в Россию автомобили идут только морем
@@ -209,6 +235,7 @@ export function Calculator() {
                 onChange={setInland}
                 options={(["vvo", "truck", "rail", "other"] as const).map((s) => ({ value: s, label: INLAND_LABEL[s], icon: INLAND_ICON[s] }))}
               />
+            </div>
             </div>
           </div>
         </Reveal>
@@ -306,7 +333,7 @@ export function Calculator() {
 
       {/* phones: the total follows the fields */}
       <AnimatePresence>
-        {inSection && !receiptSeen && ready && (
+        {pill && (
           <motion.a
             href="#contact"
             onClick={request}
@@ -314,7 +341,7 @@ export function Calculator() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
             transition={{ duration: DUR, ease: EASE }}
-            className="hide-on-menu fixed inset-x-3 bottom-[84px] z-40 flex items-center justify-between gap-3 rounded-[8px] bg-[var(--paper)] px-4 py-3 text-[var(--paper-ink)] shadow-[0_14px_30px_var(--shadow)] lg:hidden"
+            className="hide-on-menu fixed inset-x-3 bottom-3 z-40 flex items-center justify-between gap-3 rounded-[8px] bg-[var(--paper)] px-4 py-3 text-[var(--paper-ink)] shadow-[0_14px_30px_var(--shadow)] lg:hidden"
           >
             <span className="text-[15px] font-bold opacity-75">Итого</span>
             <span className="num text-[22px] leading-none">{totalText}</span>
