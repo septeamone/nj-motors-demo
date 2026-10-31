@@ -27,7 +27,7 @@ export function ViaPicker({ value, onChange, id }: { value: Via; onChange: (v: V
             style={brandStyle(VIA_BRAND[o])}
             className={`${CHIP} aria-checked:border-transparent aria-checked:text-white aria-checked:[background:var(--bf)]`}
           >
-            <BrandIcon brand={VIA_BRAND[o]} className="size-5 text-[var(--b)] group-aria-checked:text-white" />
+            <BrandIcon brand={VIA_BRAND[o]} tone={value === o ? "current" : "brand"} className="size-5 text-[var(--b)] group-aria-checked:text-white" />
             {o}
           </button>
         ))}

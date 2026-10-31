@@ -1,6 +1,9 @@
+import { useId } from "react";
+
 /**
- * Contact brands: their own colour and glyph. WhatsApp and Telegram glyphs are from Simple Icons (CC0); the MAX glyph
- * is drawn here (a speech bubble), its colour is the blue-violet of the MAX app icon; the call is the usual green.
+ * Contact brands: their own colour and glyph. WhatsApp and Telegram glyphs are from Simple Icons (CC0). The MAX glyph
+ * and its gradient are the official ones from max.ru (favicon.svg: the ring-shaped bubble, cyan #00EAFF through blue
+ * #3C22FE to violet #8419FF). The call is the usual green.
  */
 export type Brand = "call" | "whatsapp" | "telegram" | "max";
 
@@ -8,7 +11,7 @@ export const BRAND: Record<Brand, { label: string; color: string; fill: string }
   call: { label: "Звонок", color: "#1fae54", fill: "#1fae54" },
   whatsapp: { label: "WhatsApp", color: "#25D366", fill: "#25D366" },
   telegram: { label: "Telegram", color: "#26A5E4", fill: "#26A5E4" },
-  max: { label: "MAX", color: "#5b5cf6", fill: "linear-gradient(135deg, #2f8bff, #8a3ffc)" },
+  max: { label: "MAX", color: "#3C22FE", fill: "linear-gradient(45deg, #00EAFF 0%, #3C22FE 55%, #8419FF 100%)" },
 };
 
 const PATHS: Record<Exclude<Brand, "call" | "max">, string> = {
@@ -16,8 +19,15 @@ const PATHS: Record<Exclude<Brand, "call" | "max">, string> = {
   telegram: "M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z",
 };
 
-/** The glyph in currentColor (24 × 24). */
-export function BrandIcon({ brand, className = "size-5" }: { brand: Brand; className?: string }) {
+/** The official MAX mark (max.ru), 100 × 100: the bubble with its round opening. */
+const MAX_PATH = "M50.7571 0.261719C78.2929 0.261719 99.8857 22.5974 99.8857 50.1474C99.8857 77.6974 77.6071 99.4903 51.0214 99.4903C41.5857 99.4903 37.0143 98.1617 29.65 92.9474C29.1429 92.5903 28.45 92.6831 28.0214 93.1403C22.3571 99.1831 7.85 103.426 7.18571 95.176C7.18571 80.7903 0 71.4474 0 49.876C0 21.5546 23.2214 0.261719 50.7571 0.261719ZM51.5286 24.8117C38.4643 24.126 28.2643 33.1974 26.0143 47.3831C24.15 59.1332 27.45 73.4546 30.2786 74.176C31.4786 74.4832 34.3571 72.276 36.4571 70.2974C36.85 69.926 37.45 69.8617 37.9071 70.1474C41.1786 72.1474 44.8786 73.6474 48.9571 73.8617C62.3714 74.5617 74.2571 64.0617 74.9643 50.6474C75.6643 37.2331 64.9429 25.5046 51.5286 24.8046V24.8117Z";
+
+/**
+ * The glyph in currentColor (24 × 24). `tone="brand"` paints the MAX mark in its own gradient (the others take their
+ * colour from currentColor anyway).
+ */
+export function BrandIcon({ brand, className = "size-5", tone = "current" }: { brand: Brand; className?: string; tone?: "current" | "brand" }) {
+  const gid = useId();
   if (brand === "call")
     return (
       <svg aria-hidden viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -26,8 +36,17 @@ export function BrandIcon({ brand, className = "size-5" }: { brand: Brand; class
     );
   if (brand === "max")
     return (
-      <svg aria-hidden viewBox="0 0 24 24" className={className} fill="currentColor">
-        <path d="M12 2.5c5.5 0 9.5 3.9 9.5 9s-4 9-9.5 9c-1.2 0-2.4-.2-3.4-.5L4 21.5l1.1-4.2A8.6 8.6 0 0 1 2.5 11.5c0-5.1 4-9 9.5-9Zm-3.9 5.9v6.2h1.9v-3.4l1.9 2.6 1.9-2.6v3.4h1.9V8.4h-1.8L12 11.2 10 8.4H8.1Z" />
+      <svg aria-hidden viewBox="0 0 100 100" className={className}>
+        {tone === "brand" && (
+          <defs>
+            <linearGradient id={gid} x1="0" y1="100" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#00EAFF" />
+              <stop offset="0.55" stopColor="#3C22FE" />
+              <stop offset="1" stopColor="#8419FF" />
+            </linearGradient>
+          </defs>
+        )}
+        <path d={MAX_PATH} fillRule="evenodd" fill={tone === "brand" ? `url(#${gid})` : "currentColor"} />
       </svg>
     );
   return (
