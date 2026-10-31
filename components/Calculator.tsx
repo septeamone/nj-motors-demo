@@ -103,8 +103,10 @@ export function Calculator() {
   const [inSection, setInSection] = useState(false);
   const [receiptSeen, setReceiptSeen] = useState(false);
   useEffect(() => {
-    const a = new IntersectionObserver(([e]) => setInSection(e.isIntersecting), { threshold: 0.05 });
-    const b = new IntersectionObserver(([e]) => setReceiptSeen(e.isIntersecting), { threshold: 0.25 });
+    // by the share on screen, not isIntersecting: on the way out the last report comes just under the threshold,
+    // while the element is still a little on screen, and nothing is reported once it has gone
+    const a = new IntersectionObserver(([e]) => setInSection(e.intersectionRatio >= 0.05), { threshold: [0, 0.05] });
+    const b = new IntersectionObserver(([e]) => setReceiptSeen(e.intersectionRatio >= 0.25), { threshold: [0, 0.25] });
     if (section.current) a.observe(section.current);
     if (receipt.current) b.observe(receipt.current);
     return () => {
