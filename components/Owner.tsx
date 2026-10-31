@@ -2,6 +2,7 @@ import Image from "next/image";
 import { asset } from "@/lib/asset";
 import { SITE } from "@/lib/site";
 import { nb } from "@/lib/typo";
+import { OwnerVideo } from "./OwnerVideo";
 import { PhoneMock } from "./PhoneMock";
 import { Reveal, SectionHead } from "./ui";
 
@@ -19,15 +20,8 @@ export function Owner() {
         <Reveal>
           {owner.video ? (
             // Andrey's own video takes the place of his photo: the face once, and in his own words
-            <figure className="mx-auto w-full max-w-[340px] lg:mx-0">
-              <video
-                controls
-                preload="none"
-                playsInline
-                poster={owner.poster ? asset(owner.poster) : undefined}
-                src={asset(owner.video)}
-                className="block aspect-[9/16] w-full rounded-[6px] bg-black object-cover"
-              />
+            <figure className="mx-auto w-full max-w-[280px] lg:mx-0 lg:max-w-[340px]">
+              <OwnerVideo src={asset(owner.video)} poster={owner.poster ? asset(owner.poster) : undefined} />
               <figcaption className="mt-4">
                 {owner.name && <p className="font-display text-[26px] leading-none tracking-wide text-ink uppercase">{owner.name}</p>}
                 <p className="mt-1.5 text-[16px] text-ink-2">{owner.role}</p>

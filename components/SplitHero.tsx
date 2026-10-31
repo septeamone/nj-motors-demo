@@ -2,11 +2,11 @@
 
 import { Pointer } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
-import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { EASE_CSS as EASE } from "@/lib/motion";
 import { finish as partDone, progress } from "@/lib/loading";
+import { slowNet } from "@/lib/net";
 import { FilmCanvas } from "./FilmCanvas";
 
 // Wheel discs cut from the logo itself (centres measured on the 1254px original), as fractions of the logo.
@@ -16,11 +16,11 @@ const WHEELS = [
 ] as const;
 
 // Scroll distance (in screen heights) over which the halves part and the emblem flies up into the header.
-const PART = 0.65;
+const PART = 0.5;
 // After the halves have parted, the container standing behind them opens (the film, made with Higgsfield) over
 // FILM screens of scroll; the stage then holds its last frame while the catalog rises over it. The section is
-// 100svh + the pinned scroll (PART + FILM, 2 screens) + 100svh pulled back by the negative margin so the catalog overlaps.
-const FILM = 1.35;
+// 100svh + the pinned scroll (PART + FILM, 1.35 screens) + 100svh pulled back by the negative margin so the catalog overlaps.
+const FILM = 0.85;
 // Intro scrub: how much wheel / swipe it takes to open the site (1 = the whole way)
 const WHEEL_PER_PX = 1 / 650;
 const AUTO_AFTER_MS = 6000;
@@ -177,7 +177,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       const v = progress();
       if (ring.current) ring.current.style.strokeDashoffset = String(RING * (1 - v));
       if (percent.current) percent.current.textContent = `${Math.round(v * 100)}%`;
-      if (v >= 0.999 || performance.now() - loadStart > LOAD_LIMIT_MS) return loadingDone();
+      if (v >= 0.999 || performance.now() - loadStart > (slowNet() ? LOAD_LIMIT_MS * 0.6 : LOAD_LIMIT_MS)) return loadingDone();
       loadTimer = window.setTimeout(tickLoad, 100);
     };
     tickLoad();
@@ -400,7 +400,7 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <section id="top" className="relative -mb-[100svh] h-[400svh]">
+      <section id="top" className="relative -mb-[100svh] h-[335svh]">
         <div ref={stage} className="split-stage pointer-events-none sticky top-0 h-svh overflow-hidden">
           {/* behind the halves: the NJ Motors container, which opens as you scroll on */}
           <div aria-hidden className="hero-film absolute inset-0 overflow-hidden bg-[#05080c]">
@@ -424,7 +424,18 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         aria-label="NJ Motors — Cars from Korea, est. 2023"
         className="fixed top-0 left-0 z-[55] block opacity-0 will-change-transform"
       >
-        <Image src={asset("/brand/nj-logo-full.webp")} alt="" width={1254} height={1254} sizes="(min-width:1024px) 580px, 60vw" priority className="emblem-img block size-full drop-shadow-[0_14px_22px_var(--shadow)]" />
+        {/* phones take the 640 px emblem (74 KB instead of 237 KB): it is the first picture on screen */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={asset("/brand/nj-logo-full.webp")}
+          srcSet={`${asset("/brand/nj-logo-640.webp")} 640w, ${asset("/brand/nj-logo-full.webp")} 1254w`}
+          sizes="(min-width:1024px) 580px, 80vw"
+          alt=""
+          width={1254}
+          height={1254}
+          fetchPriority="high"
+          className="emblem-img block size-full drop-shadow-[0_14px_22px_var(--shadow)]"
+        />
         {WHEELS.map((w) => (
           <span key={w.f} aria-hidden className="wheel-spin absolute block aspect-square w-[10.2%]" style={{ left: w.left, top: w.top }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}

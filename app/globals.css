@@ -94,13 +94,9 @@
 :root {
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --dur: 0.7s;
-  --page: 1440px;
+  /* the page runs the full width of the screen (side padding only); a cap only for very wide monitors */
+  --page: min(100vw, 2400px);
   --radius: 6px;
-}
-@media (min-width: 1900px) {
-  :root {
-    --page: 1700px;
-  }
 }
 
 /* ---------- Base ---------- */
@@ -823,18 +819,19 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   }
 }
 @media (max-width: 1023.98px) {
+  /* the emblem takes the top third, the text with the advantages the rest */
   .split-text {
-    inset: 42% 0 0 0;
+    inset: 35% 0 0 0;
     border-top: 5px solid var(--accent);
   }
   .split-art {
-    inset: 0 0 58% 0;
+    inset: 0 0 65% 0;
   }
   .split-slot {
     position: absolute;
     left: 50%;
-    top: calc(21% + 34px);
-    width: min(58vw, 30svh);
+    top: calc(17.5% + 34px);
+    width: min(52vw, 24svh);
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
   }
@@ -1245,4 +1242,11 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   border-radius: 50%;
   background: #fff;
   border: 0;
+}
+
+/* short phones (iPhone SE and the like): the advantages on the first screen keep their headlines only */
+@media (max-width: 1023.98px) and (max-height: 740px) {
+  .hero-adv-note {
+    display: none;
+  }
 }

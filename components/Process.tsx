@@ -38,16 +38,16 @@ export function Process() {
     typeof window === "undefined"
       ? 0
       : (v * (secH.current || (sec.current?.offsetHeight ?? 0))) / innerHeight;
-  const film = useTransform(scrollYProgress, (v) => clamp(depth(v) / 1.3));
+  const film = useTransform(scrollYProgress, (v) => clamp(depth(v) / 0.75));
   const dim = useTransform(
     scrollYProgress,
-    (v) => clamp((depth(v) - 0.8) / 0.55) * 0.86,
+    (v) => clamp((depth(v) - 0.45) / 0.4) * 0.86,
   );
   // The film comes in as a rounded window in the page that opens to the whole screen while the section rises
   // (the picture never arrives as a hard-edged block), and afterwards the sea keeps drifting slowly under the shade.
   const { scrollYProgress: rise } = useScroll({ target: sec, offset: ["start end", "start start"] });
   const clip = useTransform(rise, (e) => `inset(${(1 - e) * 6}vh ${(1 - e) * 7}vw round ${(1 - e) * 36}px)`);
-  const lens = useTransform([rise, scrollYProgress], ([e, v]: number[]) => `scale(${1.12 - 0.12 * e + 0.08 * clamp((depth(v) - 1.3) / 4)})`);
+  const lens = useTransform([rise, scrollYProgress], ([e, v]: number[]) => `scale(${1.12 - 0.12 * e + 0.08 * clamp((depth(v) - 0.75) / 4)})`);
 
   return (
     <section ref={sec} id="process" className="relative bg-bg pb-14 lg:pb-20">
@@ -63,7 +63,7 @@ export function Process() {
         </motion.div>
       </div>
       {/* first the camera goes out through the porthole; the heading arrives over the open sea */}
-      <div aria-hidden className="h-[150svh]" />
+      <div aria-hidden className="h-[80svh]" />
       <div className="relative mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="on-film">
           <SectionHead

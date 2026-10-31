@@ -4,6 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronLeft, ChevronRight, Maximize, Minimize, Pause, Play, SkipBack, SkipForward, Volume1, Volume2, VolumeX, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
+import { useNear, useVideoSrc } from "@/lib/video";
 import { Reveal, SectionHead } from "./ui";
 
 // Videos compressed from the owner's originals (public/reviews). Andrey's own video lives in the block above (Owner).
@@ -138,6 +139,8 @@ export function Reviews() {
   const wantPlay = useRef(false);
   const cur = ITEMS[i];
   const idxRef = useRef(0);
+  const pick = useVideoSrc();
+  const near = useNear(box);
 
   // volume and mute are properties of the video element, not attributes: the element follows the state
   useEffect(() => {
@@ -300,7 +303,8 @@ export function Reviews() {
                 <video
                   ref={video}
                   key={cur.id}
-                  poster={asset(`/reviews/${cur.id}-poster.webp`)}
+                  src={pick(asset(`/reviews/${cur.id}.mp4`))}
+                  poster={near ? asset(`/reviews/${cur.id}-poster.webp`) : undefined}
                   playsInline
                   preload="metadata"
                   onClick={toggle}
@@ -316,9 +320,7 @@ export function Reviews() {
                   }}
                   onEnded={() => go(i + 1)}
                   className="size-full cursor-pointer object-contain"
-                >
-                  <source src={asset(`/reviews/${cur.id}.mp4`)} type="video/mp4" />
-                </video>
+                />
 
                 {/* story segments */}
                 <div className="pointer-events-none absolute inset-x-0 top-0 flex gap-1.5 p-3 pb-6 [background:linear-gradient(180deg,rgba(0,0,0,0.55),transparent)]">
@@ -427,7 +429,7 @@ export function Reviews() {
                 </div>
 
                 {/* the next video is fetched in advance (metadata only) */}
-                <video src={asset(`/reviews/${next.id}.mp4`)} preload="metadata" muted hidden aria-hidden />
+                {near && <video src={pick(asset(`/reviews/${next.id}.mp4`))} preload="metadata" muted hidden aria-hidden />}
               </div>
             </div>
           </Reveal>

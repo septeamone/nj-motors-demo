@@ -23,7 +23,8 @@ export function Faq() {
                     </span>
                   </Accordion.Trigger>
                 </Accordion.Header>
-                <Accordion.Content className="overflow-hidden data-[state=closed]:animate-[acc-up_300ms_ease-out] data-[state=open]:animate-[acc-down_700ms_cubic-bezier(0.16,1,0.3,1)]">
+                {/* forceMount: closed answers stay in the HTML (hidden), so search engines read every one */}
+                <Accordion.Content forceMount className="overflow-hidden data-[state=closed]:hidden data-[state=open]:animate-[acc-down_700ms_cubic-bezier(0.16,1,0.3,1)]">
                   <p className="max-w-[62ch] pb-7 text-[16px] leading-relaxed text-ink-2">{nb(f.a)}</p>
                 </Accordion.Content>
               </Accordion.Item>

@@ -47,7 +47,7 @@ export function Catalog() {
           />
         </div>
 
-        <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
+        <ul className="-mx-5 mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:items-start lg:[&>li:nth-child(even)]:mt-12 lg:[&>li:nth-child(3)]:mt-6">
           {CARS.map((car, i) => (
             <Reveal as="li" key={car.slug} delay={i * 0.05} className="w-[80%] shrink-0 snap-start sm:w-auto">
               <CarCard car={car} morph={morph === car.slug} onOpen={() => show(car)} />

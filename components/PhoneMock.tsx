@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { finish } from "@/lib/loading";
+import { slowNet } from "@/lib/net";
 
 // three.js is heavy: it is fetched only when the phone is about to come on screen.
 const loadScene = () => import("./PhoneScene");
@@ -57,7 +58,10 @@ export function PhoneMock() {
     const el = box.current;
     if (!el) return;
     // build the 3D at once: the intro (SplitHero) keeps the pulsing emblem on screen until window.__phoneReady is true
-    const idle = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 50));
+    // on a slow connection the loader does not wait for the 3D phone: it is built when the visitor scrolls near it
+    const slow = slowNet();
+    if (slow) finish("phone");
+    const idle = slow ? (_f: () => void) => 0 : (window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 50)));
     const id = idle(() => {
       loadScene();
       SCREENS.forEach((_, k) => {
@@ -116,7 +120,7 @@ export function PhoneMock() {
           <div className={`absolute inset-0 transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}>
             <PhoneScene
               screens={SCREENS.map((_, k) => asset(`/mockup/tg-${k + 1}.webp`))}
-              logo={asset("/brand/nj-logo-full.webp")}
+              logo={asset("/brand/nj-logo-640.webp")}
               active={i}
               run={seen}
               calm={calm}

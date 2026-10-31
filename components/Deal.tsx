@@ -68,7 +68,7 @@ function Page({ i, pressed, className = "" }: { i: number; pressed?: boolean; cl
         ))}
       </span>
 
-      <header className="flex items-center gap-3.5 border-b-2 border-dashed border-[rgba(18,16,13,0.3)] px-6 pt-9 pb-4 lg:px-8">
+      <header className="flex items-center gap-3.5 border-b-2 border-dashed border-[rgba(18,16,13,0.3)] px-5 pt-8 pb-3 lg:px-8 lg:pt-9 lg:pb-4">
         <NjIcon name={STEP_ICON[i]} className="size-9 shrink-0" />
         <div className="min-w-0">
           <h3 className="font-display text-[clamp(21px,2.2vw,27px)] leading-none tracking-wide uppercase">{s.title}</h3>
@@ -76,8 +76,8 @@ function Page({ i, pressed, className = "" }: { i: number; pressed?: boolean; cl
         </div>
       </header>
 
-      <div className="flex flex-1 flex-col gap-5 px-6 py-5 lg:px-8">
-        <p className="max-w-[46ch] text-[17px] leading-snug lg:text-[18px]">{nb(s.text)}</p>
+      <div className="flex flex-1 flex-col gap-4 px-5 py-4 lg:gap-5 lg:px-8 lg:py-5">
+        <p className="max-w-[46ch] text-[16px] leading-snug lg:text-[18px]">{nb(s.text)}</p>
 
         <div className="mt-auto flex items-end gap-4">
           <div className="min-w-0 flex-1 rounded-[4px] bg-[rgba(18,16,13,0.08)] px-4 py-3.5">
@@ -192,7 +192,7 @@ function RouteLine({ p, active }: { p: MotionValue<number>; active: number }) {
         </div>
       ))}
       <div ref={car} className="absolute top-0 left-0 w-[52px]">
-        <Image src={asset("/brand/nj-logo-full.webp")} alt="" width={160} height={160} className="block size-full" />
+        <Image src={asset("/brand/nj-logo-640.webp")} alt="" width={160} height={160} className="block size-full" />
       </div>
     </div>
   );
@@ -279,7 +279,7 @@ function Scene() {
   });
 
   return (
-    <div ref={box} className="relative mt-6 hidden lg:block" style={{ height: `calc(100svh + ${(N - 1) * 42}svh)` }}>
+    <div ref={box} className="relative mt-6 hidden lg:block" style={{ height: `calc(100svh + ${(N - 1) * 24}svh)` }}>
       <div className="sticky top-[100px] flex h-[calc(100svh-100px)] flex-col justify-center gap-10">
         <RouteLine p={p} active={active} />
         <div className="grid grid-cols-12 items-start gap-x-10">
@@ -305,7 +305,7 @@ function List({ className = "" }: { className?: string }) {
   const box = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({ target: box, offset: ["start 70%", "end 60%"] });
   return (
-    <ol ref={box} className={`relative mt-10 flex flex-col gap-6 pl-7 ${className}`} aria-label="Паспорт сделки: шесть шагов">
+    <ol ref={box} className={`relative mt-8 flex flex-col gap-4 pl-7 ${className}`} aria-label="Паспорт сделки: шесть шагов">
       <span aria-hidden className="absolute top-3 bottom-3 left-[7px] w-[3px] bg-line-strong" />
       <motion.span aria-hidden style={{ scaleY: scrollYProgress }} className="absolute top-3 bottom-3 left-[7px] w-[3px] origin-top bg-accent" />
       {STEPS.map((s, i) => (

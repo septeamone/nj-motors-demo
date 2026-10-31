@@ -4,6 +4,7 @@ import { useMotionValueEvent, useReducedMotion, type MotionValue } from "motion/
 import { useEffect, useRef } from "react";
 import { asset } from "@/lib/asset";
 import { expect, finish, step } from "@/lib/loading";
+import { slowNet } from "@/lib/net";
 
 /**
  * A rendered film played by a progress value (0 → 1, from the scroll): the frames of the clip follow it, forwards
@@ -35,7 +36,8 @@ export function FilmCanvas({
   const bitmaps = useRef(new Map<number, ImageBitmap | "pending">());
   const shown = useRef(-1);
   const calm = useReducedMotion();
-  const PRELOAD = 40;
+  // frames the opening loader waits for (a slow connection waits for fewer: the rest arrive while the visitor scrolls)
+  const PRELOAD = typeof window !== "undefined" && slowNet() ? 16 : 40;
   // frames unpacked on each side of the current one (phones keep fewer: less decoding at a time, less memory)
   const AHEAD = typeof window !== "undefined" && innerWidth < 768 ? 6 : 10;
   // reduced motion: the film stands still on its last frame
