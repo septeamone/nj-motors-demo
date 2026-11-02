@@ -1,7 +1,6 @@
 "use client";
 
 import { VIA, VIA_BRAND, type Via } from "@/lib/lead";
-import { SITE, telHref } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 
 // each chip and button wears its own brand: tinted when idle, filled when chosen
@@ -9,12 +8,12 @@ const brandStyle = (b: Brand) => ({ "--b": BRAND[b].color, "--bf": BRAND[b].fill
 const CHIP =
   "group inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border-[1.5px] border-[var(--b)] bg-[color-mix(in_srgb,var(--b)_14%,transparent)] px-3.5 text-[16px] font-bold text-ink transition-[background,color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--b)_26%,transparent)]";
 
-/** "Where is it convenient to talk": four chips in the messengers' own colours, one chosen. */
+/** "Where shall we answer you": four chips in the messengers' own colours, one chosen. */
 export function ViaPicker({ value, onChange, id }: { value: Via; onChange: (v: Via) => void; id: string }) {
   return (
     <div>
       <p id={id} className="label">
-        Где удобно связаться
+        Куда вам ответить
       </p>
       <div role="radiogroup" aria-labelledby={id} className="mt-2 flex flex-wrap gap-2">
         {VIA.map((o) => (
@@ -32,58 +31,6 @@ export function ViaPicker({ value, onChange, id }: { value: Via; onChange: (v: V
           </button>
         ))}
       </div>
-    </div>
-  );
-}
-
-/** Links that open the call or the chat with Andrey at once (from site.json; a missing one shows but does nothing yet). */
-function directLinks(): { brand: Brand; label: string; href: string | null }[] {
-  const c = SITE.contacts;
-  const tel = c.phone ? telHref(c.phone) : null;
-  return [
-    { brand: "call", label: "Позвонить", href: tel },
-    { brand: "vk", label: "ВКонтакте", href: c.vk ? (/^https?:\/\//.test(c.vk) ? c.vk : `https://vk.com/${c.vk.replace(/^@/, "")}`) : null },
-    { brand: "telegram", label: "Telegram", href: c.telegram ? `https://t.me/${c.telegram.replace(/^@|^https?:\/\/t\.me\//, "")}` : null },
-    { brand: "max", label: "MAX", href: c.max && /^https?:\/\//.test(c.max) ? c.max : null },
-  ];
-}
-
-/** "Contact directly": a call opens the phone's dialler with Andrey's number already in it, the rest open the chat. */
-export function DirectContacts({ className = "" }: { className?: string }) {
-  const links = directLinks();
-  const ready = links.some((l) => l.href);
-  return (
-    <div className={className}>
-      <p className="label">Или напишите нам напрямую</p>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {links.map((l) => (
-          <li key={l.brand}>
-            {l.href ? (
-              <a
-                href={l.href}
-                target={l.brand === "call" ? undefined : "_blank"}
-                rel={l.brand === "call" ? undefined : "noopener noreferrer"}
-                style={brandStyle(l.brand)}
-                className="inline-flex min-h-12 items-center gap-2.5 rounded-full px-5 text-[16px] font-bold text-white transition-transform duration-150 [background:var(--bf)] hover:-translate-y-0.5"
-              >
-                <BrandIcon brand={l.brand} className="size-5" />
-                {l.label}
-              </a>
-            ) : (
-              <span
-                aria-disabled
-                title="Появится после подтверждения"
-                style={brandStyle(l.brand)}
-                className="inline-flex min-h-12 cursor-default items-center gap-2.5 rounded-full px-5 text-[16px] font-bold text-white opacity-80 [background:var(--bf)]"
-              >
-                <BrandIcon brand={l.brand} className="size-5" />
-                {l.label}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
-      {!ready && <p className="mt-2 text-[15px] text-ink-2">Номер и ссылки появятся после подтверждения. Пока: заявка в форме.</p>}
     </div>
   );
 }

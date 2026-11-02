@@ -9,7 +9,7 @@ import { QUIZ } from "@/lib/data";
 import { phoneOk, sendError, sendLead, type Via } from "@/lib/lead";
 import { DUR, EASE } from "@/lib/motion";
 import { channels } from "@/lib/site";
-import { DirectContacts, ViaPicker } from "./LeadBits";
+import { ViaPicker } from "./LeadBits";
 import { Select } from "./Select";
 import { Reveal, SectionHead } from "./ui";
 
@@ -100,8 +100,6 @@ export function Contact() {
               lead="Опишите задачу — пришлём подборку вариантов с расчётом. Платить пока ничего не нужно."
             />
             <Reveal delay={0.1} className="mt-8">
-              {/* a call opens the dialler with Andrey's number, the messengers open the chat (lib/site.json contacts) */}
-              <DirectContacts />
               {/* the brand's muscle car poster, keyed out of its own red so it stands straight on the section's red */}
               <Image
                 src={asset("/brand/car-poster.webp")}
@@ -109,7 +107,7 @@ export function Contact() {
                 width={1400}
                 height={470}
                 sizes="(min-width:1024px) 46vw, 92vw"
-                className="mt-6 block h-auto w-full select-none lg:mt-12 lg:-ml-[6%] lg:w-[112%]"
+                className="block h-auto w-full select-none lg:-ml-[6%] lg:w-[112%]"
               />
             </Reveal>
           </motion.div>

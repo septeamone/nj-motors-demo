@@ -26,7 +26,8 @@ export function Socials() {
             <p className="font-display text-[clamp(22px,2.2vw,30px)] leading-tight tracking-wide text-ink uppercase">Мы в соцсетях</p>
             <p className="mt-1.5 max-w-[46ch] text-[16px] leading-snug text-ink-2">Новые машины, отзывы клиентов и как проходит каждый этап.</p>
           </div>
-          <ul className="flex flex-wrap gap-2.5 sm:gap-3">
+          {/* phones: the three side by side, icon over the name; wider screens: pills */}
+          <ul className="grid grid-cols-3 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
             {links.map((l) => (
               <li key={l.brand}>
                 <a
@@ -34,13 +35,13 @@ export function Socials() {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ background: BRAND[l.brand].fill }}
-                  className={`group inline-flex min-h-12 items-center gap-2.5 rounded-full px-5 text-[16px] font-bold text-white transition-transform duration-150 hover:-translate-y-0.5 ${
+                  className={`group flex min-h-12 flex-col items-center justify-center gap-1.5 rounded-[14px] px-2 py-3 text-[15px] font-bold text-white transition-transform duration-150 hover:-translate-y-0.5 sm:inline-flex sm:flex-row sm:gap-2.5 sm:rounded-full sm:px-5 sm:py-0 sm:text-[16px] ${
                     l.brand === "tiktok" ? "shadow-[-2px_-2px_0_#25F4EE,2px_2px_0_#FE2C55]" : ""
                   }`}
                 >
-                  <BrandIcon brand={l.brand} tone={l.brand === "tiktok" ? "brand" : "current"} className="size-[22px]" />
+                  <BrandIcon brand={l.brand} tone={l.brand === "tiktok" ? "brand" : "current"} className="size-[26px] sm:size-[22px]" />
                   {l.label}
-                  <ArrowUpRight className="size-4 opacity-70 transition-opacity group-hover:opacity-100" strokeWidth={2.2} />
+                  <ArrowUpRight className="hidden size-4 opacity-70 sm:block transition-opacity group-hover:opacity-100" strokeWidth={2.2} />
                 </a>
               </li>
             ))}
