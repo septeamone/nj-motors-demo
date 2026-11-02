@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight, Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { SITE, telHref, vkChat } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
@@ -10,39 +10,86 @@ const brandStyle = (b: Brand) => ({ "--b": BRAND[b].color, "--bf": BRAND[b].fill
 
 const url = (v: string, host: string) => (/^https?:\/\//.test(v) ? v : `https://${host}/${v.replace(/^@/, "")}`);
 
-/** Where a visitor can write to NJ Motors: only confirmed contacts from lib/site.json. Telegram takes the text pre-filled. */
-function links(text?: string): { brand: Brand; label: string; href: string }[] {
+type Link = { brand: Brand; label: string; href: string; fills: boolean };
+
+/**
+ * Where a visitor can write to NJ Motors: only confirmed contacts from lib/site.json. Of these only Telegram can open a
+ * chat with the text already typed (t.me/<user>?text=); VK, MAX and TikTok links open the chat empty.
+ */
+function links(text?: string): Link[] {
   const c = SITE.contacts;
-  const out: { brand: Brand; label: string; href: string }[] = [];
+  const out: Link[] = [];
   if (c.telegram) {
     const tg = url(c.telegram, "t.me");
-    out.push({ brand: "telegram", label: "Telegram", href: text ? `${tg}?text=${encodeURIComponent(text)}` : tg });
+    out.push({ brand: "telegram", label: "Telegram", href: text ? `${tg}?text=${encodeURIComponent(text)}` : tg, fills: true });
   }
-  if (c.vk) out.push({ brand: "vk", label: "ВКонтакте", href: vkChat(c.vk) });
-  if (c.max && /^https?:\/\//.test(c.max)) out.push({ brand: "max", label: "MAX", href: c.max });
-  if (c.phone) out.push({ brand: "call", label: "Позвонить", href: telHref(c.phone) });
+  if (c.vk) out.push({ brand: "vk", label: "ВКонтакте", href: vkChat(c.vk), fills: false });
+  if (c.max && /^https?:\/\//.test(c.max)) out.push({ brand: "max", label: "MAX", href: c.max, fills: false });
+  if (SITE.social.tiktok) out.push({ brand: "tiktok", label: "TikTok", href: SITE.social.tiktok, fills: false });
+  if (c.phone) out.push({ brand: "call", label: "Позвонить", href: telHref(c.phone), fills: true });
   return out;
 }
 
+const copyText = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // older browsers: a hidden field and the copy command
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;opacity:0;top:0";
+    document.body.append(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  }
+};
+
 /**
  * "Write to us": the site collects no personal data, so instead of a form the visitor opens a chat with NJ Motors.
- * With `text` (a car from the catalog, the quiz answers) the message is ready: Telegram gets it pre-filled, and a tap on
- * any button also copies it, so in VK or MAX it is one paste away.
+ * With `text` (a car from the catalog, the quiz answers) the ready message is shown. Telegram gets it typed in; for VK,
+ * MAX and TikTok, which cannot take a text in the link, a tap copies it first, says "paste it", then opens the chat.
  */
 export function WriteUs({ text, className = "" }: { text?: string; className?: string }) {
-  const [copied, setCopied] = useState(false);
+  const [note, setNote] = useState<"" | "copied" | "paste">("");
   const list = links(text);
 
-  const copy = () => {
-    if (!text) return;
-    navigator.clipboard?.writeText(text).then(
-      () => setCopied(true),
-      () => {},
-    );
+  const open = async (e: React.MouseEvent<HTMLAnchorElement>, l: Link) => {
+    if (!text || l.fills) return; // Telegram and the phone need nothing more
+    e.preventDefault();
+    const ok = await copyText(text);
+    setNote(ok ? "paste" : "");
+    // a moment to read the hint, then the chat
+    window.setTimeout(() => {
+      // ("noopener" in the features would make window.open return null even on success, so it is cut by hand)
+      const w = window.open(l.href, "_blank");
+      if (w) w.opener = null;
+      else location.href = l.href;
+    }, ok ? 900 : 0);
   };
 
   return (
     <div className={className}>
+      {text && (
+        <div className="mb-5">
+          <div className="flex items-center justify-between gap-3">
+            <p className="label">Ваше сообщение</p>
+            <button
+              type="button"
+              onClick={async () => setNote((await copyText(text)) ? "copied" : "")}
+              className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 text-[14px] font-bold text-ink-2 hover:text-ink"
+            >
+              {note === "copied" ? <Check className="size-4 text-[var(--ok)]" strokeWidth={2.4} /> : <Copy className="size-4" strokeWidth={2} />}
+              {note === "copied" ? "Скопировано" : "Скопировать"}
+            </button>
+          </div>
+          {/* the message as a chat bubble: what the visitor is about to send */}
+          <p className="mt-2 rounded-[14px] rounded-bl-[4px] bg-surface-2 px-4 py-3 text-[15px] leading-snug whitespace-pre-line text-ink">{text}</p>
+        </div>
+      )}
       <ul className="grid grid-cols-2 gap-2.5 sm:gap-3">
         {list.map((l) => (
           <li key={l.brand}>
@@ -50,11 +97,13 @@ export function WriteUs({ text, className = "" }: { text?: string; className?: s
               href={l.href}
               target={l.brand === "call" ? undefined : "_blank"}
               rel={l.brand === "call" ? undefined : "noopener noreferrer"}
-              onClick={copy}
+              onClick={(e) => open(e, l)}
               style={brandStyle(l.brand)}
-              className="group flex min-h-14 items-center justify-center gap-2.5 rounded-full px-4 text-[16px] font-bold text-white transition-transform duration-150 [background:var(--bf)] hover:-translate-y-0.5 sm:text-[17px]"
+              className={`group flex min-h-14 items-center justify-center gap-2.5 rounded-full px-4 text-[16px] font-bold text-white transition-transform duration-150 [background:var(--bf)] hover:-translate-y-0.5 sm:text-[17px] ${
+                l.brand === "tiktok" ? "shadow-[-2px_-2px_0_#25F4EE,2px_2px_0_#FE2C55]" : ""
+              }`}
             >
-              <BrandIcon brand={l.brand} className="size-[22px] shrink-0" />
+              <BrandIcon brand={l.brand} tone={l.brand === "tiktok" ? "brand" : "current"} className="size-[22px] shrink-0" />
               {l.label}
               <ArrowUpRight className="hidden size-4 shrink-0 opacity-70 transition-opacity group-hover:opacity-100 sm:block" strokeWidth={2.2} />
             </a>
@@ -62,14 +111,14 @@ export function WriteUs({ text, className = "" }: { text?: string; className?: s
         ))}
       </ul>
       {text && (
-        <p aria-live="polite" className="mt-3 text-[14px] leading-snug text-ink-3">
-          {copied ? (
-            <span className="inline-flex items-center gap-1.5 text-ink-2">
-              <Check className="size-4 text-[var(--ok)]" strokeWidth={2.4} />
-              Текст скопирован — вставьте его в чат
+        <p aria-live="polite" className={`mt-3 text-[14px] leading-snug ${note === "paste" ? "font-bold text-ink" : "text-ink-3"}`}>
+          {note === "paste" ? (
+            <span className="inline-flex items-start gap-1.5">
+              <Check className="mt-0.5 size-4 shrink-0 text-[var(--ok)]" strokeWidth={2.4} />
+              Текст скопирован. В чате зажмите поле ввода и нажмите «Вставить».
             </span>
           ) : (
-            "Текст сообщения подставим сами: в Telegram он появится в чате, в ВКонтакте и MAX его можно будет вставить."
+            "В Telegram текст появится сам. ВКонтакте, MAX и TikTok так не умеют: мы скопируем текст, останется вставить его в чат."
           )}
         </p>
       )}

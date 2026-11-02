@@ -6,7 +6,7 @@ import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 import { Wordmark } from "./ui";
 
 // contacts that have a network of their own show its mark in its own colours, like the buttons by the form
-const MARK: Partial<Record<string, Brand>> = { phone: "call", telegram: "telegram", vk: "vk", max: "max" };
+const MARK: Partial<Record<string, Brand>> = { phone: "call", telegram: "telegram", vk: "vk", max: "max", tiktok: "tiktok" };
 
 const NAMES: Record<string, string> = {
   ...Object.fromEntries(CARS.map((c) => [c.slug, `${c.brand} ${c.model}`])),
@@ -42,7 +42,7 @@ export function Footer() {
                         style={{ background: BRAND[b].fill }}
                         className="grid size-12 place-items-center rounded-full text-white transition-transform duration-150 hover:-translate-y-0.5"
                       >
-                        <BrandIcon brand={b} className="size-6" />
+                        <BrandIcon brand={b} tone={b === "tiktok" ? "brand" : "current"} className="size-6" />
                       </a>
                     </li>
                   );

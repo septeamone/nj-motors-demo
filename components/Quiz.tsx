@@ -54,7 +54,6 @@ export function Quiz() {
           {done ? (
             <>
               <p className="text-[18px] leading-snug font-bold text-ink">Напишите нам — пришлём 2–3 варианта под ваш бюджет с расчётом под ключ.</p>
-              <p className="mt-1 text-[16px] text-ink-2">{said.join(" · ")}</p>
               <WriteUs className="mt-5" text={["Здравствуйте! Подберите, пожалуйста, машину из Кореи.", ...said].join("\n")} />
             </>
           ) : (
