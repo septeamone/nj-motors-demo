@@ -511,16 +511,6 @@ html.lenis body {
 }
 /* stroked (outline) display text */
 
-@keyframes acc-down {
-  from {
-    height: 0;
-    opacity: 0;
-  }
-  to {
-    height: var(--radix-accordion-content-height);
-    opacity: 1;
-  }
-}
 .field[data-disabled="true"] {
   opacity: 0.5;
 }
@@ -1010,5 +1000,74 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
     box-shadow:
       5px 5px 0 color-mix(in srgb, var(--accent-fill) 85%, transparent),
       0 22px 34px -18px var(--shadow);
+  }
+}
+
+/* FAQ (components/Faq.tsx): closed questions are ruled lines; the open one is a kraft slip with the red plate a hair
+   off underneath, its answer sliding out from under the question. Height through grid rows, so it eases both ways. */
+.faq-slip {
+  border-radius: 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  transition:
+    background-color 220ms var(--ease-out),
+    color 220ms var(--ease-out),
+    box-shadow 260ms var(--ease-out),
+    border-color 220ms var(--ease-out);
+}
+.faq-slip[data-open] {
+  background: var(--paper);
+  color: var(--paper-ink);
+  border-color: transparent;
+  box-shadow:
+    3px 3px 0 color-mix(in srgb, var(--accent-fill) 85%, transparent),
+    0 18px 30px -20px var(--shadow);
+}
+.faq-q {
+  transition: color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .faq-slip:not([data-open]) .faq-q:hover {
+    color: var(--accent-ink);
+  }
+}
+.faq-chev {
+  color: var(--accent-ink);
+  transition: transform 260ms var(--ease-out);
+}
+.faq-slip[data-open] .faq-chev {
+  color: var(--accent-fill);
+  transform: rotate(180deg);
+}
+.faq-a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms var(--ease-out);
+}
+.faq-slip[data-open] .faq-a {
+  grid-template-rows: 1fr;
+}
+.faq-a-in {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 280ms var(--ease-out);
+}
+.faq-slip[data-open] .faq-a-in {
+  opacity: 1;
+  transform: none;
+  transition-delay: 60ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-a,
+  .faq-a-in,
+  .faq-chev {
+    transition-property: opacity;
+  }
+  .faq-a-in {
+    transform: none;
   }
 }

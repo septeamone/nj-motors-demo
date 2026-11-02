@@ -1,38 +1,62 @@
 "use client";
 
-import * as Accordion from "@radix-ui/react-accordion";
-import { Plus } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { useId, useState } from "react";
 import { FAQ as BASE, IF_CASES } from "@/lib/data";
-
-// the owner's "what if" commitments join the questions once they are filled in (lib/data)
-const FAQ = [...BASE, ...IF_CASES.filter((x) => x.a.trim())];
 import { nb } from "@/lib/typo";
 import { Reveal, SectionHead } from "./ui";
 
+// the owner's "what if" commitments join the questions once they are filled in (lib/data)
+const FAQ = [...BASE, ...IF_CASES.filter((x) => x.a.trim())];
+
+/**
+ * Questions as a stack of slips: the open one becomes a kraft page (the paper of the deal passport, with the red
+ * plate printed a hair off underneath), and its answer slides out from under the question. The height opens through
+ * grid rows (0fr → 1fr), so it eases both ways with no measuring; every answer stays in the HTML for search engines.
+ * One open at a time; a second click closes it.
+ */
 export function Faq() {
+  const [open, setOpen] = useState<number | null>(0);
+  const base = useId();
   return (
     <section id="faq" className="pt-14 pb-16 lg:pt-24 lg:pb-24">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead title="Вопросы до заявки" />
         <Reveal className="mt-8 lg:mt-10">
-          <Accordion.Root type="single" collapsible defaultValue="item-0" className="grid items-start gap-x-12 border-t border-line-strong lg:grid-cols-2">
-            {FAQ.map((f, i) => (
-              <Accordion.Item key={f.q} value={`item-${i}`} className="border-b border-line">
-                <Accordion.Header>
-                  <Accordion.Trigger className="group flex w-full items-center justify-between gap-6 py-5 text-left text-[17px] font-bold text-ink transition-colors hover:text-accent-ink">
-                    {nb(f.q)}
-                    <span className="grid size-11 shrink-0 place-items-center rounded-full border-2 border-accent/40 transition-[rotate,transform,border-color] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-data-[state=open]:rotate-45 group-data-[state=open]:border-accent group-data-[state=open]:text-accent-ink">
-                      <Plus className="size-6 text-accent" strokeWidth={3.2} strokeLinecap="round" />
-                    </span>
-                  </Accordion.Trigger>
-                </Accordion.Header>
-                {/* forceMount: closed answers stay in the HTML (hidden), so search engines read every one */}
-                <Accordion.Content forceMount className="overflow-hidden data-[state=closed]:hidden data-[state=open]:animate-[acc-down_700ms_cubic-bezier(0.16,1,0.3,1)]">
-                  <p className="max-w-[62ch] pb-7 text-[16px] leading-relaxed text-ink-2">{nb(f.a)}</p>
-                </Accordion.Content>
-              </Accordion.Item>
+          {/* two independent columns on wide screens (an open slip lengthens only its own column), one list on phones */}
+          <div className="grid items-start gap-x-8 gap-y-2 lg:grid-cols-2">
+            {[0, 1].map((col) => (
+              <ul key={col} className="flex flex-col gap-2 max-lg:contents">
+                {FAQ.map((f, i) => {
+                  if (i % 2 !== col) return null;
+                  const on = open === i;
+                  const id = `${base}-${i}`;
+                  return (
+                    <li key={f.q} data-open={on || undefined} className="faq-slip" style={{ order: i }}>
+                      <h3>
+                        <button
+                          type="button"
+                          id={`${id}-q`}
+                          aria-expanded={on}
+                          aria-controls={`${id}-a`}
+                          onClick={() => setOpen(on ? null : i)}
+                          className="faq-q group flex w-full cursor-pointer items-center justify-between gap-5 px-4 py-4 text-left text-[17px] font-bold sm:px-5"
+                        >
+                          <span>{nb(f.q)}</span>
+                          <ChevronDown aria-hidden className="faq-chev size-5 shrink-0" strokeWidth={2.4} />
+                        </button>
+                      </h3>
+                      <div id={`${id}-a`} role="region" aria-labelledby={`${id}-q`} className="faq-a">
+                        <div className="faq-a-in">
+                          <p className="max-w-[62ch] px-4 pb-5 text-[16px] leading-relaxed sm:px-5">{nb(f.a)}</p>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             ))}
-          </Accordion.Root>
+          </div>
         </Reveal>
       </div>
     </section>
