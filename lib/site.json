@@ -8,8 +8,8 @@
   "contacts": {
     "phone": null,
     "telegram": null,
-    "vk": null,
-    "max": null,
+    "vk": "https://vk.com/njmotorskorea",
+    "max": "https://max.ru/u/f9LHodD0cOJF6cKWZF3KOmiHSgLD40DBrd3rNt4E7uiPSw2VSB16TTZugKM",
     "email": null,
     "address": null
   },
@@ -30,5 +30,10 @@
     "endpoint": null
   },
   "pricesConfirmed": false,
-  "dealConfirmed": false
+  "dealConfirmed": false,
+  "social": {
+    "tiktok": "https://www.tiktok.com/@njmotorskorea",
+    "vk": "https://vk.com/njmotorskorea",
+    "telegram": "https://t.me/njmotorskorea2"
+  }
 }

@@ -9,6 +9,7 @@ import { MobileBar } from "@/components/MobileBar";
 import { Owner } from "@/components/Owner";
 import { Process } from "@/components/Process";
 import { Reviews } from "@/components/Reviews";
+import { Socials } from "@/components/Socials";
 
 // Marks the intro before first paint, so the header and hero text never flash ahead of the emblem (see EmblemStage).
 const introScript = `if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.dataset.intro='play'`;
@@ -30,6 +31,8 @@ export default function Home() {
         {/* one block: who you work with, then what his clients say */}
         <Owner />
         <Reviews />
+        {/* where to see more: TikTok, VK, Telegram */}
+        <Socials />
         <Faq />
         <Contact />
       </main>
