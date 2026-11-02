@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
 import { useId, useState } from "react";
 import { phoneOk, sendError, sendLead, type Via } from "@/lib/lead";
 import { channels } from "@/lib/site";
-import { ConsentText, ViaPicker } from "./LeadBits";
+import { ConsentText, PolicyNote, ViaPicker } from "./LeadBits";
 
 /**
  * A short request in the middle of the page: a phone and where to talk, one button. The full form waits at the end;
@@ -93,6 +93,7 @@ export function QuickLead({ form, button = "Жду связи", extra }: { form:
           />
           <ConsentText />
         </label>
+        <PolicyNote />
         {consentErr && (
           <p id={`${id}-consent-err`} role="alert" className="mt-2 text-[16px] text-[var(--danger)]">
             Нужно согласие на обработку данных

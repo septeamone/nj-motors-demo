@@ -9,7 +9,7 @@ import { QUIZ } from "@/lib/data";
 import { phoneOk, sendError, sendLead, type Via } from "@/lib/lead";
 import { DUR, EASE } from "@/lib/motion";
 import { channels } from "@/lib/site";
-import { ConsentText, ViaPicker } from "./LeadBits";
+import { ConsentText, PolicyNote, ViaPicker } from "./LeadBits";
 import { Select } from "./Select";
 import { Reveal, SectionHead } from "./ui";
 
@@ -239,6 +239,7 @@ export function Contact() {
                         />
                         <ConsentText />
                       </label>
+                      <PolicyNote />
                       {errors.consent && <p id="f-consent-err" role="alert" className="mt-2 text-[16px] text-[var(--danger)]">{errors.consent}</p>}
                     </div>
                     {status === "error" && (

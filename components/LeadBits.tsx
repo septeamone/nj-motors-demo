@@ -38,18 +38,28 @@ export function ViaPicker({ value, onChange, id }: { value: Via; onChange: (v: V
 
 const DOC_LINK = "underline decoration-line-strong underline-offset-4 hover:text-ink";
 
-/** The words beside every consent box: the consent and the policy, each a link to its own page. */
+/**
+ * The words beside every consent box. The box is the consent alone: since 1 September 2025 it may not be bundled with
+ * other documents (152-FZ art. 9), so the policy gets its own plain line under the box (PolicyNote), outside the label.
+ */
 export function ConsentText() {
   return (
     <span>
       Даю{" "}
       <a href={asset("/consent/")} target="_blank" rel="noopener" className={DOC_LINK}>
         согласие на обработку персональных данных
-      </a>{" "}
-      и принимаю{" "}
-      <a href={asset("/privacy/")} target="_blank" rel="noopener" className={DOC_LINK}>
-        политику конфиденциальности
       </a>
     </span>
+  );
+}
+
+export function PolicyNote() {
+  return (
+    <p className="mt-1.5 pl-[30px] text-[14px] leading-snug text-ink-3 [hyphens:none]">
+      Как мы обращаемся с данными — в{" "}
+      <a href={asset("/privacy/")} target="_blank" rel="noopener" className={DOC_LINK}>
+        политике конфиденциальности
+      </a>
+    </p>
   );
 }
