@@ -11,12 +11,17 @@ import { WriteUs } from "./LeadBits";
  * A choice in four taps (budget, body, engine, age), then a message: the soft way in for a visitor who does not know
  * what to write. Each answer moves on by itself; the answers become a ready-made message. No discounts for answering.
  */
+// what each answer is about, so "Не важно" in the message says what is not important
+const ABOUT: Record<string, string> = { budget: "Бюджет", body: "Кузов", engine: "Двигатель", age: "Возраст" };
+
 export function Quiz() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const calm = useReducedMotion();
   const done = step >= QUIZ.length;
   const q = QUIZ[Math.min(step, QUIZ.length - 1)];
+
+  const said = QUIZ.filter((x) => answers[x.key]).map((x) => `${ABOUT[x.key]}: ${answers[x.key].toLowerCase()}`);
 
   const pick = (o: string) => {
     setAnswers((a) => ({ ...a, [q.key]: o }));
@@ -49,8 +54,8 @@ export function Quiz() {
           {done ? (
             <>
               <p className="text-[18px] leading-snug font-bold text-ink">Напишите нам — пришлём 2–3 варианта под ваш бюджет с расчётом под ключ.</p>
-              <p className="mt-1 text-[16px] text-ink-2">{Object.values(answers).join(" · ")}</p>
-              <WriteUs className="mt-5" text={`Здравствуйте! Подберите, пожалуйста, машину из Кореи: ${Object.values(answers).join(", ")}.`} />
+              <p className="mt-1 text-[16px] text-ink-2">{said.join(" · ")}</p>
+              <WriteUs className="mt-5" text={["Здравствуйте! Подберите, пожалуйста, машину из Кореи.", ...said].join("\n")} />
             </>
           ) : (
             <div role="radiogroup" aria-label={q.q}>
