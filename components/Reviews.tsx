@@ -11,9 +11,9 @@ import { Reveal, SectionHead } from "./ui";
 // Any number of videos, upright or wide: the player reads each video's own shape when it loads (`wide` is only the
 // first guess before that), and the list scrolls sideways when there are more than fit.
 const ITEMS = [
-  { id: "review-1", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 82 },
-  { id: "review-2", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: false, dur: 102 },
-  { id: "review-3", title: "Отзыв клиента", sub: "Имя, машина и город — после согласия клиента", wide: true, dur: 30 },
+  { id: "review-1", title: "Отзыв клиента", sub: "", wide: false, dur: 82 },
+  { id: "review-2", title: "Отзыв клиента", sub: "", wide: false, dur: 102 },
+  { id: "review-3", title: "Отзыв клиента", sub: "", wide: true, dur: 30 },
 ] as const;
 
 // Photos of cars sent by the owner (public/gallery): a cropped tile for the wall and the whole frame for the big view.
@@ -292,7 +292,7 @@ export function Reviews() {
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           title="Что говорят клиенты"
-          lead="Видео от наших клиентов. Имена, машины и города добавим с их согласия."
+          lead="Живые видео от наших клиентов: как получили машину и как прошла сделка."
         />
 
         <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-10 xl:gap-14">
@@ -380,7 +380,7 @@ export function Reviews() {
                 <div className="absolute inset-x-0 bottom-0 flex flex-col gap-2 px-3 pt-10 pb-3 [background:linear-gradient(0deg,rgba(0,0,0,0.75),transparent)]">
                   <p className="px-1 text-[16px] leading-tight font-bold text-white">
                     {cur.title}
-                    <span className="block text-[14px] font-medium text-white/75">{cur.sub}</span>
+                    {cur.sub && <span className="block text-[14px] font-medium text-white/75">{cur.sub}</span>}
                   </p>
                   <div
                     role="slider"
@@ -469,7 +469,7 @@ export function Reviews() {
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block text-[16px] leading-tight font-bold text-ink">{it.title}</span>
-                        <span className="mt-0.5 line-clamp-2 block text-[14px] text-ink-2 max-sm:line-clamp-1">{it.sub}</span>
+                        {it.sub && <span className="mt-0.5 line-clamp-2 block text-[14px] text-ink-2 max-sm:line-clamp-1">{it.sub}</span>}
                       </span>
                       <span className="num shrink-0 text-[15px] text-ink-3">{mmss(it.dur)}</span>
                     </button>
