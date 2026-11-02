@@ -7,7 +7,6 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { MobileBar } from "@/components/MobileBar";
-import { Owner } from "@/components/Owner";
 import { Process } from "@/components/Process";
 import { Reviews } from "@/components/Reviews";
 import { Socials } from "@/components/Socials";
@@ -34,7 +33,6 @@ export default function Home() {
         <Socials />
         <Compare />
         <Process />
-        <Owner />
         <Faq />
         <Contact />
       </main>
