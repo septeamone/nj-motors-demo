@@ -2,7 +2,11 @@ import credits from "@/lib/credits.json";
 import { asset } from "@/lib/asset";
 import { CARS } from "@/lib/data";
 import { channels, SITE } from "@/lib/site";
+import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 import { Wordmark } from "./ui";
+
+// contacts that have a network of their own show its mark in its own colours, like the buttons by the form
+const MARK: Partial<Record<string, Brand>> = { phone: "call", telegram: "telegram", vk: "vk", max: "max" };
 
 const NAMES: Record<string, string> = {
   ...Object.fromEntries(CARS.map((c) => [c.slug, `${c.brand} ${c.model}`])),
@@ -23,18 +27,37 @@ export function Footer() {
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <Wordmark />
           {contacts.length ? (
-            <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[16px]">
-              {contacts.map((c) => (
-                <li key={c.key}>
-                  {c.href ? (
-                    <a href={c.href} className="font-semibold text-ink hover:text-accent-ink">
-                      {c.value}
-                    </a>
-                  ) : (
-                    <span className="font-semibold text-ink">{c.value}</span>
-                  )}
-                </li>
-              ))}
+            <ul className="flex flex-wrap items-center gap-3 text-[16px]">
+              {contacts.map((c) => {
+                const b = MARK[c.key];
+                if (b && c.href)
+                  return (
+                    <li key={c.key}>
+                      <a
+                        href={c.href}
+                        target={c.key === "phone" ? undefined : "_blank"}
+                        rel="noopener noreferrer"
+                        aria-label={c.key === "telegram" ? `Telegram ${c.value}` : c.label}
+                        title={c.key === "telegram" ? `Telegram ${c.value}` : c.label}
+                        style={{ background: BRAND[b].fill }}
+                        className="grid size-12 place-items-center rounded-full text-white transition-transform duration-150 hover:-translate-y-0.5"
+                      >
+                        <BrandIcon brand={b} className="size-6" />
+                      </a>
+                    </li>
+                  );
+                return (
+                  <li key={c.key}>
+                    {c.href ? (
+                      <a href={c.href} className="font-semibold text-ink hover:text-accent-ink">
+                        {c.value}
+                      </a>
+                    ) : (
+                      <span className="font-semibold text-ink">{c.value}</span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             // макет: контакты ещё не подтверждены владельцем

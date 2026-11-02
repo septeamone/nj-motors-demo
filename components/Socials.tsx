@@ -1,6 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { SITE } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
+import { PhoneMock } from "./PhoneMock";
 import { Reveal } from "./ui";
 
 const LINKS: { brand: Brand; href: string | null; label: string }[] = [
@@ -10,16 +11,17 @@ const LINKS: { brand: Brand; href: string | null; label: string }[] = [
 ];
 
 /**
- * A slim horizontal strip after the reviews: where to see more cars, clients and the process. Each button wears its
- * network's own colours; TikTok is black with its cyan and pink plates printed off-register, like its own mark.
+ * After the reviews: where to see more cars, clients and the process, beside the 3D phone showing the real Telegram channel.
+ * Each button wears its network's own colours; TikTok is black with its cyan and pink plates printed off-register, like its own mark.
  */
 export function Socials() {
   const links = LINKS.filter((l) => l.href);
   if (!links.length) return null;
   return (
     <section aria-label="NJ Motors в соцсетях" className="bg-bg-2 pb-12 lg:pb-16">
-      <Reveal className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
-        <div className="flex flex-col gap-5 rounded-[8px] bg-surface p-5 sm:p-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:px-10">
+      <div className="mx-auto grid max-w-[var(--page)] items-center gap-6 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-14 lg:px-12 xl:px-20">
+      <Reveal>
+        <div className="flex flex-col gap-5 rounded-[8px] bg-surface p-5 sm:p-7 lg:gap-7 lg:p-10">
           <div>
             <p className="font-display text-[clamp(22px,2.2vw,30px)] leading-tight tracking-wide text-ink uppercase">Мы в соцсетях</p>
             <p className="mt-1.5 max-w-[46ch] text-[16px] leading-snug text-ink-2">Новые машины, отзывы клиентов и как проходит каждый этап.</p>
@@ -45,6 +47,10 @@ export function Socials() {
           </ul>
         </div>
       </Reveal>
+      <Reveal delay={0.1}>
+        <PhoneMock />
+      </Reveal>
+      </div>
     </section>
   );
 }
