@@ -16,13 +16,19 @@ type Channel = { key: "phone" | "telegram" | "vk" | "max" | "email" | "address";
 /** A dialler link with the country code: "8 (900) 123-45-67" and "+7 900 123-45-67" both become tel:+79001234567. */
 export const telHref = (phone: string) => `tel:+${phone.replace(/\D/g, "").replace(/^8(?=\d{10}$)/, "7")}`;
 
+/**
+ * The VK link that opens a chat with the community (vk.me/<address>), not its wall: in the VK app it lands straight in
+ * the messages. Accepts "njmotorskorea", "@njmotorskorea" or a vk.com / vk.ru link.
+ */
+export const vkChat = (v: string) => `https://vk.me/${v.replace(/^https?:\/\/(m\.)?vk\.(com|ru|me)\//, "").replace(/^@/, "").replace(/\/.*$/, "")}`;
+
 /** Only contacts that NJ Motors has confirmed (non-null in site.json) are ever rendered. */
 export function channels(): Channel[] {
   const c = SITE.contacts;
   const out: Channel[] = [];
   if (c.phone) out.push({ key: "phone", label: "Телефон", value: c.phone, href: telHref(c.phone) });
   if (c.telegram) out.push({ key: "telegram", label: "Telegram", value: c.telegram, href: `https://t.me/${c.telegram.replace(/^@/, "")}` });
-  if (c.vk) out.push({ key: "vk", label: "ВКонтакте", value: "Группа ВКонтакте", href: /^https?:\/\//.test(c.vk) ? c.vk : `https://vk.com/${c.vk.replace(/^@/, "")}` });
+  if (c.vk) out.push({ key: "vk", label: "ВКонтакте", value: "Написать во ВКонтакте", href: vkChat(c.vk) });
   if (c.max) out.push({ key: "max", label: "MAX", value: "MAX", href: /^https?:\/\//.test(c.max) ? c.max : undefined });
   if (c.email) out.push({ key: "email", label: "Эл. почта", value: c.email, href: `mailto:${c.email}` });
   if (c.address) out.push({ key: "address", label: "Офис", value: c.address });

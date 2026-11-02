@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Check } from "lucide-react";
 import { useState } from "react";
-import { SITE, telHref } from "@/lib/site";
+import { SITE, telHref, vkChat } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 
 // each button wears its own brand colour
@@ -18,7 +18,7 @@ function links(text?: string): { brand: Brand; label: string; href: string }[] {
     const tg = url(c.telegram, "t.me");
     out.push({ brand: "telegram", label: "Telegram", href: text ? `${tg}?text=${encodeURIComponent(text)}` : tg });
   }
-  if (c.vk) out.push({ brand: "vk", label: "ВКонтакте", href: url(c.vk, "vk.com") });
+  if (c.vk) out.push({ brand: "vk", label: "ВКонтакте", href: vkChat(c.vk) });
   if (c.max && /^https?:\/\//.test(c.max)) out.push({ brand: "max", label: "MAX", href: c.max });
   if (c.phone) out.push({ brand: "call", label: "Позвонить", href: telHref(c.phone) });
   return out;
