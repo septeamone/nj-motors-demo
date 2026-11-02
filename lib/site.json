@@ -20,7 +20,9 @@
     "poster": "/reviews/andrey-poster.webp"
   },
   "legal": {
-    "entity": null,
+    "entity": "KOREANDR CO., LTD",
+    "regNo": "146-88-04047",
+    "address": "29, Sinheung-dong 3-ga, Jung-gu, Incheon, Republic of Korea",
     "inn": null,
     "ogrn": null
   },

@@ -9,7 +9,8 @@ import { Reveal, SectionHead } from "./ui";
 export function Owner() {
   const { owner, legal } = SITE;
   const rows = [
-    ["Компания", legal.entity],
+    ["Компания", legal.entity && `${legal.entity}, Южная Корея`],
+    ["Рег. номер", legal.regNo],
     ["ИНН", legal.inn],
     ["ОГРН", legal.ogrn],
   ].filter((r): r is [string, string] => !!r[1]);

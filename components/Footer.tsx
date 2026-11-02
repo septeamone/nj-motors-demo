@@ -1,7 +1,7 @@
 import credits from "@/lib/credits.json";
 import { asset } from "@/lib/asset";
 import { CARS } from "@/lib/data";
-import { channels } from "@/lib/site";
+import { channels, SITE } from "@/lib/site";
 import { Wordmark } from "./ui";
 
 const NAMES: Record<string, string> = {
@@ -43,7 +43,17 @@ export function Footer() {
         </div>
 
         <div className="mt-6 flex flex-col gap-3 border-t border-line pt-5 text-[15px] text-ink-3 lg:flex-row lg:items-start lg:justify-between">
-          <p>© 2026 NJ Motors. Сайт в разработке: фото, цены и сроки ориентировочные.</p>
+          <div className="grid gap-1">
+            <p>© 2026 NJ Motors. Сайт в разработке: фото, цены и сроки ориентировочные.</p>
+            {SITE.legal.entity && (
+              // the exporter behind NJ Motors, as on its invoices
+              <p>
+                NJ Motors — {SITE.legal.entity}
+                {SITE.legal.regNo ? `, рег. номер ${SITE.legal.regNo}` : ""}
+                {SITE.legal.address ? `. ${SITE.legal.address}` : ""}
+              </p>
+            )}
+          </div>
           <div className="flex flex-wrap items-start gap-x-6 gap-y-2">
             <a href={asset("/privacy/")} className="font-semibold hover:text-ink">
               Политика конфиденциальности

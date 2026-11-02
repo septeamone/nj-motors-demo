@@ -3,7 +3,7 @@ import raw from "./site.json";
 type Site = Omit<typeof raw, "contacts" | "owner" | "legal"> & {
   contacts: { phone: string | null; telegram: string | null; vk: string | null; max: string | null; email: string | null; address: string | null };
   owner: { name: string | null; role: string; video: string | null; poster: string | null };
-  legal: { entity: string | null; inn: string | null; ogrn: string | null };
+  legal: { entity: string | null; regNo: string | null; address: string | null; inn: string | null; ogrn: string | null };
 };
 
 export const SITE = raw as Site;
