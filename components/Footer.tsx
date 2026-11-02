@@ -61,7 +61,7 @@ export function Footer() {
             </ul>
           ) : (
             // макет: контакты ещё не подтверждены владельцем
-            <p className="text-[16px] leading-snug text-ink-2">Телефон и почта появятся после подтверждения. Пока: заявка в форме выше.</p>
+            <p className="text-[16px] leading-snug text-ink-2">Напишите нам в соцсетях — ссылки выше.</p>
           )}
         </div>
 
@@ -81,9 +81,6 @@ export function Footer() {
           <div className="flex flex-wrap items-start gap-x-6 gap-y-2">
             <a href={asset("/privacy/")} className="font-semibold hover:text-ink">
               Политика конфиденциальности
-            </a>
-            <a href={asset("/consent/")} className="font-semibold hover:text-ink">
-              Согласие на обработку данных
             </a>
             <a href={asset("/terms/")} className="font-semibold hover:text-ink">
               Пользовательское соглашение

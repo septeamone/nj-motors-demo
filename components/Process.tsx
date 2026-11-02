@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef } from "react";
 import { DOCS } from "@/lib/data";
 import { NjIcon } from "./NjIcon";
-import { QuickLead } from "./QuickLead";
+import { WriteUs } from "./LeadBits";
 import { Deal } from "./Deal";
 import { FilmCanvas } from "./FilmCanvas";
 import { Reveal, SectionHead } from "./ui";
@@ -101,13 +101,13 @@ export function Process() {
           </div>
         </Reveal>
 
-        {/* the most reassuring moment of the page ends with the action: a phone is enough */}
+        {/* the most reassuring moment of the page ends with the action: one message is enough */}
         <Reveal className="mt-10 grid items-center gap-6 rounded-[6px] bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 lg:p-10">
           <div>
             <p className="font-display text-[clamp(24px,2.6vw,34px)] leading-tight tracking-wide text-ink uppercase">Первый шаг бесплатный</p>
-            <p className="mt-2 max-w-[40ch] text-[17px] leading-snug text-ink-2">Оставьте телефон: мы свяжемся, расспросим о задаче и пришлём расчёт. Платить пока не нужно.</p>
+            <p className="mt-2 max-w-[40ch] text-[17px] leading-snug text-ink-2">Напишите нам, где удобно: расспросим о задаче и пришлём расчёт. Платить пока не нужно.</p>
           </div>
-          <QuickLead form="deal" />
+          <WriteUs />
         </Reveal>
       </div>
     </section>

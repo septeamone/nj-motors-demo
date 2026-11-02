@@ -5,11 +5,11 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { QUIZ } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
-import { QuickLead } from "./QuickLead";
+import { WriteUs } from "./LeadBits";
 
 /**
- * A choice in four taps (budget, body, engine, age), then a phone: the soft way in for a visitor who is not ready to
- * write a message. Each answer moves on by itself; the answers travel with the request. No discounts for answering.
+ * A choice in four taps (budget, body, engine, age), then a message: the soft way in for a visitor who does not know
+ * what to write. Each answer moves on by itself; the answers become a ready-made message. No discounts for answering.
  */
 export function Quiz() {
   const [step, setStep] = useState(0);
@@ -48,11 +48,9 @@ export function Quiz() {
         >
           {done ? (
             <>
-              <p className="text-[18px] leading-snug font-bold text-ink">Пришлём 2–3 варианта под ваш бюджет с расчётом под ключ.</p>
+              <p className="text-[18px] leading-snug font-bold text-ink">Напишите нам — пришлём 2–3 варианта под ваш бюджет с расчётом под ключ.</p>
               <p className="mt-1 text-[16px] text-ink-2">{Object.values(answers).join(" · ")}</p>
-              <div className="mt-5">
-                <QuickLead form="quiz" button="Получить подборку" extra={answers} />
-              </div>
+              <WriteUs className="mt-5" text={`Здравствуйте! Подберите, пожалуйста, машину из Кореи: ${Object.values(answers).join(", ")}.`} />
             </>
           ) : (
             <div role="radiogroup" aria-label={q.q}>

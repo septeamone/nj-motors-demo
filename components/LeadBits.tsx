@@ -1,65 +1,78 @@
 "use client";
 
-import { asset } from "@/lib/asset";
-import { VIA, VIA_BRAND, type Via } from "@/lib/lead";
+import { ArrowUpRight, Check } from "lucide-react";
+import { useState } from "react";
+import { SITE, telHref } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 
-// each chip and button wears its own brand: tinted when idle, filled when chosen
+// each button wears its own brand colour
 const brandStyle = (b: Brand) => ({ "--b": BRAND[b].color, "--bf": BRAND[b].fill }) as React.CSSProperties;
-const CHIP =
-  "group inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border-[1.5px] border-[var(--b)] bg-[color-mix(in_srgb,var(--b)_14%,transparent)] px-3.5 text-[16px] font-bold text-ink transition-[background,color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--b)_26%,transparent)]";
 
-/** "Where shall we answer you": four chips in the messengers' own colours, one chosen. */
-export function ViaPicker({ value, onChange, id }: { value: Via; onChange: (v: Via) => void; id: string }) {
-  return (
-    <div>
-      <p id={id} className="label">
-        Куда вам ответить
-      </p>
-      <div role="radiogroup" aria-labelledby={id} className="mt-2 flex flex-wrap gap-2">
-        {VIA.map((o) => (
-          <button
-            key={o}
-            type="button"
-            role="radio"
-            aria-checked={value === o}
-            onClick={() => onChange(o)}
-            style={brandStyle(VIA_BRAND[o])}
-            className={`${CHIP} aria-checked:border-transparent aria-checked:text-white aria-checked:[background:var(--bf)]`}
-          >
-            <BrandIcon brand={VIA_BRAND[o]} tone={value === o ? "current" : "brand"} className="size-5 text-[var(--b)] group-aria-checked:text-white" />
-            {o}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+const url = (v: string, host: string) => (/^https?:\/\//.test(v) ? v : `https://${host}/${v.replace(/^@/, "")}`);
+
+/** Where a visitor can write to NJ Motors: only confirmed contacts from lib/site.json. Telegram takes the text pre-filled. */
+function links(text?: string): { brand: Brand; label: string; href: string }[] {
+  const c = SITE.contacts;
+  const out: { brand: Brand; label: string; href: string }[] = [];
+  if (c.telegram) {
+    const tg = url(c.telegram, "t.me");
+    out.push({ brand: "telegram", label: "Telegram", href: text ? `${tg}?text=${encodeURIComponent(text)}` : tg });
+  }
+  if (c.vk) out.push({ brand: "vk", label: "ВКонтакте", href: url(c.vk, "vk.com") });
+  if (c.max && /^https?:\/\//.test(c.max)) out.push({ brand: "max", label: "MAX", href: c.max });
+  if (c.phone) out.push({ brand: "call", label: "Позвонить", href: telHref(c.phone) });
+  return out;
 }
-
-const DOC_LINK = "underline decoration-line-strong underline-offset-4 hover:text-ink";
 
 /**
- * The words beside every consent box. The box is the consent alone: since 1 September 2025 it may not be bundled with
- * other documents (152-FZ art. 9), so the policy gets its own plain line under the box (PolicyNote), outside the label.
+ * "Write to us": the site collects no personal data, so instead of a form the visitor opens a chat with NJ Motors.
+ * With `text` (a car from the catalog, the quiz answers) the message is ready: Telegram gets it pre-filled, and a tap on
+ * any button also copies it, so in VK or MAX it is one paste away.
  */
-export function ConsentText() {
-  return (
-    <span>
-      Даю{" "}
-      <a href={asset("/consent/")} target="_blank" rel="noopener" className={DOC_LINK}>
-        согласие на обработку персональных данных
-      </a>
-    </span>
-  );
-}
+export function WriteUs({ text, className = "" }: { text?: string; className?: string }) {
+  const [copied, setCopied] = useState(false);
+  const list = links(text);
 
-export function PolicyNote() {
+  const copy = () => {
+    if (!text) return;
+    navigator.clipboard?.writeText(text).then(
+      () => setCopied(true),
+      () => {},
+    );
+  };
+
   return (
-    <p className="mt-1.5 pl-[30px] text-[14px] leading-snug text-ink-3 [hyphens:none]">
-      Как мы обращаемся с данными — в{" "}
-      <a href={asset("/privacy/")} target="_blank" rel="noopener" className={DOC_LINK}>
-        политике конфиденциальности
-      </a>
-    </p>
+    <div className={className}>
+      <ul className="grid grid-cols-2 gap-2.5 sm:gap-3">
+        {list.map((l) => (
+          <li key={l.brand}>
+            <a
+              href={l.href}
+              target={l.brand === "call" ? undefined : "_blank"}
+              rel={l.brand === "call" ? undefined : "noopener noreferrer"}
+              onClick={copy}
+              style={brandStyle(l.brand)}
+              className="group flex min-h-14 items-center justify-center gap-2.5 rounded-full px-4 text-[16px] font-bold text-white transition-transform duration-150 [background:var(--bf)] hover:-translate-y-0.5 sm:text-[17px]"
+            >
+              <BrandIcon brand={l.brand} className="size-[22px] shrink-0" />
+              {l.label}
+              <ArrowUpRight className="hidden size-4 shrink-0 opacity-70 transition-opacity group-hover:opacity-100 sm:block" strokeWidth={2.2} />
+            </a>
+          </li>
+        ))}
+      </ul>
+      {text && (
+        <p aria-live="polite" className="mt-3 text-[14px] leading-snug text-ink-3">
+          {copied ? (
+            <span className="inline-flex items-center gap-1.5 text-ink-2">
+              <Check className="size-4 text-[var(--ok)]" strokeWidth={2.4} />
+              Текст скопирован — вставьте его в чат
+            </span>
+          ) : (
+            "Текст сообщения подставим сами: в Telegram он появится в чате, в ВКонтакте и MAX его можно будет вставить."
+          )}
+        </p>
+      )}
+    </div>
   );
 }

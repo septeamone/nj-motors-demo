@@ -26,14 +26,7 @@
     "inn": null,
     "ogrn": null
   },
-  "operator": {
-    "name": null,
-    "email": null
-  },
   "metrika": null,
-  "form": {
-    "endpoint": null
-  },
   "pricesConfirmed": false,
   "dealConfirmed": false,
   "social": {

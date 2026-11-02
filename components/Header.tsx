@@ -12,7 +12,7 @@ const NAV = [
   { id: "reviews", label: "Отзывы" },
   { id: "process", label: "Как мы работаем" },
   { id: "faq", label: "Вопросы" },
-  { id: "contact", label: "Заявка" },
+  { id: "contact", label: "Написать" },
 ];
 
 function NavList({ items, prefix, active, className = "" }: { items: typeof NAV; prefix: string; active: string; className?: string }) {

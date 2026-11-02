@@ -7,12 +7,8 @@ const missing = [];
 for (const [key, value] of Object.entries(site.contacts)) {
   if (!value) missing.push(`contacts.${key}: not set (the site shows only confirmed contacts)`);
 }
-for (const [key, value] of Object.entries(site.operator)) {
-  if (!value) missing.push(`operator.${key}: not set (the privacy policy and the consent show blanks)`);
-}
 if (!site.metrika) missing.push("metrika: no Yandex Metrika counter number");
-if (!site.form.endpoint) missing.push("form.endpoint: no receiver connected, requests are NOT delivered anywhere");
-if (!site.pricesConfirmed) missing.push("pricesConfirmed: catalog prices and calculator rates are sample figures; confirm or replace them in lib/data.ts and lib/calc.ts");
+if (!site.pricesConfirmed) missing.push("pricesConfirmed: catalog prices are sample figures; confirm or replace them in lib/data.ts");
 
 if (missing.length) {
   console.log("Not ready to publish. Still to confirm:\n");
