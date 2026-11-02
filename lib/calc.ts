@@ -24,7 +24,7 @@ export const FUEL_LABEL: Record<Fuel, string> = { petrol: "Бензин", diesel
 export const SEA_LABEL: Record<Sea, string> = { roro: "Специальное судно для автомобилей", container: "В контейнере" };
 export const INLAND_LABEL: Record<Inland, string> = {
   vvo: "Заберу во Владивостоке",
-  truck: "Москва и центр, автовозом",
+  truck: "Автовоз до моего города",
   rail: "Москва и центр, по железной дороге",
   other: "Другой город",
 };
@@ -131,11 +131,7 @@ export function calculate(i: CalcInput) {
   const inland: Part =
     i.inland === "vvo"
       ? same("inland", "russia", "По России", "Забираете машину в порту Владивостока, доставка не нужна", 0)
-      : i.inland === "truck"
-        ? range("inland", "russia", "Владивосток → Москва", "Автовоз, около 9 000 км", 170_000, 200_000)
-        : i.inland === "rail"
-          ? range("inland", "russia", "Владивосток → Москва", "Железная дорога, автомобиль в контейнере", 130_000, 180_000)
-          : manager("inland", "russia", "Владивосток → ваш город", "Цена зависит от расстояния, назовёт Андрей");
+      : range("inland", "russia", "Владивосток → ваш город", "Автовоз или крытая фура: зависит от кузова, стоимости авто и расстояния", 150_000, 220_000);
 
   const parts: Part[] = [
     same("car", "korea", "Автомобиль в Корее", `${Math.round(i.priceKrw).toLocaleString("ru-RU")} ₩ по курсу ЦБ ${RATES.date}`, car),
@@ -145,9 +141,8 @@ export function calculate(i: CalcInput) {
     duty === null ? manager("duty", "customs", "Пошлина (единая ставка)", "Для электромобилей считает Андрей") : same("duty", "customs", "Пошлина (единая ставка)", ageNote, duty),
     same("fee", "customs", "Таможенный сбор", "Фиксированная сумма по стоимости автомобиля", customsFee(customsValue)),
     utilisation(isNew, i.volume, i.hp, i.fuel),
-    same("broker", "customs", "Брокер, склад, лаборатория, ЭПТС", "Оформление декларации и временное хранение в порту", 90_000),
+    range("broker", "customs", "Брокер, склад, лаборатория, ЭПТС", "Оплачивается после лаборатории и получения ЭПТС", 90_000, 101_000),
     inland,
-    manager("service", "contract", "Вознаграждение NJ Motors", "Фиксированная сумма, прописана в договоре до первого платежа"),
   ];
 
   let lo = 0;
@@ -165,9 +160,9 @@ export function calculate(i: CalcInput) {
     if (p.hi === null) open = true;
   }
 
-  const seaDays = i.sea === "roro" ? [14, 21] : [18, 30];
-  const inlandDays = i.inland === "truck" ? [18, 22] : i.inland === "rail" ? [14, 28] : [0, 0];
-  const days = { lo: seaDays[0] + 7 + inlandDays[0], hi: seaDays[1] + 17 + inlandDays[1], partial: i.inland === "other" };
+  // со слов Андрея: 4–7 дней в Корее, 5–10 во Владивостоке, 5–20 по России
+  const inlandDays = i.inland === "vvo" ? [0, 0] : [5, 20];
+  const days = { lo: 4 + 5 + inlandDays[0], hi: 7 + 10 + inlandDays[1], partial: false };
 
   return { parts, total: { lo, hi, open, missing }, days, age, isNew };
 }

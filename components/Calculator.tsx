@@ -29,7 +29,6 @@ const GROUPS: { id: Group; title: string }[] = [
   { id: "sea", title: "Море до Владивостока" },
   { id: "customs", title: "Таможня и оформление" },
   { id: "russia", title: "Дорога по России" },
-  { id: "contract", title: "Вознаграждение NJ Motors" },
 ];
 
 const SEA_ICON: Record<Sea, IconName> = { roro: "ship", container: "container" };
@@ -142,7 +141,7 @@ export function Calculator() {
         detail:
           `Расчёт на сайте: автомобиль ${fmt(priceKrw)} ₩, ${year} г., ${FUEL_LABEL[fuel].toLowerCase()}` +
           `${fuel === "electric" ? "" : `, ${volume} см³`}, ${hp} л.с.; море: ${SEA_LABEL[sea].toLowerCase()}; по России: ${INLAND_LABEL[inland].replace(/^(Заберу|Другой)/, (w) => w.toLowerCase())}. ` +
-          `Ориентир ${totalText} без вознаграждения NJ Motors.`,
+          `Ориентир ${totalText}.`,
       }),
     );
 
@@ -245,7 +244,7 @@ export function Calculator() {
                 label="2. Владивосток → вы"
                 value={inland}
                 onChange={setInland}
-                options={(["vvo", "truck", "rail", "other"] as const).map((s) => ({ value: s, label: INLAND_LABEL[s], icon: INLAND_ICON[s] }))}
+                options={(["vvo", "truck"] as const).map((s) => ({ value: s, label: INLAND_LABEL[s], icon: INLAND_ICON[s] }))}
               />
             </div>
             </div>
@@ -342,7 +341,7 @@ export function Calculator() {
             </ul>
 
             <p className="mt-3 text-[14px] leading-snug opacity-70">
-              Сюда не входит вознаграждение NJ Motors: это фиксированная сумма, Андрей называет её до подписания и вписывает в договор
+              Комиссий и наценок нет. Все платежи официальные и на ваше имя. Цена машины и доставки зависит от курса воны в день оплаты, пошлина — от курса евро, поэтому точную сумму Андрей считает прямо перед покупкой
               {total.missing.length ? `. Не посчитаны строки «уточнит Андрей» (${total.missing.join(", ")})` : ""}.
             </p>
             </div>

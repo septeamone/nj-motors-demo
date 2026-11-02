@@ -1,10 +1,8 @@
 "use client";
 
-import { Download } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef } from "react";
-import { asset } from "@/lib/asset";
-import { SITE } from "@/lib/site";
+import { DOCS } from "@/lib/data";
 import { NjIcon } from "./NjIcon";
 import { QuickLead } from "./QuickLead";
 import { Deal } from "./Deal";
@@ -73,7 +71,7 @@ export function Process() {
         <div className="on-film">
           <SectionHead
             title="Паспорт вашей сделки"
-            lead="Четыре платежа по этапам сделки. За что и когда вы платите, записано в договоре до первого платежа."
+            lead="Пять официальных платежей по этапам. За что и когда вы платите, записано в договоре."
           />
         </div>
 
@@ -81,35 +79,24 @@ export function Process() {
 
         <Reveal className="mt-12 rounded-[6px] bg-surface p-6 sm:p-8 lg:mt-16 lg:grid lg:grid-cols-12 lg:gap-x-6 lg:p-10">
           <div className="lg:col-span-12">
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-5">
-                <NjIcon
-                  name="contract"
-                  className="size-12 shrink-0 text-ink"
-                />
-                <div>
-                  <p className="font-display text-[clamp(26px,3vw,36px)] leading-tight tracking-wide uppercase">
-                    Образец договора
-                  </p>
-                  <p className="mt-2 max-w-[48ch] text-[18px] leading-snug text-ink-2">
-                    Этапы оплаты, сроки, возврат аванса, приёмка. Образец без
-                    сумм и подписей.
-                  </p>
-                </div>
+            {/* what the buyer holds at the end (from Andrey's own description) */}
+            <div className="flex items-start gap-5">
+              <NjIcon name="contract" className="size-12 shrink-0 text-ink" />
+              <div className="min-w-0">
+                <p className="font-display text-[clamp(26px,3vw,36px)] leading-tight tracking-wide uppercase">Документы на ваше имя</p>
+                <p className="mt-2 max-w-[52ch] text-[17px] leading-snug text-ink-2">Всё официально: на руках у вас будет полный комплект.</p>
               </div>
-              <a
-                href={asset("/docs/NJ-Motors-dogovor-obrazec.pdf")}
-                download
-                className="btn btn-primary shrink-0 self-start sm:self-center"
-              >
-                <Download className="size-[18px]" strokeWidth={2} />
-                Скачать PDF
-              </a>
             </div>
+            <ol className="mt-6 grid gap-x-10 gap-y-2.5 sm:grid-cols-2">
+              {DOCS.map((d, k) => (
+                <li key={d} className="flex gap-3 text-[16px] leading-snug text-ink">
+                  <span className="num w-6 shrink-0 text-accent-ink">{k + 1}</span>
+                  {d}
+                </li>
+              ))}
+            </ol>
             <p className="mt-6 max-w-[62ch] text-[16px] leading-snug text-ink-3">
-              Суммы и сроки вписываются в договор
-              {SITE.dealConfirmed ? "" : ". Этапы на сайте пока уточняются с владельцем"}
-              .
+              Для постановки на учёт останется распечатать ЭПТС и ТПО, пройти техосмотр и оформить страховку.
             </p>
           </div>
         </Reveal>

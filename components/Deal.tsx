@@ -11,10 +11,11 @@ import { nb } from "@/lib/typo";
 import { NjIcon, type IconName } from "./NjIcon";
 
 const N = STEPS.length;
-// Which payment belongs to which step (order of the two lists in lib/data.ts), and the step each payment is made on
-const PAY_AT: Record<number, number> = { 1: 0, 3: 1, 4: 2, 5: 3 };
-const PAY_STEP = [1, 3, 4, 5];
-const PAY_NOTE: Record<number, string> = { 0: "Платить пока не нужно", 2: "Входит в аванс" };
+// The payments made on each step (a step can carry two), from the step written on each payment in lib/data.ts
+const PAYS = DEAL_STAGES.length;
+const PAY_AT: Record<number, number[]> = {};
+DEAL_STAGES.forEach((d, k) => (PAY_AT[d.step] ??= []).push(k));
+const PAY_NOTE: Record<number, string> = { 0: "Платить пока не нужно", 2: "За осмотры денег не берём" };
 const STEP_ICON: IconName[] = ["form", "car", "inspect", "rub", "ship", "key"];
 const STATUS = ["ПРИНЯТО", "ПОДОБРАНО", "ПРОВЕРЕНО", "ВЫКУПЛЕНО", "В ПУТИ", "ВЫДАНО"];
 const PLACE = ["Вы", "Корея", "Корея", "Корея", "Пусан → Владивосток", "Ваш город"];
@@ -53,7 +54,7 @@ const splashV = {
 function Page({ i, pressed, className = "" }: { i: number; pressed?: boolean; className?: string }) {
   const calm = useReducedMotion();
   const s = STEPS[i];
-  const pay = i in PAY_AT ? DEAL_STAGES[PAY_AT[i]] : null;
+  const pays = PAY_AT[i] ?? [];
   const press = calm
     ? { initial: "on" as const }
     : pressed === undefined
@@ -81,11 +82,17 @@ function Page({ i, pressed, className = "" }: { i: number; pressed?: boolean; cl
 
         <div className="mt-auto flex items-end gap-4">
           <div className="min-w-0 flex-1 rounded-[4px] bg-[rgba(18,16,13,0.08)] px-4 py-3.5">
-            {pay ? (
+            {pays.length ? (
               <>
-                <p className="text-[15px] font-bold opacity-70">Платёж {PAY_AT[i] + 1} из 4</p>
-                <p className="mt-0.5 text-[17px] leading-snug font-bold">{pay.pay}</p>
-                <p className="mt-0.5 text-[15px] leading-snug opacity-80">{pay.when}</p>
+                <p className="text-[15px] font-bold opacity-70">
+                  {pays.length > 1 ? `Платежи ${pays[0] + 1}–${pays.at(-1)! + 1}` : `Платёж ${pays[0] + 1}`} из {PAYS}
+                </p>
+                {pays.map((k) => (
+                  <div key={k} className="mt-1 [&+div]:mt-2 [&+div]:border-t [&+div]:border-[rgba(18,16,13,0.18)] [&+div]:pt-2">
+                    <p className="text-[17px] leading-snug font-bold">{DEAL_STAGES[k].pay}</p>
+                    {pays.length === 1 && <p className="mt-0.5 text-[15px] leading-snug opacity-80">{DEAL_STAGES[k].when}</p>}
+                  </div>
+                ))}
               </>
             ) : (
               <p className="text-[17px] font-bold">{PAY_NOTE[i]}</p>
@@ -198,20 +205,20 @@ function RouteLine({ p, active }: { p: MotionValue<number>; active: number }) {
   );
 }
 
-/** The four payments beside the pad: the one due at this step is lit, the ones behind you are ticked. */
+/** The payments beside the pad: the ones due at this step are lit, the ones behind you are ticked. */
 function Ledger({ active }: { active: number }) {
   const note = PAY_NOTE[active];
   return (
     <div>
-      <h3 className="font-display text-[clamp(22px,2vw,28px)] leading-none tracking-wide uppercase">Четыре платежа</h3>
-      <p className="mt-3 max-w-[34ch] text-[17px] leading-snug text-ink-2">Сумма и срок каждого записаны в договоре.</p>
+      <h3 className="font-display text-[clamp(22px,2vw,28px)] leading-none tracking-wide uppercase">Пять платежей</h3>
+      <p className="mt-3 max-w-[34ch] text-[17px] leading-snug text-ink-2">Все официальные и на ваше имя.</p>
       <ol className="mt-6 flex flex-col gap-1.5">
-        {DEAL_STAGES.map((d, k) => {
-          const state = PAY_STEP[k] < active ? "done" : PAY_STEP[k] === active ? "now" : "next";
+        {DEAL_STAGES.map((d) => {
+          const state = d.step < active ? "done" : d.step === active ? "now" : "next";
           return (
             <li
-              key={d.name}
-              className={`flex gap-4 rounded-[6px] px-4 py-3.5 transition-[background-color,opacity] duration-700 ${state === "now" ? "bg-surface-2" : ""} ${state === "next" ? "opacity-50" : ""}`}
+              key={d.pay}
+              className={`flex gap-4 rounded-[6px] px-4 py-2.5 transition-[background-color,opacity] duration-700 ${state === "now" ? "bg-surface-2" : ""} ${state === "next" ? "opacity-50" : ""}`}
             >
               <span
                 className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full transition-colors duration-700 ${state === "next" ? "border-2 border-line-strong" : "bg-accent text-on-accent"}`}

@@ -59,7 +59,7 @@ export function Owner() {
 
           {/* the first screen already says this on phones, where every line costs a scroll */}
           <p className="mt-8 max-w-[44ch] text-[clamp(19px,1.7vw,23px)] leading-snug font-medium text-ink max-lg:hidden">
-            {nb("До выкупа автомобиль проходит независимый осмотр, а цена, вознаграждение и этапы оплаты записаны в договоре до первого платежа.")}
+            {nb("Вы работаете напрямую с корейской экспортной компанией, без посредников, комиссий и наценок. По каждому варианту — фото, видео и заключение эксперта.")}
           </p>
 
           <ChannelLink className="mt-8 max-lg:hidden" />

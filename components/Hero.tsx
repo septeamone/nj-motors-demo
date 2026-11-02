@@ -4,10 +4,10 @@ import { SplitHero } from "./SplitHero";
 // Advantages on the first screen, big, the way the owner's favourite competitor shows them. Only confirmed facts;
 // numbers (savings, cars delivered) are added once Andrey gives them.
 const ADVANTAGES = [
-  { v: "5–9 недель", t: "от выкупа до ключей" },
-  { v: "Без посредников", t: "сделку ведёт сам Андрей" },
-  { v: "Независимый осмотр", t: "до выкупа, решение за вами" },
-  { v: "Фото и видео", t: "на каждом этапе сделки" },
+  { v: "Без комиссий", t: "и наценок: напрямую с экспортёром" },
+  { v: "Отчёт эксперта", t: "фото, видео, толщиномер, диагностика" },
+  { v: "Страховка", t: "на полную стоимость на всех этапах" },
+  { v: "Документы на вас", t: "с первого дня, платежи официальные" },
 ];
 
 /** Text half of the hero; SplitHero owns the split, the intro and the emblem. */
@@ -23,7 +23,7 @@ export function Hero() {
         </h1>
 
         <p className="lead mt-4 !max-w-[40ch] max-sm:!text-[16px] lg:mt-6 lg:text-[18px]">
-          Автомобили из Кореи под ключ с 2023 года. Цена, вознаграждение и 4 платежа записаны в договоре до оплаты.
+          Автомобили из Кореи под ключ с 2023 года, напрямую от корейского экспортёра. Пять официальных платежей по этапам, все на ваше имя.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 lg:mt-8">
