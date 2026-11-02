@@ -292,7 +292,7 @@ export function Reviews() {
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           title="Что говорят клиенты"
-          lead="Видео от клиентов Андрея. Имена, машины и города добавим с их согласия."
+          lead="Видео от наших клиентов. Имена, машины и города добавим с их согласия."
         />
 
         <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-10 xl:gap-14">
@@ -479,7 +479,7 @@ export function Reviews() {
             </Rail>
 
             <div className="mt-6 lg:mt-8">
-              <Rail label="Фото с площадок в Корее, от Андрея" hint={`${PHOTOS.length}`} shelf={PHOTO_SHELF}>
+              <Rail label="Фото с площадок в Корее" hint={`${PHOTOS.length}`} shelf={PHOTO_SHELF}>
                 {PHOTOS.map((p, n) => (
                   <div key={p.n}>
                     <button

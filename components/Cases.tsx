@@ -10,7 +10,7 @@ export function Cases() {
   if (!CASES.length) return null;
   return (
     <section id="cases" className="mx-auto max-w-[var(--page)] px-5 pt-14 pb-6 sm:px-8 lg:px-12 lg:pt-20 xl:px-20">
-      <SectionHead title="Сколько сэкономили клиенты" lead="Настоящие сделки Андрея: итог под ключ и цена похожей машины в России." />
+      <SectionHead title="Сколько сэкономили клиенты" lead="Настоящие сделки NJ Motors: итог под ключ и цена похожей машины в России." />
       <ul className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {CASES.map((c) => {
           const save = c.market - c.ours;

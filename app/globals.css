@@ -996,3 +996,19 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
     display: none;
   }
 }
+
+/* hero advantages: kraft tiles lifted off the page, the red plate printed a hair off underneath */
+.adv-tile {
+  box-shadow:
+    3px 3px 0 color-mix(in srgb, var(--accent-fill) 85%, transparent),
+    0 18px 30px -18px var(--shadow);
+  transition: transform 0.25s var(--ease-expo), box-shadow 0.25s var(--ease-expo);
+}
+@media (hover: hover) and (pointer: fine) {
+  .adv-tile:hover {
+    transform: translate(-1px, -2px);
+    box-shadow:
+      5px 5px 0 color-mix(in srgb, var(--accent-fill) 85%, transparent),
+      0 22px 34px -18px var(--shadow);
+  }
+}

@@ -4,6 +4,7 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { DUR, EASE } from "@/lib/motion";
 import { useEffect, useState } from "react";
+import { asset } from "@/lib/asset";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
@@ -75,8 +76,9 @@ export function Header({ prefix = "" }: { prefix?: string }) {
       >
         <div className="mx-auto grid h-[68px] max-w-[var(--page)] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:h-[76px] sm:px-8 lg:h-[100px] lg:px-12 xl:px-20">
           <div className="flex items-center">
-            <a href={`${prefix}#top`} aria-label="NJ Motors — на главную" className="font-display text-[15px] tracking-[0.02em] whitespace-nowrap text-ink uppercase sm:text-[18px] lg:hidden">
-              NJ Motors
+            <a href={`${prefix}#top`} aria-label="NJ Motors — на главную" className="block shrink-0 lg:hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={asset("/brand/nj-wordmark-header.webp")} alt="NJ Motors — автомобили из Кореи" width={480} height={146} className="block h-[38px] w-auto sm:h-[46px]" />
             </a>
             <NavList items={NAV.slice(0, 3)} prefix={prefix} active={active} className="ml-auto" />
           </div>

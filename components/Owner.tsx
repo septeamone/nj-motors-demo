@@ -54,12 +54,12 @@ export function Owner() {
           <SectionHead
             stacked
             title="С кем вы будете работать"
-            lead="От заявки до ключей вашу сделку ведёт Андрей сам, без посредников."
+            lead="NJ Motors — корейская экспортная компания. От заявки до ключей ведём вашу сделку сами, без посредников."
           />
 
           {/* the first screen already says this on phones, where every line costs a scroll */}
           <p className="mt-8 max-w-[44ch] text-[clamp(19px,1.7vw,23px)] leading-snug font-medium text-ink max-lg:hidden">
-            {nb("Вы работаете напрямую с корейской экспортной компанией, без посредников, комиссий и наценок. По каждому варианту — фото, видео и заключение эксперта.")}
+            {nb("Сами находим, проверяем, выкупаем и отправляем машину — без посредников, комиссий и наценок. По каждому варианту вы получаете фото, видео и заключение эксперта.")}
           </p>
 
           <ChannelLink className="mt-8 max-lg:hidden" />

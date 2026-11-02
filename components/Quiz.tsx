@@ -48,7 +48,7 @@ export function Quiz() {
         >
           {done ? (
             <>
-              <p className="text-[18px] leading-snug font-bold text-ink">Андрей подберёт варианты и пришлёт расчёт.</p>
+              <p className="text-[18px] leading-snug font-bold text-ink">Подберём варианты и пришлём расчёт.</p>
               <p className="mt-1 text-[16px] text-ink-2">{Object.values(answers).join(" · ")}</p>
               <div className="mt-5">
                 <QuickLead form="quiz" button="Получить подборку" extra={answers} />

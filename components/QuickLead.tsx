@@ -22,7 +22,7 @@ export function QuickLead({ form, button = "Жду связи", extra }: { form:
     return (
       <p role="status" className="flex items-center gap-3 text-[17px] font-bold text-ink">
         <CheckCircle2 className="size-7 shrink-0 text-[var(--ok)]" strokeWidth={1.5} />
-        Заявка принята. Андрей свяжется: {via === "Звонок" ? "позвонит" : `напишет в ${via}`}.
+        Заявка принята. Мы {via === "Звонок" ? "позвоним" : `напишем в ${via}`} в ближайшее время.
       </p>
     );
 

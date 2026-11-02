@@ -54,7 +54,7 @@ export function DirectContacts({ className = "" }: { className?: string }) {
   const ready = links.some((l) => l.href);
   return (
     <div className={className}>
-      <p className="label">Или свяжитесь с Андреем напрямую</p>
+      <p className="label">Или напишите нам напрямую</p>
       <ul className="mt-3 flex flex-wrap gap-2">
         {links.map((l) => (
           <li key={l.brand}>

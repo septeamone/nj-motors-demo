@@ -72,7 +72,7 @@ export function Catalog() {
         <div data-theme="dark" className="on-film">
           <SectionHead
             title="Примеры из Кореи"
-            lead="Реальный автомобиль Андрей подбирает под вашу задачу, а цену считает до заказа."
+            lead="Это примеры. Вашу машину мы найдём под вашу задачу и бюджет, а цену посчитаем заранее."
           />
         </div>
 
@@ -227,7 +227,7 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
         <div className="mt-6 border-t border-line pt-5">
           <p className="label">{PRICE_LABEL}</p>
           <p className="num mt-1 text-[30px] leading-none">{rub(car.price)}</p>
-          <p className="mt-2 text-[16px] leading-snug text-ink-3">Примерная сумма под ключ. Точную Андрей считает по таможенным ставкам на дату сделки.</p>
+          <p className="mt-2 text-[16px] leading-snug text-ink-3">Примерная сумма под ключ. Точную мы считаем по таможенным ставкам на дату сделки.</p>
         </div>
         <a
           href="#lead-form"

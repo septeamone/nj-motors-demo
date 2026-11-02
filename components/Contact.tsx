@@ -97,7 +97,7 @@ export function Contact() {
             <SectionHead
               stacked
               title="Расскажите, какую машину ищете"
-              lead="Опишите задачу: Андрей пришлёт подборку и расчёт. Платить пока ничего не нужно."
+              lead="Опишите задачу — пришлём подборку вариантов с расчётом. Платить пока ничего не нужно."
             />
             <Reveal delay={0.1} className="mt-8">
               {/* a call opens the dialler with Andrey's number, the messengers open the chat (lib/site.json contacts) */}
@@ -129,7 +129,7 @@ export function Contact() {
                     <CheckCircle2 className="size-14 text-[var(--ok)]" strokeWidth={1.25} />
                     <p className="font-display mt-6 text-[26px] tracking-wide uppercase text-ink">Заявка принята</p>
                     <p className="mt-3 max-w-[40ch] text-[16px] text-ink-2">
-                      Андрей свяжется с вами и уточнит детали.
+                      Мы свяжемся с вами и уточним детали.
                     </p>
                     <button
                       type="button"
