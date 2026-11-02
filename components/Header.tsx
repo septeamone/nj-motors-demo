@@ -9,8 +9,8 @@ import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
   { id: "catalog", label: "Автомобили" },
-  { id: "process", label: "Как мы работаем" },
   { id: "reviews", label: "Отзывы" },
+  { id: "process", label: "Как мы работаем" },
   { id: "faq", label: "Вопросы" },
   { id: "contact", label: "Заявка" },
 ];
@@ -91,7 +91,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
             <span className="ml-auto" />
             <ThemeToggle />
             <a href={`${prefix}#contact`} className="btn btn-primary btn-sm hidden 2xl:inline-flex">
-              Оставить заявку
+              Подобрать машину
               <ArrowUpRight className="size-4" strokeWidth={2} />
             </a>
             <button
@@ -137,7 +137,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
           </ul>
           <div className="mt-2 flex items-center justify-between gap-3 p-3 pt-4">
             <a href={`${prefix}#contact`} onClick={() => setOpen(false)} className="btn btn-primary btn-sm">
-              Оставить заявку
+              Подобрать машину
             </a>
           </div>
         </motion.div>

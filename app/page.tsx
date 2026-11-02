@@ -1,5 +1,6 @@
 import { Cases } from "@/components/Cases";
 import { Catalog } from "@/components/Catalog";
+import { Compare } from "@/components/Compare";
 import { Contact } from "@/components/Contact";
 import { Faq } from "@/components/Faq";
 import { Footer } from "@/components/Footer";
@@ -27,12 +28,13 @@ export default function Home() {
         </div>
         {/* real deals against the Russian market: appears once the owner's deals are filled in */}
         <Cases />
-        <Process />
-        {/* one block: who you work with, then what his clients say */}
-        <Owner />
+        {/* trust early: live clients right after the cars, then why buying direct pays */}
         <Reviews />
         {/* where to see more: TikTok, VK, Telegram */}
         <Socials />
+        <Compare />
+        <Process />
+        <Owner />
         <Faq />
         <Contact />
       </main>

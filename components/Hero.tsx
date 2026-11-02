@@ -17,19 +17,19 @@ export function Hero() {
     <SplitHero>
       <div className="flex h-full flex-col justify-center px-5 pt-5 pb-6 sm:px-8 lg:pt-[96px] lg:pr-10 lg:pb-8 lg:pl-[max(2rem,calc((100vw-var(--page))/2+3rem))]">
         <h1 className="display text-[clamp(46px,12.5vw,64px)] !leading-[0.92] lg:text-[clamp(62px,6vw,108px)]">
-          <span className="block">Из Кореи</span>{" "}
+          <span className="block">Авто из Кореи</span>{" "}
           <span className="block">
-            в ваш город.
+            до <span className="text-accent">30%</span> дешевле.
           </span>
         </h1>
 
         <p className="lead mt-4 !max-w-[40ch] max-sm:!text-[16px] lg:mt-6 lg:text-[18px]">
-          Автомобили под ключ напрямую от корейского экспортёра. С 2023 года находим, проверяем и привозим машины, а все платежи и документы — на ваше имя.
+          Без посредников и наценок — напрямую от корейского экспортёра. Проверяем, выкупаем и привозим под ключ, а машина и документы сразу на ваше имя.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 lg:mt-8">
           <a href="#lead-form" className="btn btn-primary">
-            Оставить заявку
+            Подобрать машину
             <ArrowRight className="size-[18px]" strokeWidth={2} />
           </a>
         </div>
