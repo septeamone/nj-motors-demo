@@ -39,12 +39,10 @@ export function ViaPicker({ value, onChange, id }: { value: Via; onChange: (v: V
 /** Links that open the call or the chat with Andrey at once (from site.json; a missing one shows but does nothing yet). */
 function directLinks(): { brand: Brand; label: string; href: string | null }[] {
   const c = SITE.contacts;
-  const digits = (v: string) => v.replace(/\D/g, "");
   const tel = c.phone ? telHref(c.phone) : null;
-  const wa = c.whatsapp ?? c.phone;
   return [
     { brand: "call", label: "Позвонить", href: tel },
-    { brand: "whatsapp", label: "WhatsApp", href: wa ? `https://wa.me/${digits(wa).replace(/^8(?=\d{10}$)/, "7")}` : null },
+    { brand: "vk", label: "ВКонтакте", href: c.vk ? (/^https?:\/\//.test(c.vk) ? c.vk : `https://vk.com/${c.vk.replace(/^@/, "")}`) : null },
     { brand: "telegram", label: "Telegram", href: c.telegram ? `https://t.me/${c.telegram.replace(/^@|^https?:\/\/t\.me\//, "")}` : null },
     { brand: "max", label: "MAX", href: c.max && /^https?:\/\//.test(c.max) ? c.max : null },
   ];

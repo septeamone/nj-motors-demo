@@ -13,8 +13,8 @@ const clamp = (v: number) => Math.min(1, Math.max(0, v));
 
 /**
  * The deal: six steps on the route, four payments, and the sample contract they are written into.
- * The whole section stands on the sea: it comes up out of the dark, feathered, into a ship's cabin, the camera goes out through
- * the porthole (a film made with Higgsfield, played by the scroll) while the heading rises over it, and then the sea
+ * The whole section stands on the sea: the open-water part of a film made with Higgsfield (frames 61–91 of the old
+ * porthole clip, without the porthole), played by the scroll, comes up out of the dark while the heading rises, and then the sea
  * dims into the section's ground and stays behind the route, the pages and the payments.
  */
 export function Process() {
@@ -37,8 +37,8 @@ export function Process() {
     typeof window === "undefined"
       ? 0
       : (v * (secH.current || (sec.current?.offsetHeight ?? 0))) / innerHeight;
-  // The porthole film comes up out of the page (feathered edges) and fills the screen while the section rises;
-  // the camera goes out through the porthole to the sea as you scroll, the heading already rising over the flight
+  // The sea film comes up out of the page (feathered edges) and fills the screen while the section rises;
+  // the waves and the car carrier move with the scroll, the heading already rising over them
   // (the film has no empty screens of its own), and then the sea dims under the route, the pages and the payments.
   const { scrollYProgress: rise } = useScroll({ target: sec, offset: ["start end", "start start"] });
   // how far the visitor has come: 0 when the section appears at the bottom, 1 when it reaches the top, then deeper
@@ -58,7 +58,7 @@ export function Process() {
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <motion.div style={{ maskImage: fade, WebkitMaskImage: fade, maskComposite: "intersect", WebkitMaskComposite: "source-in" }} className="sticky top-0 h-svh overflow-hidden bg-bg">
           <motion.div style={{ transform: lens }} className="absolute inset-0 will-change-transform">
-            <FilmCanvas name="porthole" count={91} progress={film} />
+            <FilmCanvas name="sea" count={31} progress={film} />
           </motion.div>
           <motion.span
             style={{ opacity: dim }}

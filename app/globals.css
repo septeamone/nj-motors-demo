@@ -693,8 +693,7 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   }
 }
 /* the open phone menu covers the page: the floating bars at the bottom wait until it closes */
-html[data-menu] .hide-on-menu,
-html[data-calc-bar] .mobile-cta {
+html[data-menu] .hide-on-menu {
   visibility: hidden;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -873,22 +872,6 @@ html[data-intro="play"] .emblem-img,
 html[data-intro="glide"] .emblem-img {
   filter: none !important;
 }
-
-/* ---------- Calculator panel: quiet, ruled like a statement ---------- */
-.receipt {
-  position: relative;
-  padding: 30px 30px 28px;
-  background: var(--surface);
-  color: var(--ink);
-  border: 1px solid var(--line-strong);
-  border-top: 3px solid var(--accent);
-}
-@media (min-width: 640px) {
-  .receipt {
-    padding: 36px 38px 32px;
-  }
-}
-/* rolling digits */
 
 .h2,
 .display {

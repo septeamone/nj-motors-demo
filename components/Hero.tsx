@@ -31,9 +31,6 @@ export function Hero() {
             Оставить заявку
             <ArrowRight className="size-[18px]" strokeWidth={2} />
           </a>
-          <a href="#calc" className="px-2 text-[16px] font-bold text-ink-2 underline decoration-line-strong underline-offset-[6px] transition-colors hover:text-ink">
-            Посчитать стоимость самому
-          </a>
         </div>
 
         <ul className="mt-5 grid grid-cols-2 border-t border-line-strong lg:mt-10">

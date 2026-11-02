@@ -8,7 +8,6 @@ import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
   { id: "catalog", label: "Автомобили" },
-  { id: "calc", label: "Расчёт" },
   { id: "process", label: "Как мы работаем" },
   { id: "reviews", label: "Отзывы" },
   { id: "faq", label: "Вопросы" },

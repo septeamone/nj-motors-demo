@@ -45,7 +45,7 @@ export function Contact() {
   // the optional part (budget, wishes, message) stays folded; a pre-filled message unfolds it
   const [wish, setWish] = useState(false);
 
-  // Car cards and the calculator can pre-fill the message.
+  // Car cards and the quiz can pre-fill the message.
   useEffect(() => {
     const h = (e: Event) => {
       const text = (e as CustomEvent<string>).detail;
