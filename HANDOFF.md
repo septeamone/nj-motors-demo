@@ -3,7 +3,7 @@
 Сайт NJ Motors: автомобили из Кореи под ключ. Next.js (статика), папка `sites/njmotors`. Статус: макет показан владельцу Андрею (01.11), идёт наполнение его данными и подготовка к запуску с админкой.
 
 ## СЕЙЧАС (02.11) — читать первым
-- **Работа идёт в ветке `andrey-data`** (от `compact`, запушена на GitHub). Она НЕ выложена ни на клиентскую ссылку, ни на /preview/. Смотреть локально: `npm run build`, затем `node scripts/serve.mjs 8772 out` → http://localhost:8772/ . Ссылка клиента (master) = версия 01.11 до правок Андрея.
+- **Работа идёт в ветке `andrey-data`** (от `compact`, запушена на GitHub). Она выложена на пробную ссылку https://septeamone.github.io/nj-motors-demo/preview/ (02.11), но НЕ на клиентскую. Смотреть локально: `npm run build`, затем `node scripts/serve.mjs 8772 out` → http://localhost:8772/ . Ссылка клиента (master) = версия 01.11 до правок Андрея.
 - Jack скажет «переносим» → поставить метку `before-andrey-data-2026-11-02` на master, `bash scripts/publish-preview.sh` с ветки andrey-data, затем `git checkout master && git merge --ff-only andrey-data && git push && bash scripts/publish-pages.sh`.
 - Что сделано в andrey-data (по тексту Андрея `C:/Users/Jack/Desktop/nj/njj.txt` и инвойсу `C:/Users/Jack/Downloads/AyuGram Desktop/INV KOR_202610-116 K5 249.pdf`):
   - Без комиссий и наценок (вознаграждение убрано отовсюду). 5 официальных платежей: предоплата по договору, машина + Корея + море, пошлина и утильсбор, брокер, доставка по РФ — БЕЗ сумм (Jack: ценники завуалировать; осмотр не называть бесплатным — он стоит ~100 $, о его цене не писать).
