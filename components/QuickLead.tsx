@@ -2,10 +2,9 @@
 
 import { ArrowRight, CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
 import { useId, useState } from "react";
-import { asset } from "@/lib/asset";
 import { phoneOk, sendError, sendLead, type Via } from "@/lib/lead";
 import { channels } from "@/lib/site";
-import { ViaPicker } from "./LeadBits";
+import { ConsentText, ViaPicker } from "./LeadBits";
 
 /**
  * A short request in the middle of the page: a phone and where to talk, one button. The full form waits at the end;
@@ -16,6 +15,8 @@ export function QuickLead({ form, button = "Жду связи", extra }: { form:
   const [phone, setPhone] = useState("");
   const [via, setVia] = useState<Via>("Звонок");
   const [err, setErr] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [consentErr, setConsentErr] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   if (status === "success")
@@ -33,8 +34,13 @@ export function QuickLead({ form, button = "Жду связи", extra }: { form:
       document.getElementById(`${id}-phone`)?.focus();
       return;
     }
+    if (!consent) {
+      setConsentErr(true);
+      document.getElementById(`${id}-consent`)?.focus();
+      return;
+    }
     setStatus("loading");
-    setStatus(await sendLead({ form, contact: phone, via, consent: true, ...extra }));
+    setStatus(await sendLead({ form, contact: phone, via, consent, ...extra }));
   };
 
   return (
@@ -71,13 +77,28 @@ export function QuickLead({ form, button = "Жду связи", extra }: { form:
           {status === "loading" ? <Loader2 className="size-5 animate-spin" strokeWidth={2} /> : <>{button}<ArrowRight className="size-[18px]" strokeWidth={2} /></>}
         </button>
       </div>
-      <p className="text-[14px] leading-snug text-ink-3">
-        Нажимая кнопку, вы соглашаетесь с{" "}
-        <a href={asset("/privacy/")} target="_blank" rel="noopener" className="underline decoration-line-strong underline-offset-4 hover:text-ink">
-          политикой конфиденциальности
-        </a>
-        .
-      </p>
+      <div>
+        <label className="flex cursor-pointer items-start gap-3 text-[15px] leading-snug text-ink-2">
+          <input
+            id={`${id}-consent`}
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => {
+              setConsent(e.target.checked);
+              setConsentErr(false);
+            }}
+            aria-invalid={consentErr}
+            aria-describedby={consentErr ? `${id}-consent-err` : undefined}
+            className="mt-0.5 size-[18px] shrink-0 cursor-pointer accent-[var(--accent)]"
+          />
+          <ConsentText />
+        </label>
+        {consentErr && (
+          <p id={`${id}-consent-err`} role="alert" className="mt-2 text-[16px] text-[var(--danger)]">
+            Нужно согласие на обработку данных
+          </p>
+        )}
+      </div>
       {status === "error" && (
         <p role="alert" className="flex gap-3 text-[16px] leading-snug text-ink">
           <TriangleAlert className="mt-0.5 size-4 shrink-0 text-[var(--danger)]" strokeWidth={1.75} />

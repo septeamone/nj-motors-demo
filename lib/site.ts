@@ -1,9 +1,13 @@
 import raw from "./site.json";
 
-type Site = Omit<typeof raw, "contacts" | "owner" | "legal" | "social"> & {
+type Site = Omit<typeof raw, "contacts" | "owner" | "legal" | "social" | "operator" | "metrika"> & {
   social: { tiktok: string | null; vk: string | null; telegram: string | null };
   contacts: { phone: string | null; telegram: string | null; vk: string | null; max: string | null; email: string | null; address: string | null };
   owner: { name: string | null; role: string; video: string | null; poster: string | null };
+  // the person who processes the visitors' personal data (152-FZ): Andrey as a private individual
+  operator: { name: string | null; email: string | null };
+  // Yandex Metrika counter number; null = no counter on the site
+  metrika: number | null;
   legal: { entity: string | null; regNo: string | null; address: string | null; inn: string | null; ogrn: string | null };
 };
 

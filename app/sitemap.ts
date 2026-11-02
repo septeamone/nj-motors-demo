@@ -6,6 +6,6 @@ const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").repla
 const path = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages = ["", "/privacy/", "/terms/"];
+  const pages = ["", "/privacy/", "/consent/", "/terms/"];
   return pages.map((p) => ({ url: `${base}${path}${p || "/"}` }));
 }

@@ -68,6 +68,7 @@ export function Footer() {
         <div className="mt-6 flex flex-col gap-3 border-t border-line pt-5 text-[15px] text-ink-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="grid gap-1">
             <p>© 2026 NJ Motors. Сайт в разработке: фото, цены и сроки ориентировочные.</p>
+            <p>Сайт носит информационный характер и не является публичной офертой.</p>
             {SITE.legal.entity && (
               // the exporter behind NJ Motors, as on its invoices
               <p>
@@ -80,6 +81,9 @@ export function Footer() {
           <div className="flex flex-wrap items-start gap-x-6 gap-y-2">
             <a href={asset("/privacy/")} className="font-semibold hover:text-ink">
               Политика конфиденциальности
+            </a>
+            <a href={asset("/consent/")} className="font-semibold hover:text-ink">
+              Согласие на обработку данных
             </a>
             <a href={asset("/terms/")} className="font-semibold hover:text-ink">
               Пользовательское соглашение

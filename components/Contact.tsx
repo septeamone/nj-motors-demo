@@ -9,7 +9,7 @@ import { QUIZ } from "@/lib/data";
 import { phoneOk, sendError, sendLead, type Via } from "@/lib/lead";
 import { DUR, EASE } from "@/lib/motion";
 import { channels } from "@/lib/site";
-import { ViaPicker } from "./LeadBits";
+import { ConsentText, ViaPicker } from "./LeadBits";
 import { Select } from "./Select";
 import { Reveal, SectionHead } from "./ui";
 
@@ -237,12 +237,7 @@ export function Contact() {
                           onChange={(e) => set("consent", e.target.checked)}
                           className="mt-0.5 size-[18px] shrink-0 cursor-pointer accent-[var(--accent)]"
                         />
-                        <span>
-                          Согласен на обработку персональных данных и с{" "}
-                          <a href={asset("/privacy/")} target="_blank" rel="noopener" className="underline decoration-line-strong underline-offset-4 hover:text-ink">
-                            политикой конфиденциальности
-                          </a>
-                        </span>
+                        <ConsentText />
                       </label>
                       {errors.consent && <p id="f-consent-err" role="alert" className="mt-2 text-[16px] text-[var(--danger)]">{errors.consent}</p>}
                     </div>

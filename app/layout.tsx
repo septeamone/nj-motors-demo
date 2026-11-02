@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fira_Sans_Extra_Condensed, Onest, Russo_One } from "next/font/google";
+import { CookieNote } from "@/components/CookieNote";
+import { Metrika } from "@/components/Metrika";
 import { Providers } from "@/components/Providers";
 import { asset } from "@/lib/asset";
 import "./globals.css";
@@ -68,6 +70,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body>
         <Providers>{children}</Providers>
+        <CookieNote />
+        <Metrika />
       </body>
     </html>
   );

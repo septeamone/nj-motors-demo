@@ -1,5 +1,6 @@
 "use client";
 
+import { asset } from "@/lib/asset";
 import { VIA, VIA_BRAND, type Via } from "@/lib/lead";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 
@@ -32,5 +33,23 @@ export function ViaPicker({ value, onChange, id }: { value: Via; onChange: (v: V
         ))}
       </div>
     </div>
+  );
+}
+
+const DOC_LINK = "underline decoration-line-strong underline-offset-4 hover:text-ink";
+
+/** The words beside every consent box: the consent and the policy, each a link to its own page. */
+export function ConsentText() {
+  return (
+    <span>
+      Даю{" "}
+      <a href={asset("/consent/")} target="_blank" rel="noopener" className={DOC_LINK}>
+        согласие на обработку персональных данных
+      </a>{" "}
+      и принимаю{" "}
+      <a href={asset("/privacy/")} target="_blank" rel="noopener" className={DOC_LINK}>
+        политику конфиденциальности
+      </a>
+    </span>
   );
 }
