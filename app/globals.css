@@ -428,9 +428,6 @@ html.lenis body {
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 30px 60px -32px rgba(0, 0, 0, 0.65);
 }
-.glass-plate .lead {
-  color: var(--ink);
-}
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass-plate {
     background: rgba(4, 12, 20, 0.78);
@@ -1089,4 +1086,9 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   .faq-a-in {
     transform: none;
   }
+}
+
+/* outside the layers on purpose: the plain .lead colour above is unlayered and would win over a layered rule */
+.glass-plate .lead {
+  color: var(--ink);
 }
