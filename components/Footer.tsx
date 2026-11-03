@@ -1,6 +1,4 @@
-import credits from "@/lib/credits.json";
 import { asset } from "@/lib/asset";
-import { CARS } from "@/lib/data";
 import { channels, SITE } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 import { Wordmark } from "./ui";
@@ -8,19 +6,13 @@ import { Wordmark } from "./ui";
 // contacts that have a network of their own show its mark in its own colours, like the buttons by the form
 const MARK: Partial<Record<string, Brand>> = { phone: "call", telegram: "telegram", vk: "vk", max: "max", tiktok: "tiktok" };
 
-const NAMES: Record<string, string> = {
-  ...Object.fromEntries(CARS.map((c) => [c.slug, `${c.brand} ${c.model}`])),
-};
-
-type Credit = { file: string; lic: string; artist: string; page: string };
 
 /**
  * A compact footer: the mark, the contacts (only those NJ Motors has confirmed, non-null in site.json), one line of
- * legal links, and the photo credits folded away.
+ * legal links.
  */
 export function Footer() {
   const contacts = channels();
-  const rows = Object.entries(credits as Record<string, Credit>).filter(([slug]) => slug in NAMES);
   return (
     <footer className="bg-bg-2">
       <div className="mx-auto max-w-[var(--page)] px-5 py-7 sm:px-8 lg:px-12 xl:px-20">
@@ -85,22 +77,6 @@ export function Footer() {
             <a href={asset("/terms/")} className="font-semibold hover:text-ink">
               Пользовательское соглашение
             </a>
-            {rows.length > 0 && (
-              <details className="basis-full lg:basis-auto">
-                <summary className="cursor-pointer font-semibold hover:text-ink">Источники фото</summary>
-                <ul className="mt-2 grid gap-1">
-                  {rows.map(([slug, c]) => (
-                    <li key={slug}>
-                      <span className="font-semibold text-ink-2">{NAMES[slug]}</span>
-                      {": "}
-                      <a href={c.page} target="_blank" rel="noopener noreferrer" className="underline decoration-line-strong underline-offset-4 hover:text-accent-ink">
-                        {c.artist || "Автор не указан"} · {c.lic}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            )}
           </div>
         </div>
       </div>

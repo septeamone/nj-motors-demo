@@ -1,7 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
@@ -17,7 +17,6 @@ const PAY_AT: Record<number, number[]> = {};
 DEAL_STAGES.forEach((d, k) => (PAY_AT[d.step] ??= []).push(k));
 const PAY_NOTE: Record<number, string> = { 0: "Платить пока не нужно", 3: "Все этапы транспортировки застрахованы" };
 const STEP_ICON: IconName[] = ["car", "inspect", "rub", "ship", "stamp", "truck"];
-const STATUS = ["ПОДОБРАНО", "ПРОВЕРЕНО", "ВЫКУПЛЕНО", "ОТПРАВЛЕНО", "РАСТАМОЖЕНО", "ВЫДАНО"];
 const PLACE = ["Корея", "Корея", "Корея", "Инчхон → Владивосток", "Владивосток", "Ваш город"];
 const STOP_NAME = ["Подбор", "Проверка", "Выкуп", "Отправка", "Таможня", "Доставка"];
 
@@ -37,92 +36,51 @@ const D = STOPS.reduce((d, [x, y], i) => {
   return `${d} C ${mx} ${py}, ${mx} ${y}, ${x} ${y}`;
 }, "");
 
-const stampV = {
-  off: { opacity: 0, scale: 1.9, rotate: -22 },
-  on: { opacity: 0.94, scale: 1, rotate: -9 },
-};
-const splashV = {
-  off: { opacity: 0, scale: 0.6 },
-  on: { opacity: [0, 0.5, 0], scale: [0.6, 1, 1.5] },
-};
-
 /**
- * One page of the deal passport: what happens, where, what you pay at this point, and the seal with the status
- * stamp, pressed when the page comes up (pressed given) or when it scrolls into view (pressed left out).
- * The stamp sits beside the payment, never over the text.
+ * One page of the process: the step's number, what happens and where, the step's points, and what you pay here.
+ * The height follows the text (the desktop pad gives all its pages the same height).
  */
-function Page({ i, pressed, className = "" }: { i: number; pressed?: boolean; className?: string }) {
-  const calm = useReducedMotion();
+function Page({ i, className = "" }: { i: number; className?: string }) {
   const s = STEPS[i];
   const pays = PAY_AT[i] ?? [];
-  const press = calm
-    ? { initial: "on" as const }
-    : pressed === undefined
-      ? { initial: "off" as const, whileInView: "on" as const, viewport: { once: true, amount: 0.6 } }
-      : { initial: "off" as const, animate: pressed ? "on" : "off" };
+  const points = s.text.split(/(?<=[.;])\s+(?=[А-ЯЁA-Z])/);
   return (
-    <article className={`relative flex flex-col overflow-hidden rounded-[6px] bg-[var(--paper)] text-[var(--paper-ink)] shadow-[0_1px_0_rgba(18,16,13,0.18),0_22px_40px_-26px_var(--shadow)] ${className}`}>
-      {/* punched holes of the binding along the top edge */}
-      <span aria-hidden className="absolute inset-x-8 top-3 flex justify-between">
-        {Array.from({ length: 9 }, (_, k) => (
-          <i key={k} className="block size-2.5 rounded-full bg-[rgba(18,16,13,0.32)]" />
-        ))}
-      </span>
-
-      <header className="flex items-center gap-3.5 border-b-2 border-dashed border-[rgba(18,16,13,0.3)] px-5 pt-8 pb-3 lg:px-8 lg:pt-9 lg:pb-4">
-        <NjIcon name={STEP_ICON[i]} className="size-9 shrink-0" />
-        <div className="min-w-0">
+    <article className={`relative flex flex-col overflow-hidden rounded-[10px] bg-[var(--paper)] text-[var(--paper-ink)] shadow-[0_1px_0_rgba(18,16,13,0.18),0_22px_40px_-26px_var(--shadow)] ${className}`}>
+      <header className="flex items-center gap-4 border-b-2 border-dashed border-[rgba(18,16,13,0.22)] px-5 pt-5 pb-4 lg:px-8 lg:pt-6">
+        <span className="num grid size-11 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-[20px] text-white">{i + 1}</span>
+        <div className="min-w-0 flex-1">
           <h3 className="font-display text-[clamp(21px,2.2vw,27px)] leading-none tracking-wide uppercase">{s.title}</h3>
           <p className="mt-1.5 text-[15px] font-medium opacity-75">{PLACE[i]}</p>
         </div>
+        <NjIcon name={STEP_ICON[i]} className="size-9 shrink-0" />
       </header>
 
-      <div className="flex flex-1 flex-col gap-4 px-5 py-4 lg:gap-5 lg:px-8 lg:py-5">
-        <p className="max-w-[46ch] text-[16px] leading-snug lg:text-[18px]">{nb(s.text)}</p>
+      <div className="flex flex-1 flex-col gap-4 px-5 pt-4 pb-5 lg:gap-5 lg:px-8 lg:pb-6">
+        <ul className="grid gap-2">
+          {points.map((t) => (
+            <li key={t} className="flex gap-2.5 text-[16px] leading-snug lg:text-[17px]">
+              <Check aria-hidden className="mt-[3px] size-4 shrink-0 text-[var(--accent-fill)]" strokeWidth={3.2} />
+              <span>{nb(t)}</span>
+            </li>
+          ))}
+        </ul>
 
-        <div className="mt-auto flex items-end gap-4">
-          <div className="min-w-0 flex-1 rounded-[4px] bg-[rgba(18,16,13,0.08)] px-4 py-3.5">
-            {pays.length ? (
-              <>
-                <p className="text-[15px] font-bold opacity-70">
-                  {pays.length > 1 ? `Платежи ${pays[0] + 1}–${pays.at(-1)! + 1}` : `Платёж ${pays[0] + 1}`} из {PAYS}
-                </p>
-                {pays.map((k) => (
-                  <div key={k} className="mt-1 [&+div]:mt-2 [&+div]:border-t [&+div]:border-[rgba(18,16,13,0.18)] [&+div]:pt-2">
-                    <p className="text-[17px] leading-snug font-bold">{DEAL_STAGES[k].pay}</p>
-                    {pays.length === 1 && <p className="mt-0.5 text-[15px] leading-snug opacity-80">{DEAL_STAGES[k].when}</p>}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <p className="text-[17px] font-bold">{PAY_NOTE[i]}</p>
-            )}
-          </div>
-
-          <div aria-hidden className="relative aspect-[6/5] w-[84px] shrink-0 sm:w-[min(34%,150px)]">
-            <motion.div {...press} variants={stampV} transition={{ duration: DUR, ease: EASE }} className="absolute inset-0">
-              <Image src={asset("/brand/nj-seal.webp")} alt="" width={576} height={480} className="block size-full object-contain opacity-90" />
-            </motion.div>
-            <motion.span
-              {...press}
-              variants={splashV}
-              transition={{ duration: DUR, ease: EASE, delay: 0.18 }}
-              className="absolute inset-[8%] rounded-full border-[3px] border-[var(--accent-fill)]"
-            />
-            <motion.span
-              {...press}
-              variants={{ off: { opacity: 0, scale: 2, rotate: 18 }, on: { opacity: 0.92, scale: 1, rotate: 6 } }}
-              transition={{ duration: DUR, ease: EASE, delay: 0.22 }}
-              className="absolute top-1/2 left-1/2 -mt-4 -ml-[50%] w-full text-center"
-            >
-              <span
-                className="inline-block rounded-[4px] border-[3px] border-[var(--accent-fill)] bg-[var(--paper)]/70 px-2 py-0.5 text-[clamp(14px,1.4vw,17px)] tracking-[0.06em] whitespace-nowrap text-[var(--accent-fill)]"
-                style={{ fontFamily: "var(--font-russo)" }}
-              >
-                {STATUS[i]}
-              </span>
-            </motion.span>
-          </div>
+        <div className="mt-auto rounded-[6px] bg-[rgba(18,16,13,0.08)] px-4 py-3">
+          {pays.length ? (
+            <>
+              <p className="text-[14px] font-bold opacity-70">
+                {pays.length > 1 ? `Платежи ${pays[0] + 1}–${pays.at(-1)! + 1}` : `Платёж ${pays[0] + 1}`} из {PAYS}
+              </p>
+              {pays.map((k) => (
+                <div key={k} className="mt-1 [&+div]:mt-2 [&+div]:border-t [&+div]:border-[rgba(18,16,13,0.18)] [&+div]:pt-2">
+                  <p className="text-[17px] leading-snug font-bold">{DEAL_STAGES[k].pay}</p>
+                  {pays.length === 1 && <p className="mt-0.5 text-[15px] leading-snug opacity-80">{DEAL_STAGES[k].when}</p>}
+                </div>
+              ))}
+            </>
+          ) : (
+            <p className="text-[17px] font-bold">{PAY_NOTE[i]}</p>
+          )}
         </div>
       </div>
     </article>
@@ -254,7 +212,7 @@ function Ledger({ active }: { active: number }) {
 }
 
 /** One leaf of the pad: it flips up over the binding when its step is done, uncovering the next page. */
-function Leaf({ i, p, active }: { i: number; p: MotionValue<number>; active: number }) {
+function Leaf({ i, p }: { i: number; p: MotionValue<number> }) {
   // the leaf lies flat for most of its stretch of scroll and turns in the middle of it, so it never rests half-turned
   const t = useTransform(p, [i + 0.25, i + 0.85], [0, 1], { clamp: true });
   const rotateX = useTransform(t, [0, 1], [0, 112]);
@@ -264,7 +222,7 @@ function Leaf({ i, p, active }: { i: number; p: MotionValue<number>; active: num
   const shade = useTransform(p, [i - 0.75, i - 0.15], [0.32, 0], { clamp: true });
   return (
     <motion.div className="absolute inset-0 origin-top will-change-transform [backface-visibility:hidden]" style={{ rotateX, y, opacity, zIndex: N - i }}>
-      <Page i={i} pressed={active >= i} className="h-full" />
+      <Page i={i} className="h-full" />
       {i > 0 && <motion.span aria-hidden style={{ opacity: shade }} className="pointer-events-none absolute inset-0 rounded-[6px] bg-[#040c14]" />}
     </motion.div>
   );
@@ -290,12 +248,12 @@ function Scene() {
       <div className="sticky top-[100px] flex h-[calc(100svh-100px)] flex-col justify-center gap-10">
         <RouteLine p={p} active={active} />
         <div className="grid grid-cols-12 items-start gap-x-10">
-          <div className="relative col-span-7 h-[min(400px,46svh)] [perspective:1800px]">
+          <div className="relative col-span-7 h-[min(460px,56svh)] [perspective:1800px]">
             {/* edges of the pages below, so the pad reads as a stack */}
             <span aria-hidden className="absolute inset-x-3 -bottom-3 h-full rounded-[6px] bg-[color-mix(in_srgb,var(--paper)_55%,var(--bg-2))]" />
             <span aria-hidden className="absolute inset-x-1.5 -bottom-1.5 h-full rounded-[6px] bg-[color-mix(in_srgb,var(--paper)_78%,var(--bg-2))]" />
             {STEPS.map((s, i) => (
-              <Leaf key={s.title} i={i} p={p} active={active} />
+              <Leaf key={s.title} i={i} p={p} />
             ))}
           </div>
           <div className="col-span-5">
@@ -307,7 +265,7 @@ function Scene() {
   );
 }
 
-/** Phones and reduced motion: the same pages down a route line that fills as you scroll; each stamp lands in view. */
+/** Reduced motion on wide screens: the same pages down a route line that fills as you scroll. */
 function List({ className = "" }: { className?: string }) {
   const box = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({ target: box, offset: ["start 70%", "end 60%"] });
@@ -327,7 +285,7 @@ function List({ className = "" }: { className?: string }) {
 
 /**
  * Phones and tablets: the six pages side by side, swiped one at a time (a stack of tall cards took four screens).
- * Each stamp is pressed as its page comes into view; the dots show where you are and jump to a page.
+ * The dots show where you are and jump to a page.
  */
 function Swipe() {
   const box = useRef<HTMLDivElement>(null);
@@ -351,11 +309,11 @@ function Swipe() {
         onScroll={onScroll}
         role="list"
         aria-label="Процесс: шесть шагов, листайте вбок"
-        className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8"
+        className="-mx-5 flex snap-x snap-mandatory items-start scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8"
       >
         {STEPS.map((s, i) => (
           <div key={s.title} role="listitem" className="w-[86%] max-w-[520px] shrink-0 snap-start">
-            <Page i={i} className="h-full" />
+            <Page i={i} />
           </div>
         ))}
       </div>

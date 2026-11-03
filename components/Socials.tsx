@@ -20,7 +20,7 @@ export function Socials() {
   const links = LINKS.filter((l) => l.href);
   if (!links.length) return null;
   return (
-    <section aria-label="NJ Motors в соцсетях" className="bg-bg-2 pb-12 lg:pb-16">
+    <section aria-label="NJ Motors в соцсетях" className="bg-bg-2 pb-10 lg:pb-14">
       <div className="mx-auto grid max-w-[var(--page)] items-center gap-6 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-14 lg:px-12 xl:px-20">
       <Reveal>
         <div className="flex flex-col gap-5 rounded-[8px] bg-surface p-5 sm:p-7 lg:gap-7 lg:p-10">
@@ -50,7 +50,7 @@ export function Socials() {
           </ul>
         </div>
       </Reveal>
-      <Reveal delay={0.1}>
+      <Reveal delay={0.1} className="-mt-12 sm:mt-0">
         <PhoneMock />
       </Reveal>
       </div>

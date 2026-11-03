@@ -110,18 +110,15 @@ export function WriteUs({ text, className = "" }: { text?: string; className?: s
           </li>
         ))}
       </ul>
-      {text && (
-        <p aria-live="polite" className={`mt-3 text-[14px] leading-snug ${note === "paste" ? "font-bold text-ink" : "text-ink-3"}`}>
-          {note === "paste" ? (
-            <span className="inline-flex items-start gap-1.5">
-              <Check className="mt-0.5 size-4 shrink-0 text-[var(--ok)]" strokeWidth={2.4} />
-              Текст скопирован. В чате зажмите поле ввода и нажмите «Вставить».
-            </span>
-          ) : (
-            "В Telegram текст появится сам. ВКонтакте, MAX и TikTok так не умеют: мы скопируем текст, останется вставить его в чат."
-          )}
-        </p>
-      )}
+      {/* said only after a tap on VK, MAX or TikTok, when the text waits on the clipboard */}
+      <p aria-live="polite" className="mt-3 min-h-0 text-[15px] leading-snug font-bold text-ink empty:hidden">
+        {note === "paste" && (
+          <span className="inline-flex items-start gap-1.5">
+            <Check className="mt-0.5 size-4 shrink-0 text-[var(--ok)]" strokeWidth={2.4} />
+            Текст скопирован. В чате зажмите поле ввода и нажмите «Вставить».
+          </span>
+        )}
+      </p>
     </div>
   );
 }

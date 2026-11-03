@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
 import { Legal } from "@/components/Legal";
+import credits from "@/lib/credits.json";
+import { CARS } from "@/lib/data";
+
+// who took the catalog photos (one of them is CC BY 4.0 and needs its author named)
+const SOURCES = CARS.filter((c) => c.slug in credits).map((c) => {
+  const x = (credits as Record<string, { lic: string; artist: string; page: string }>)[c.slug];
+  return `${c.brand} ${c.model}: ${x.artist || "автор не указан"}, ${x.lic}, ${x.page}`;
+});
 
 export const metadata: Metadata = { title: "Пользовательское соглашение — NJ Motors" };
 
@@ -21,7 +29,7 @@ export default function Terms() {
         },
         {
           title: "Фотографии автомобилей",
-          text: ["Фотографии в каталоге иллюстративные. Реальный автомобиль, который вы получите, может отличаться от изображённого. Источники иллюстраций указаны внизу страницы."],
+          text: ["Фотографии в каталоге иллюстративные. Реальный автомобиль, который вы получите, может отличаться от изображённого.", ...(SOURCES.length ? ["Источники фотографий:", ...SOURCES] : [])],
         },
         {
           title: "Права на материалы",

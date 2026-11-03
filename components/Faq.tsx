@@ -19,7 +19,7 @@ export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   const base = useId();
   return (
-    <section id="faq" className="pt-14 pb-16 lg:pt-24 lg:pb-24">
+    <section id="faq" className="pt-10 pb-10 lg:pt-16 lg:pb-16">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead title="Ответы на вопросы" />
         <Reveal className="mt-8 lg:mt-10">
@@ -48,7 +48,7 @@ export function Faq() {
                       </h3>
                       <div id={`${id}-a`} role="region" aria-labelledby={`${id}-q`} className="faq-a">
                         <div className="faq-a-in">
-                          <p className="max-w-[62ch] px-4 pb-5 text-[16px] leading-relaxed sm:px-5">{nb(f.a)}</p>
+                          <p className="px-4 pb-5 text-[16px] leading-relaxed sm:px-5 sm:pr-12">{nb(f.a)}</p>
                         </div>
                       </div>
                     </li>

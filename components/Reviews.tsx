@@ -13,7 +13,7 @@ import { Reveal, SectionHead } from "./ui";
 const ITEMS = [
   { id: "review-2", title: "Александр, г. Ванино", sub: "Chevrolet Trailblazer 2026", wide: false, dur: 102 },
   { id: "review-3", title: "Дмитрий, г. Санкт-Петербург", sub: "Hyundai Tucson 2020", wide: true, dur: 30 },
-  { id: "review-4", title: "Григорий и Андрей, г. Ижевск", sub: "Land Rover Discovery Sport, SsangYong", wide: false, dur: 98 },
+  { id: "review-4", title: "Григорий, г. Ижевск", sub: "Land Rover Discovery Sport, SsangYong", wide: false, dur: 98 },
   { id: "review-1", title: "Евгений, г. Красноярск", sub: "Chevrolet Trailblazer 2022", wide: false, dur: 82 },
 ] as const;
 
@@ -28,7 +28,6 @@ const PHOTOS = [
   { n: 7, title: "SsangYong", alt: "Белый SsangYong на парковке" },
 ].map((p) => ({ ...p, tile: asset(`/gallery/car-${p.n}.webp`), full: asset(`/gallery/car-${p.n}-full.webp`) }));
 
-const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 type FsVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 type FsBox = HTMLDivElement & { webkitRequestFullscreen?: () => void };
@@ -136,7 +135,6 @@ export function Reviews() {
   const wrap = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
   const bar = useRef<HTMLDivElement>(null);
-  const clock = useRef<HTMLSpanElement>(null);
   const segs = useRef<(HTMLSpanElement | null)[]>([]);
   const userPaused = useRef(false);
   const wantPlay = useRef(false);
@@ -175,7 +173,6 @@ export function Reviews() {
     if (bar.current) bar.current.style.transform = `scaleX(${k})`;
     const seg = segs.current[idxRef.current];
     if (seg) seg.style.transform = `scaleX(${k})`;
-    if (clock.current) clock.current.textContent = `${mmss(time)} / ${mmss(d)}`;
   }, []);
 
   const go = useCallback((n: number, play = true) => {
@@ -288,26 +285,27 @@ export function Reviews() {
   const next = ITEMS[(i + 1) % ITEMS.length];
 
   return (
-    <section id="reviews" className="bg-bg-2 pt-10 pb-14 lg:pt-14 lg:pb-20">
+    <section id="reviews" className="bg-bg-2 pt-9 pb-10 lg:pt-14 lg:pb-16">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
           title="Отзывы клиентов"
           lead="Видео от наших покупателей: как получили машину и как прошла сделка."
         />
 
-        <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-10 xl:gap-14">
+        <div ref={wrap} className="mt-6 grid items-start gap-6 lg:mt-12 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-10 xl:gap-14">
           <Reveal delay={0.08} className="min-w-0">
-            <div className="mx-auto flex min-h-[480px] items-center justify-center lg:min-h-[600px]">
+            <div className="-mx-5 flex items-center justify-center sm:mx-auto lg:min-h-[600px]">
               <div
                 ref={box}
+                id="review-player"
                 tabIndex={0}
                 role="group"
                 aria-label={`Видеоплеер: ${cur.title}. Пробел: пауза, M: звук, F: во весь экран, стрелки влево и вправо: перемотка, вверх и вниз: громкость`}
                 onKeyDown={onKey}
                 style={fs ? undefined : { aspectRatio: String(ratio) }}
                 className={`group relative overflow-hidden rounded-[6px] bg-black outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                  ratio >= 1 ? "w-full max-w-[600px]" : "h-[min(70svh,600px)] max-w-full"
-                } ${fs ? "!h-full !w-full !max-w-none !rounded-none" : ""}`}
+                  ratio >= 1 ? "w-full lg:max-w-[600px]" : "w-full max-h-[86svh] sm:w-auto sm:h-[min(70svh,600px)] sm:max-w-full"
+                } max-sm:rounded-none ${fs ? "!h-full !max-h-none !w-full !max-w-none !rounded-none" : ""}`}
               >
                 <video
                   ref={video}
@@ -393,8 +391,8 @@ export function Reviews() {
                       e.currentTarget.setPointerCapture(e.pointerId);
                       seek(e.clientX, e.currentTarget);
                     }}
-                    onPointerMove={(e) => e.buttons && seek(e.clientX, e.currentTarget)}
-                    className="group/bar cursor-pointer py-2"
+                    onPointerMove={(e) => e.currentTarget.hasPointerCapture(e.pointerId) && seek(e.clientX, e.currentTarget)}
+                    className="group/bar cursor-pointer touch-none py-2 pointer-coarse:py-3.5"
                   >
                     <div className="h-[5px] overflow-hidden rounded-full bg-white/30 transition-[height] group-hover/bar:h-[7px]">
                       <div ref={bar} className="h-full origin-left bg-accent" style={{ transform: "scaleX(0)" }} />
@@ -410,9 +408,6 @@ export function Reviews() {
                     <button type="button" aria-label="Следующее видео" onClick={() => go(i + 1)} className="vp-btn">
                       <SkipForward className="size-5" strokeWidth={2} />
                     </button>
-                    <span ref={clock} className="num ml-1 text-[14px] whitespace-nowrap opacity-85">
-                      0:00 / {mmss(dur)}
-                    </span>
                     <span className="flex-1" />
                     <div className="flex items-center gap-1">
                       <button type="button" aria-label={muted || volume === 0 ? "Включить звук" : "Выключить звук"} onClick={toggleMute} className="vp-btn">
@@ -430,7 +425,7 @@ export function Reviews() {
                         value={muted ? 0 : volume}
                         onChange={(e) => setLevel(Number(e.target.value))}
                         aria-label="Громкость"
-                        className="vp-range w-[52px] sm:w-[60px]"
+                        className="vp-range w-[60px] pointer-coarse:hidden"
                         style={{ ["--lvl" as string]: `${(muted ? 0 : volume) * 100}%` }}
                       />
                     </div>
@@ -471,7 +466,6 @@ export function Reviews() {
                         <span className="block text-[16px] leading-tight font-bold text-ink">{it.title}</span>
                         {it.sub && <span className="mt-0.5 line-clamp-2 block text-[14px] text-ink-2 max-sm:line-clamp-1">{it.sub}</span>}
                       </span>
-                      <span className="num shrink-0 text-[15px] text-ink-3">{mmss(it.dur)}</span>
                     </button>
                   </div>
                 );

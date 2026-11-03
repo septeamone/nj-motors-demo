@@ -14,13 +14,13 @@ export function MobileBar() {
     const onScroll = () => setPast(window.scrollY > window.innerHeight * 0.8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    // hidden while the form or the footer (its links) is on screen
+    // hidden while the contact block, the footer (its links) or the review player (its controls) is on screen
     const seen = new Map<Element, boolean>();
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => seen.set(e.target, e.isIntersecting && (e.target.tagName === "FOOTER" || e.intersectionRatio >= 0.15)));
       setAtForm([...seen.values()].some(Boolean));
     }, { threshold: [0, 0.15] });
-    document.querySelectorAll("#contact, footer").forEach((el) => io.observe(el));
+    document.querySelectorAll("#contact, footer, #review-player").forEach((el) => io.observe(el));
     return () => {
       window.removeEventListener("scroll", onScroll);
       io.disconnect();

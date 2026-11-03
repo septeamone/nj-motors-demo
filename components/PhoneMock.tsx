@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
+import { BrandIcon } from "./BrandIcon";
 import { lightLoad } from "@/lib/net";
 
 // three.js is heavy: it is fetched only when the phone is about to come on screen.
@@ -30,19 +30,6 @@ const SCREENS = [
 ] as const;
 
 const CHANNEL = "https://t.me/njmotorskorea2";
-
-/** The real channel link with the date of the screenshots; on wide screens it stands in the text beside the phone. */
-export function ChannelLink({ className = "" }: { className?: string }) {
-  return (
-    <div className={className}>
-      <p className="mono !text-[16px] text-ink-3">Настоящий канал · скриншоты от 18.10.2026</p>
-      <a href={CHANNEL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm mt-3">
-        Открыть канал в Telegram
-        <ArrowUpRight className="size-4" strokeWidth={2} />
-      </a>
-    </div>
-  );
-}
 
 /**
  * A real 3D phone (three.js): thick bevelled titanium frame, glass screen with reflections, camera back with the emblem.
@@ -155,7 +142,7 @@ export function PhoneMock() {
         )}
       </div>
 
-      <div className="flex w-full items-center justify-between gap-2 lg:-mt-6 lg:justify-center">
+      <div className="-mt-12 flex w-full items-center justify-center gap-2 sm:-mt-8 lg:-mt-6">
         <div className="flex items-center" role="group" aria-label="Скриншоты канала">
           {SCREENS.map((alt, k) => (
             <button key={alt} type="button" aria-label={`Показать: ${alt}`} aria-current={k === i} onClick={() => setI(k)} className="grid h-11 w-4 cursor-pointer place-items-center lg:w-5">
@@ -163,13 +150,17 @@ export function PhoneMock() {
             </button>
           ))}
         </div>
-        {/* phones: the channel button in the same row as the dots (wide screens show it in the text column) */}
-        <a href={CHANNEL} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm lg:hidden">
-          Канал в Telegram
-          <ArrowUpRight className="size-4" strokeWidth={2} />
-        </a>
       </div>
-      <p className="mono mt-1 !text-[16px] text-ink-3 lg:hidden">Настоящий канал · скриншоты от 18.10.2026</p>
+      {/* the channel itself, in Telegram's own colour */}
+      <a
+        href={CHANNEL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2 inline-flex min-h-13 items-center gap-2.5 self-center rounded-full bg-[#26A5E4] px-6 py-3 text-[17px] font-bold text-white transition-transform duration-150 hover:-translate-y-0.5"
+      >
+        <BrandIcon brand="telegram" className="size-[22px] shrink-0" />
+        Перейти в Telegram-канал
+      </a>
     </div>
   );
 }

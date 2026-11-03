@@ -36,7 +36,7 @@ export function Contact() {
   const plateX = useTransform(closed, [0, 1], ["34%", "0%"]);
 
   return (
-    <section ref={sec} id="contact" className="drench relative isolate overflow-hidden !bg-transparent py-12 lg:py-16">
+    <section ref={sec} id="contact" className="drench relative isolate overflow-hidden !bg-transparent py-10 lg:py-14">
       <motion.span aria-hidden style={calm ? undefined : { x: leftX }} className="halftone !absolute inset-y-0 left-0 -z-10 w-[51%] bg-accent-fill" />
       <motion.span aria-hidden style={calm ? undefined : { x: rightX }} className="halftone !absolute inset-y-0 right-0 -z-10 w-[51%] bg-accent-fill" />
       <motion.div style={calm ? undefined : { opacity: rise }} className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">

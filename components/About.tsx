@@ -13,7 +13,7 @@ const PLACES = [
 export function About() {
   const phone = SITE.contacts.phone;
   return (
-    <section id="about" className="bg-bg py-14 lg:py-20">
+    <section id="about" className="bg-bg py-10 lg:py-16">
       <div className="mx-auto grid max-w-[var(--page)] gap-10 px-5 sm:px-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16 lg:px-12 xl:px-20">
         <div>
           <SectionHead

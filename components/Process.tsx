@@ -2,7 +2,8 @@
 
 import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef } from "react";
-import { DOCS, TERMS } from "@/lib/data";
+import { Check } from "lucide-react";
+import { DOCS, PROMISES, TERMS } from "@/lib/data";
 import { NjIcon } from "./NjIcon";
 import { WriteUs } from "./LeadBits";
 import { Deal } from "./Deal";
@@ -54,7 +55,7 @@ export function Process() {
   const lens = useTransform([rise, scrollYProgress], ([e, v]: number[]) => `scale(${1.12 - 0.12 * e + 0.08 * clamp(depth(v) / 4)})`);
 
   return (
-    <section ref={sec} id="process" className="relative bg-bg pb-14 lg:pb-20">
+    <section ref={sec} id="process" className="relative bg-bg pb-10 lg:pb-16">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <motion.div style={{ maskImage: fade, WebkitMaskImage: fade, maskComposite: "intersect", WebkitMaskComposite: "source-in" }} className="sticky top-0 h-svh overflow-hidden bg-bg">
           <motion.div style={{ transform: lens }} className="absolute inset-0 will-change-transform">
@@ -68,43 +69,78 @@ export function Process() {
       </div>
       <div aria-hidden className="h-[45svh]" />
       <div className="relative mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
-        <div className="on-film">
-          <SectionHead
-            title="Процесс"
-            lead="4 договора с привязкой к конкретному этапу, весь необходимый пакет документов и ведение под ключ."
+        <div className="on-film relative">
+          {/* a dark veil under the heading: the sky in the film is bright, the words stay legible on any frame */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -top-16 -bottom-10 left-[calc(50%-50vw)] w-screen bg-[rgba(4,12,20,0.58)] [mask-image:linear-gradient(180deg,transparent,#000_22%,#000_78%,transparent)] lg:bg-[linear-gradient(90deg,rgba(4,12,20,0.86)_0%,rgba(4,12,20,0.6)_42%,transparent_78%)]"
           />
-          {/* the terms, as Andrey puts them */}
-          <p className="mt-5 inline-flex max-w-full items-start gap-3 rounded-[8px] bg-[var(--paper)] px-4 py-3 text-[var(--paper-ink)] sm:px-5">
-            <NjIcon name="clock" className="mt-0.5 size-6 shrink-0" />
-            <span className="text-[16px] leading-snug">
-              <b className="font-display text-[19px] tracking-wide uppercase">Сроки: {TERMS.short}</b>
-              <span className="block opacity-85">{TERMS.text}</span>
-            </span>
-          </p>
+          <div className="relative">
+            <SectionHead
+              title="Процесс"
+              lead="4 договора с привязкой к конкретному этапу, весь необходимый пакет документов и ведение под ключ."
+            />
+            {/* the terms: one number, then the two legs of the way */}
+            <Reveal className="mt-6 lg:mt-8">
+              <div className="adv-tile grid max-w-[860px] overflow-hidden rounded-[10px] bg-[var(--paper)] text-[var(--paper-ink)] sm:grid-cols-[auto_minmax(0,1fr)]">
+                <div className="flex items-center gap-4 bg-[var(--paper-ink)] px-5 py-4 text-[var(--paper)] sm:flex-col sm:items-start sm:justify-center sm:gap-2 sm:px-7 sm:py-6">
+                  <NjIcon name="clock" className="size-9 shrink-0 sm:size-10" />
+                  <p className="leading-none">
+                    <span className="num block text-[clamp(38px,4.2vw,54px)] leading-none">{TERMS.days}</span>
+                    <span className="mt-1.5 block text-[16px] font-bold">дней под ключ</span>
+                  </p>
+                </div>
+                <ol className="grid divide-y divide-[rgba(18,16,13,0.16)] sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                  {TERMS.legs.map((l, k) => (
+                    <li key={k} className="flex gap-3 px-5 py-4 sm:block sm:px-7 sm:py-6">
+                      <span className="font-display shrink-0 text-[clamp(22px,2.2vw,30px)] leading-none tracking-wide uppercase">{l.t}</span>
+                      <span className="block text-[16px] leading-snug sm:mt-2 sm:text-[17px]">{l.d}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </Reveal>
+          </div>
         </div>
 
         <Deal />
 
-        <Reveal className="mt-12 rounded-[6px] bg-surface p-6 sm:p-8 lg:mt-16 lg:grid lg:grid-cols-12 lg:gap-x-6 lg:p-10">
-          <div className="lg:col-span-12">
-            {/* what the buyer holds at the end (from Andrey's own description) */}
-            <div className="flex items-start gap-5">
-              <NjIcon name="contract" className="size-12 shrink-0 text-ink" />
-              <div className="min-w-0">
-                <p className="font-display text-[clamp(26px,3vw,36px)] leading-tight tracking-wide uppercase">Гарантии</p>
-                <p className="mt-2 max-w-[52ch] text-[17px] leading-snug text-ink-2">Документы на ваше имя и понятные условия на каждом этапе.</p>
+        {/* guarantees: the three promises on kraft first, then every paper the buyer holds, each one on its own */}
+        <div className="mt-12 lg:mt-16">
+          <Reveal className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+            <h3 className="font-display text-[clamp(30px,3.4vw,46px)] leading-none tracking-wide uppercase">Гарантии</h3>
+            <p className="max-w-[46ch] text-[17px] leading-snug text-ink-2">Документы на ваше имя и понятные условия на каждом этапе.</p>
+          </Reveal>
+          <Reveal className="mt-6 grid gap-3 sm:grid-cols-3 lg:gap-4">
+            {PROMISES.map((g) => (
+              <div key={g.t} className="adv-tile flex gap-4 rounded-[10px] bg-[var(--paper)] p-5 text-[var(--paper-ink)] sm:flex-col sm:gap-3 lg:p-6">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-white">
+                  <Check className="size-6" strokeWidth={3} />
+                </span>
+                <div>
+                  <p className="font-display text-[clamp(21px,1.9vw,26px)] leading-tight tracking-wide uppercase">{g.t}</p>
+                  <p className="mt-1.5 text-[16px] leading-snug opacity-85">{g.d}</p>
+                </div>
               </div>
+            ))}
+          </Reveal>
+          <Reveal className="mt-3 rounded-[10px] bg-surface p-5 sm:p-7 lg:mt-4 lg:p-9">
+            <div className="flex items-center gap-4">
+              <NjIcon name="contract" className="size-10 shrink-0 text-ink" />
+              <p className="font-display text-[clamp(22px,2.2vw,30px)] leading-tight tracking-wide uppercase">Документы на ваше имя</p>
             </div>
-            <ol className="mt-6 grid gap-x-10 gap-y-2.5 sm:grid-cols-2">
-              {DOCS.map((d, k) => (
-                <li key={d} className="flex gap-3 text-[16px] leading-snug text-ink">
-                  <span className="num w-6 shrink-0 text-accent-ink">{k + 1}</span>
+            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:gap-3">
+              {DOCS.map((d) => (
+                <li key={d} className="flex items-start gap-3 rounded-[8px] bg-surface-2 px-4 py-3.5 text-[16px] leading-snug font-bold text-ink">
+                  <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2 border-[var(--accent-fill)] text-accent-ink">
+                    <Check className="size-3.5" strokeWidth={3.5} />
+                  </span>
                   {d}
                 </li>
               ))}
-            </ol>
-          </div>
-        </Reveal>
+            </ul>
+          </Reveal>
+        </div>
 
         {/* the most reassuring moment of the page ends with the action: one message is enough */}
         <Reveal className="mt-10 grid items-center gap-6 rounded-[6px] bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 lg:p-10">
