@@ -7,7 +7,7 @@ import { asset } from "@/lib/asset";
 import { DUR, EASE } from "@/lib/motion";
 
 /** Small round mark from the logo + wordmark. */
-export function Wordmark({ className = "", tagline = true }: { className?: string; tagline?: boolean }) {
+export function Wordmark({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-3 ${className}`}>
       <Image
@@ -19,9 +19,6 @@ export function Wordmark({ className = "", tagline = true }: { className?: strin
       />
       <span className="leading-none">
         <span className="font-display block text-[22px] font-semibold tracking-[0.06em] text-ink uppercase">NJ Motors</span>
-        {tagline && (
-          <span className="mono mt-1 hidden text-ink-3 sm:block">Автомобили из Кореи с 2023 года</span>
-        )}
       </span>
     </span>
   );

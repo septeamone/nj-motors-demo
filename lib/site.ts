@@ -1,7 +1,7 @@
 import raw from "./site.json";
 
 type Site = Omit<typeof raw, "contacts" | "owner" | "legal" | "social" | "metrika"> & {
-  social: { tiktok: string | null; vk: string | null; telegram: string | null };
+  social: { tiktok: string | null; vk: string | null; telegram: string | null; youtube: string | null; max: string | null };
   contacts: { phone: string | null; telegram: string | null; vk: string | null; max: string | null; email: string | null; address: string | null };
   owner: { name: string | null; role: string; video: string | null; poster: string | null };
   // Yandex Metrika counter number; null = no counter on the site

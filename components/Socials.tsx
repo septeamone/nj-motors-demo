@@ -5,9 +5,11 @@ import { PhoneMock } from "./PhoneMock";
 import { Reveal } from "./ui";
 
 const LINKS: { brand: Brand; href: string | null; label: string }[] = [
-  { brand: "tiktok", href: SITE.social.tiktok, label: "TikTok" },
-  { brand: "vk", href: SITE.social.vk, label: "ВКонтакте" },
   { brand: "telegram", href: SITE.social.telegram, label: "Telegram" },
+  { brand: "vk", href: SITE.social.vk, label: "ВКонтакте" },
+  { brand: "youtube", href: SITE.social.youtube, label: "YouTube" },
+  { brand: "tiktok", href: SITE.social.tiktok, label: "TikTok" },
+  { brand: "max", href: SITE.social.max, label: "MAX" },
 ];
 
 /**
@@ -24,7 +26,7 @@ export function Socials() {
         <div className="flex flex-col gap-5 rounded-[8px] bg-surface p-5 sm:p-7 lg:gap-7 lg:p-10">
           <div>
             <p className="font-display text-[clamp(22px,2.2vw,30px)] leading-tight tracking-wide text-ink uppercase">Мы в соцсетях</p>
-            <p className="mt-1.5 max-w-[46ch] text-[16px] leading-snug text-ink-2">Новые машины, отзывы клиентов и как проходит каждый этап.</p>
+            <p className="mt-1.5 max-w-[46ch] text-[16px] leading-snug text-ink-2">Ещё больше вариантов с ценами, этапы и процессы работы.</p>
           </div>
           {/* phones: the three side by side, icon over the name; wider screens: pills */}
           <ul className="grid grid-cols-3 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">

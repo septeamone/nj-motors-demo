@@ -5,10 +5,10 @@ import { SplitHero } from "./SplitHero";
 // Advantages on the first screen, big, the way the owner's favourite competitor shows them. Only confirmed facts;
 // numbers (savings, cars delivered) are added once Andrey gives them.
 const ADVANTAGES: { v: string; t: string; icon: IconName }[] = [
-  { v: "Без комиссий", t: "и наценок: напрямую с экспортёром", icon: "rub" },
-  { v: "Отчёт эксперта", t: "фото, видео, толщиномер, диагностика", icon: "inspect" },
-  { v: "Страховка", t: "на полную стоимость на всех этапах", icon: "shield" },
-  { v: "Документы на вас", t: "с первого дня, платежи официальные", icon: "contract" },
+  { v: "Без комиссий", t: "Без наценок — напрямую от экспортёра", icon: "rub" },
+  { v: "Детальный осмотр", t: "Фото, видео, толщиномер, диагностика от эксперта за счёт компании", icon: "inspect" },
+  { v: "Страховка", t: "На полную стоимость машины на всех этапах транспортировки", icon: "shield" },
+  { v: "Прозрачная оплата", t: "Официальные поэтапные платежи без полной предоплаты", icon: "contract" },
 ];
 
 /** Text half of the hero; SplitHero owns the split, the intro and the emblem. */
@@ -16,15 +16,16 @@ export function Hero() {
   return (
     <SplitHero>
       <div className="flex h-full flex-col justify-center px-5 pt-5 pb-6 sm:px-8 lg:pt-[96px] lg:pr-10 lg:pb-8 lg:pl-[max(2rem,calc((100vw-var(--page))/2+3rem))]">
-        <h1 className="display text-[clamp(46px,12.5vw,64px)] !leading-[0.92] lg:text-[clamp(62px,6vw,108px)]">
+        <h1 className="display text-[clamp(38px,10.6vw,58px)] !leading-[0.92] lg:text-[clamp(62px,6vw,108px)]">
           <span className="block">Авто из Кореи</span>{" "}
           <span className="block">
-            до <span className="text-accent">30%</span> дешевле.
+            до <span className="text-accent">30%</span> дешевле
           </span>
+          <span className="block">рынка РФ.</span>
         </h1>
 
         <p className="lead mt-4 !max-w-[40ch] max-sm:!text-[16px] lg:mt-6 lg:text-[18px]">
-          Без посредников и наценок — напрямую от корейского экспортёра. Проверяем, выкупаем и привозим под ключ, а машина и документы сразу на ваше имя.
+          Без посредников и наценок — напрямую от корейской экспортной компании. Подбираем, проверяем и привозим под ключ со всеми документами и полной страховкой.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 lg:mt-8">

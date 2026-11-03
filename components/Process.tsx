@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef } from "react";
-import { DOCS } from "@/lib/data";
+import { DOCS, TERMS } from "@/lib/data";
 import { NjIcon } from "./NjIcon";
 import { WriteUs } from "./LeadBits";
 import { Deal } from "./Deal";
@@ -70,9 +70,17 @@ export function Process() {
       <div className="relative mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="on-film">
           <SectionHead
-            title="Паспорт вашей сделки"
-            lead="Пять официальных платежей по этапам. За что и когда вы платите, записано в договоре."
+            title="Процесс"
+            lead="4 договора с привязкой к конкретному этапу, весь необходимый пакет документов и ведение под ключ."
           />
+          {/* the terms, as Andrey puts them */}
+          <p className="mt-5 inline-flex max-w-full items-start gap-3 rounded-[8px] bg-[var(--paper)] px-4 py-3 text-[var(--paper-ink)] sm:px-5">
+            <NjIcon name="clock" className="mt-0.5 size-6 shrink-0" />
+            <span className="text-[16px] leading-snug">
+              <b className="font-display text-[19px] tracking-wide uppercase">Сроки: {TERMS.short}</b>
+              <span className="block opacity-85">{TERMS.text}</span>
+            </span>
+          </p>
         </div>
 
         <Deal />
@@ -83,8 +91,8 @@ export function Process() {
             <div className="flex items-start gap-5">
               <NjIcon name="contract" className="size-12 shrink-0 text-ink" />
               <div className="min-w-0">
-                <p className="font-display text-[clamp(26px,3vw,36px)] leading-tight tracking-wide uppercase">Документы на ваше имя</p>
-                <p className="mt-2 max-w-[52ch] text-[17px] leading-snug text-ink-2">Всё официально: на руках у вас будет полный комплект.</p>
+                <p className="font-display text-[clamp(26px,3vw,36px)] leading-tight tracking-wide uppercase">Гарантии</p>
+                <p className="mt-2 max-w-[52ch] text-[17px] leading-snug text-ink-2">Документы на ваше имя и понятные условия на каждом этапе.</p>
               </div>
             </div>
             <ol className="mt-6 grid gap-x-10 gap-y-2.5 sm:grid-cols-2">
@@ -95,17 +103,14 @@ export function Process() {
                 </li>
               ))}
             </ol>
-            <p className="mt-6 max-w-[62ch] text-[16px] leading-snug text-ink-3">
-              Для постановки на учёт останется распечатать ЭПТС и ТПО, пройти техосмотр и оформить страховку.
-            </p>
           </div>
         </Reveal>
 
         {/* the most reassuring moment of the page ends with the action: one message is enough */}
         <Reveal className="mt-10 grid items-center gap-6 rounded-[6px] bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 lg:p-10">
           <div>
-            <p className="font-display text-[clamp(24px,2.6vw,34px)] leading-tight tracking-wide text-ink uppercase">Первый шаг бесплатный</p>
-            <p className="mt-2 max-w-[40ch] text-[17px] leading-snug text-ink-2">Напишите нам, где удобно: расспросим о задаче и пришлём расчёт. Платить пока не нужно.</p>
+            <p className="font-display text-[clamp(24px,2.6vw,34px)] leading-tight tracking-wide text-ink uppercase">Бесплатная консультация</p>
+            <p className="mt-2 max-w-[40ch] text-[17px] leading-snug text-ink-2">Пришлём варианты с расчётом «под ключ», фотографиями и описанием.</p>
           </div>
           <WriteUs />
         </Reveal>

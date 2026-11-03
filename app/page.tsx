@@ -1,3 +1,4 @@
+import { About } from "@/components/About";
 import { Cases } from "@/components/Cases";
 import { Catalog } from "@/components/Catalog";
 import { Compare } from "@/components/Compare";
@@ -35,6 +36,7 @@ export default function Home() {
         <Process />
         <Faq />
         <Contact />
+        <About />
       </main>
       <Footer />
       <MobileBar />

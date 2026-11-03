@@ -71,8 +71,8 @@ export function Catalog() {
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div data-theme="dark" className="on-film">
           <SectionHead
-            title="Примеры из Кореи"
-            lead="Это примеры. Вашу машину мы найдём под вашу задачу и бюджет, а цену посчитаем заранее."
+            title="Каталог"
+            lead="Цены на автомобили указаны с учётом курсов валют на момент публикации."
           />
         </div>
 

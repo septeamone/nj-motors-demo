@@ -21,7 +21,7 @@ export function Faq() {
   return (
     <section id="faq" className="pt-14 pb-16 lg:pt-24 lg:pb-24">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
-        <SectionHead title="Вопросы до заявки" />
+        <SectionHead title="Ответы на вопросы" />
         <Reveal className="mt-8 lg:mt-10">
           {/* two independent columns on wide screens (an open slip lengthens only its own column), one list on phones */}
           <div className="grid items-start gap-x-8 gap-y-2 lg:grid-cols-2">

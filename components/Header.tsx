@@ -5,14 +5,17 @@ import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { DUR, EASE } from "@/lib/motion";
 import { useEffect, useState } from "react";
 import { asset } from "@/lib/asset";
+import { SITE, telHref } from "@/lib/site";
+import { BrandIcon } from "./BrandIcon";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
   { id: "catalog", label: "Автомобили" },
   { id: "reviews", label: "Отзывы" },
-  { id: "process", label: "Как мы работаем" },
+  { id: "process", label: "Процесс" },
   { id: "faq", label: "Вопросы" },
-  { id: "contact", label: "Написать" },
+  { id: "contact", label: "Контакты" },
+  { id: "about", label: "О нас" },
 ];
 
 function NavList({ items, prefix, active, className = "" }: { items: typeof NAV; prefix: string; active: string; className?: string }) {
@@ -23,13 +26,13 @@ function NavList({ items, prefix, active, className = "" }: { items: typeof NAV;
           <a
             href={`${prefix}#${n.id}`}
             aria-current={active === n.id ? "true" : undefined}
-            className="relative px-3 py-2 text-[16px] font-bold text-ink-2 transition-colors hover:text-ink aria-[current=true]:text-ink xl:px-4"
+            className="relative px-2.5 py-2 text-[16px] font-bold whitespace-nowrap text-ink-2 transition-colors hover:text-ink aria-[current=true]:text-ink min-[1600px]:px-4"
           >
             {n.label}
             {active === n.id && (
               <motion.span
                 layoutId="nav-active"
-                className="absolute inset-x-3 -bottom-[1px] h-[2px] bg-accent xl:inset-x-4"
+                className="absolute inset-x-2.5 -bottom-[1px] h-[2px] bg-accent min-[1600px]:inset-x-4"
                 transition={{ duration: 0.45, ease: EASE }}
               />
             )}
@@ -89,11 +92,18 @@ export function Header({ prefix = "" }: { prefix?: string }) {
           <div className="flex items-center gap-3">
             <NavList items={NAV.slice(3)} prefix={prefix} active={active} />
             <span className="ml-auto" />
+            {SITE.contacts.phone && (
+              // the number in full on wide screens, a round call button on phones and tablets
+              <a
+                href={telHref(SITE.contacts.phone)}
+                aria-label={`Позвонить: ${SITE.contacts.phone}`}
+                className="grid size-11 shrink-0 place-items-center rounded-full bg-[#1fae54] text-white min-[1400px]:flex min-[1400px]:size-auto min-[1400px]:gap-2 min-[1400px]:bg-transparent min-[1400px]:px-2 min-[1400px]:text-[17px] min-[1400px]:font-bold min-[1400px]:whitespace-nowrap min-[1400px]:text-ink min-[1400px]:hover:text-accent-ink"
+              >
+                <BrandIcon brand="call" className="size-5 min-[1400px]:size-[18px] min-[1400px]:text-[#1fae54]" />
+                <span className="hidden min-[1400px]:inline">{SITE.contacts.phone}</span>
+              </a>
+            )}
             <ThemeToggle />
-            <a href={`${prefix}#contact`} className="btn btn-primary btn-sm hidden 2xl:inline-flex">
-              Подобрать машину
-              <ArrowUpRight className="size-4" strokeWidth={2} />
-            </a>
             <button
               type="button"
               aria-label={open ? "Закрыть меню" : "Открыть меню"}

@@ -11,10 +11,10 @@ import { Reveal, SectionHead } from "./ui";
 // Any number of videos, upright or wide: the player reads each video's own shape when it loads (`wide` is only the
 // first guess before that), and the list scrolls sideways when there are more than fit.
 const ITEMS = [
-  { id: "review-1", title: "Отзыв клиента", sub: "", wide: false, dur: 82 },
-  { id: "review-2", title: "Отзыв клиента", sub: "", wide: false, dur: 102 },
-  { id: "review-3", title: "Отзыв клиента", sub: "", wide: true, dur: 30 },
-  { id: "review-4", title: "Отзыв клиента", sub: "", wide: false, dur: 98 },
+  { id: "review-2", title: "Александр, г. Ванино", sub: "Chevrolet Trailblazer 2026", wide: false, dur: 102 },
+  { id: "review-3", title: "Дмитрий, г. Санкт-Петербург", sub: "Hyundai Tucson 2020", wide: true, dur: 30 },
+  { id: "review-4", title: "Григорий и Андрей, г. Ижевск", sub: "Land Rover Discovery Sport, SsangYong", wide: false, dur: 98 },
+  { id: "review-1", title: "Евгений, г. Красноярск", sub: "Chevrolet Trailblazer 2022", wide: false, dur: 82 },
 ] as const;
 
 // Photos of cars sent by the owner (public/gallery): a cropped tile for the wall and the whole frame for the big view.
@@ -291,8 +291,8 @@ export function Reviews() {
     <section id="reviews" className="bg-bg-2 pt-10 pb-14 lg:pt-14 lg:pb-20">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead
-          title="Что говорят клиенты"
-          lead="Живые видео от наших клиентов: как получили машину и как прошла сделка."
+          title="Отзывы клиентов"
+          lead="Видео от наших покупателей: как получили машину и как прошла сделка."
         />
 
         <div ref={wrap} className="mt-12 grid items-start gap-10 lg:mt-16 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-10 xl:gap-14">

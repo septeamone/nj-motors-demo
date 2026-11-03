@@ -980,8 +980,8 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   border: 0;
 }
 
-/* short phones (iPhone SE and the like): the advantages on the first screen keep their headlines only */
-@media (max-width: 1023.98px) and (max-height: 740px) {
+/* phones (up to the tallest ones): the advantages on the first screen keep their headlines only, so the screen holds them */
+@media (max-width: 1023.98px) and (max-height: 899.98px) {
   .hero-adv-note {
     display: none;
   }

@@ -44,8 +44,8 @@ export function Contact() {
           <motion.div style={calm ? undefined : { x: textX }}>
             <SectionHead
               stacked
-              title="Расскажите, какую машину ищете"
-              lead="Опишите задачу — пришлём подборку вариантов с расчётом. Платить пока ничего не нужно."
+              title="Подобрать автомобиль"
+              lead="Опишите, какую примерно машину ищете, — пришлём подборку вариантов с расчётом «под ключ»."
             />
             <Reveal delay={0.1} className="mt-8">
               {/* the brand's muscle car poster, keyed out of its own red so it stands straight on the section's red */}
@@ -69,7 +69,7 @@ export function Contact() {
                     Вы выбрали: <b className="text-ink">{car.replace(/^Интересует: /, "")}</b>. Напишите, где удобно, — пришлём похожие варианты с расчётом.
                   </>
                 ) : (
-                  "Расскажите, что ищете: модель или бюджет, год, ваш город. Отвечаем сами, без менеджеров-посредников."
+                  "Укажите свой бюджет, город назначения, тип кузова и желаемые параметры. Менеджер ответит на все вопросы и пришлёт подборку авто."
                 )}
               </p>
               <WriteUs className="mt-6" text={car ? `${HELLO} ${car}` : undefined} />

@@ -15,11 +15,11 @@ const N = STEPS.length;
 const PAYS = DEAL_STAGES.length;
 const PAY_AT: Record<number, number[]> = {};
 DEAL_STAGES.forEach((d, k) => (PAY_AT[d.step] ??= []).push(k));
-const PAY_NOTE: Record<number, string> = { 0: "Платить пока не нужно", 2: "Покупать или нет, решаете вы" };
-const STEP_ICON: IconName[] = ["form", "car", "inspect", "rub", "ship", "key"];
-const STATUS = ["ПРИНЯТО", "ПОДОБРАНО", "ПРОВЕРЕНО", "ВЫКУПЛЕНО", "В ПУТИ", "ВЫДАНО"];
-const PLACE = ["Вы", "Корея", "Корея", "Корея", "Пусан → Владивосток", "Ваш город"];
-const STOP_NAME = ["Заявка", "Подбор", "Проверка", "Выкуп", "Море и таможня", "Ключи"];
+const PAY_NOTE: Record<number, string> = { 0: "Платить пока не нужно", 3: "Все этапы транспортировки застрахованы" };
+const STEP_ICON: IconName[] = ["car", "inspect", "rub", "ship", "stamp", "truck"];
+const STATUS = ["ПОДОБРАНО", "ПРОВЕРЕНО", "ВЫКУПЛЕНО", "ОТПРАВЛЕНО", "РАСТАМОЖЕНО", "ВЫДАНО"];
+const PLACE = ["Корея", "Корея", "Корея", "Инчхон → Владивосток", "Владивосток", "Ваш город"];
+const STOP_NAME = ["Подбор", "Проверка", "Выкуп", "Отправка", "Таможня", "Доставка"];
 
 // The route across the top of the scene: one stop per step, on a 1000 × 120 drawing
 const STOPS = [
@@ -210,8 +210,8 @@ function Ledger({ active }: { active: number }) {
   const note = PAY_NOTE[active];
   return (
     <div>
-      <h3 className="font-display text-[clamp(22px,2vw,28px)] leading-none tracking-wide uppercase">Пять платежей</h3>
-      <p className="mt-3 max-w-[34ch] text-[17px] leading-snug text-ink-2">Все официальные и на ваше имя.</p>
+      <h3 className="font-display text-[clamp(22px,2vw,28px)] leading-none tracking-wide uppercase">Этапы оплаты</h3>
+      <p className="mt-3 max-w-[34ch] text-[17px] leading-snug text-ink-2">Все платежи официальные на имя покупателя.</p>
       <ol className="mt-6 flex flex-col gap-1.5">
         {DEAL_STAGES.map((d) => {
           const state = d.step < active ? "done" : d.step === active ? "now" : "next";
@@ -312,7 +312,7 @@ function List({ className = "" }: { className?: string }) {
   const box = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({ target: box, offset: ["start 70%", "end 60%"] });
   return (
-    <ol ref={box} className={`relative mt-8 flex flex-col gap-4 pl-7 ${className}`} aria-label="Паспорт сделки: шесть шагов">
+    <ol ref={box} className={`relative mt-8 flex flex-col gap-4 pl-7 ${className}`} aria-label="Процесс: шесть шагов">
       <span aria-hidden className="absolute top-3 bottom-3 left-[7px] w-[3px] bg-line-strong" />
       <motion.span aria-hidden style={{ scaleY: scrollYProgress }} className="absolute top-3 bottom-3 left-[7px] w-[3px] origin-top bg-accent" />
       {STEPS.map((s, i) => (
@@ -350,7 +350,7 @@ function Swipe() {
         ref={box}
         onScroll={onScroll}
         role="list"
-        aria-label="Паспорт сделки: шесть шагов, листайте вбок"
+        aria-label="Процесс: шесть шагов, листайте вбок"
         className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8"
       >
         {STEPS.map((s, i) => (
