@@ -420,13 +420,16 @@ html.lenis body {
 
 /* frosted glass over the films: one blur layer (cheap enough for phones), a faint tint, a lit top edge */
 .glass-plate {
-  background: linear-gradient(150deg, rgba(4, 12, 20, 0.5), rgba(4, 12, 20, 0.3));
+  background: linear-gradient(150deg, rgba(4, 12, 20, 0.62), rgba(4, 12, 20, 0.42));
   -webkit-backdrop-filter: blur(16px) saturate(1.35);
   backdrop-filter: blur(16px) saturate(1.35);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 30px 60px -32px rgba(0, 0, 0, 0.65);
+}
+.glass-plate .lead {
+  color: var(--ink);
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass-plate {
