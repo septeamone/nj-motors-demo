@@ -69,12 +69,8 @@ export function Process() {
       </div>
       <div aria-hidden className="h-[45svh]" />
       <div className="relative mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
-        <div className="on-film relative">
-          {/* a dark veil under the heading: the sky in the film is bright, the words stay legible on any frame */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute -top-16 -bottom-10 left-[calc(50%-50vw)] w-screen bg-[rgba(4,12,20,0.58)] [mask-image:linear-gradient(180deg,transparent,#000_22%,#000_78%,transparent)] lg:bg-[linear-gradient(90deg,rgba(4,12,20,0.86)_0%,rgba(4,12,20,0.6)_42%,transparent_78%)]"
-          />
+        {/* the heading on a frosted glass plate: the bright sky of the film stays visible around it, the words stay crisp */}
+        <div className="on-film glass-plate relative max-w-[980px] rounded-[20px] p-5 sm:p-8 lg:p-10">
           <div className="relative">
             <SectionHead
               title="Процесс"

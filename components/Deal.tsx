@@ -15,7 +15,7 @@ const N = STEPS.length;
 const PAYS = DEAL_STAGES.length;
 const PAY_AT: Record<number, number[]> = {};
 DEAL_STAGES.forEach((d, k) => (PAY_AT[d.step] ??= []).push(k));
-const PAY_NOTE: Record<number, string> = { 0: "Платить пока не нужно", 3: "Все этапы транспортировки застрахованы" };
+const PAY_NOTE: Record<number, string> = { 0: "Платить пока не нужно", 3: "На этом этапе платить не нужно" };
 const STEP_ICON: IconName[] = ["car", "inspect", "rub", "ship", "stamp", "truck"];
 const PLACE = ["Корея", "Корея", "Корея", "Инчхон → Владивосток", "Владивосток", "Ваш город"];
 const STOP_NAME = ["Подбор", "Проверка", "Выкуп", "Отправка", "Таможня", "Доставка"];

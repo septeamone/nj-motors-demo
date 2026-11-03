@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 import { SITE } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 import { PhoneMock } from "./PhoneMock";
@@ -20,39 +19,40 @@ export function Socials() {
   const links = LINKS.filter((l) => l.href);
   if (!links.length) return null;
   return (
-    <section aria-label="NJ Motors в соцсетях" className="bg-bg-2 pb-10 lg:pb-14">
-      <div className="mx-auto grid max-w-[var(--page)] items-center gap-6 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-14 lg:px-12 xl:px-20">
-      <Reveal>
-        <div className="flex flex-col gap-5 rounded-[8px] bg-surface p-5 sm:p-7 lg:gap-7 lg:p-10">
-          <div>
-            <p className="font-display text-[clamp(22px,2.2vw,30px)] leading-tight tracking-wide text-ink uppercase">Мы в соцсетях</p>
-            <p className="mt-1.5 max-w-[46ch] text-[16px] leading-snug text-ink-2">Ещё больше вариантов с ценами, этапы и процессы работы.</p>
-          </div>
-          {/* phones: the three side by side, icon over the name; wider screens: pills */}
-          <ul className="grid grid-cols-3 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
-            {links.map((l) => (
-              <li key={l.brand}>
-                <a
-                  href={l.href!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ background: BRAND[l.brand].fill }}
-                  className={`group flex min-h-12 flex-col items-center justify-center gap-1.5 rounded-[14px] px-2 py-3 text-[15px] font-bold text-white transition-transform duration-150 hover:-translate-y-0.5 sm:inline-flex sm:flex-row sm:gap-2.5 sm:rounded-full sm:px-5 sm:py-0 sm:text-[16px] ${
-                    l.brand === "tiktok" ? "shadow-[-2px_-2px_0_#25F4EE,2px_2px_0_#FE2C55]" : ""
-                  }`}
-                >
-                  <BrandIcon brand={l.brand} tone={l.brand === "tiktok" ? "brand" : "current"} className="size-[26px] sm:size-[22px]" />
-                  {l.label}
-                  <ArrowUpRight className="hidden size-4 opacity-70 sm:block transition-opacity group-hover:opacity-100" strokeWidth={2.2} />
-                </a>
-              </li>
-            ))}
-          </ul>
+    <section aria-label="NJ Motors в соцсетях" className="bg-bg-2 pb-10 lg:pt-20 lg:pb-24">
+      <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
+        {/* wide screens: one panel, the phone rising out of it above and below, so the height is the phone's, not empty space */}
+        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,330px)] lg:gap-12 lg:rounded-[18px] lg:bg-surface lg:py-12 lg:pr-12 lg:pl-14 xl:grid-cols-[minmax(0,1fr)_minmax(0,350px)] xl:gap-16 xl:pl-16">
+          <Reveal>
+            <div className="flex flex-col gap-5 rounded-[8px] bg-surface p-5 sm:p-7 lg:gap-8 lg:rounded-none lg:bg-transparent lg:p-0">
+              <div>
+                <p className="font-display text-[clamp(22px,3vw,48px)] leading-[1.02] tracking-wide text-ink uppercase">Мы в соцсетях</p>
+                <p className="mt-1.5 max-w-[46ch] text-[16px] leading-snug text-ink-2 lg:mt-3 lg:text-[19px]">Ещё больше вариантов с ценами, этапы и процессы работы.</p>
+              </div>
+              <ul className="grid grid-cols-3 gap-2.5 sm:gap-3 xl:grid-cols-5">
+                {links.map((l) => (
+                  <li key={l.brand}>
+                    <a
+                      href={l.href!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ background: BRAND[l.brand].fill }}
+                      className={`flex min-h-[84px] flex-col items-center justify-center gap-1.5 rounded-[14px] px-2 py-3 text-[15px] font-bold text-white transition-transform duration-150 hover:-translate-y-0.5 lg:min-h-[112px] lg:gap-2.5 lg:rounded-[16px] lg:text-[17px] ${
+                        l.brand === "tiktok" ? "shadow-[-2px_-2px_0_#25F4EE,2px_2px_0_#FE2C55]" : ""
+                      }`}
+                    >
+                      <BrandIcon brand={l.brand} tone={l.brand === "tiktok" ? "brand" : "current"} className="size-[26px] lg:size-[34px]" />
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1} className="-mt-12 sm:mt-0 lg:-my-32">
+            <PhoneMock />
+          </Reveal>
         </div>
-      </Reveal>
-      <Reveal delay={0.1} className="-mt-12 sm:mt-0">
-        <PhoneMock />
-      </Reveal>
       </div>
     </section>
   );
