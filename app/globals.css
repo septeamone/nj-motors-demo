@@ -1094,19 +1094,6 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
 }
 
 /* ---------- phone menu: a full-screen ink sheet (after codefronts "full screen overlay", in NJ Motors colours) ---------- */
-.menu-word {
-  position: relative;
-  display: block;
-  height: 15px;
-  overflow: hidden;
-  line-height: 15px;
-}
-.menu-word i {
-  display: block;
-  height: 15px;
-  font-style: normal;
-  transition: translate 0.4s cubic-bezier(0.65, 0, 0.35, 1);
-}
 .menu-ico {
   position: relative;
   display: block;
@@ -1130,9 +1117,6 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
 }
 .menu-ico b:nth-child(2) {
   top: 8px;
-}
-[data-menu-open] .menu-word i {
-  translate: 0 -15px;
 }
 [data-menu-open] .menu-ico b {
   background: var(--accent);
@@ -1164,9 +1148,7 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   justify-content: space-between;
   gap: 28px;
   padding: calc(68px + 5svh) 24px calc(24px + env(safe-area-inset-bottom));
-  background:
-    radial-gradient(120% 60% at 100% 100%, rgba(212, 4, 4, 0.22), transparent 60%),
-    #040c14;
+  background: #040c14;
   color: #f3e8d6;
   overflow-y: auto;
   opacity: 0;
@@ -1205,48 +1187,87 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
     top: 76px;
   }
 }
+.menu-list {
+  position: relative;
+  z-index: 1;
+}
 .menu-list li {
   overflow: hidden;
+  border-bottom: 1px solid rgba(243, 232, 214, 0.12);
 }
 .menu-list a {
-  display: block;
-  padding: 2px 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0 12px;
   font-family: var(--font-head), "Arial Narrow", system-ui, sans-serif;
   font-weight: 800;
-  font-size: clamp(44px, 13.5vw, 72px);
+  font-size: clamp(34px, 9.6vw, 52px);
   line-height: 1;
   letter-spacing: 0.004em;
   text-transform: uppercase;
-  color: transparent;
-  -webkit-text-stroke: 1.5px #f3e8d6;
-  translate: 0 110%;
+  color: #f3e8d6;
+  text-shadow: 0.035em 0.03em 0 rgba(212, 4, 4, 0.85);
+  translate: 0 105%;
   transition:
     translate 0.6s cubic-bezier(0.2, 0.75, 0.15, 1),
-    color 0.25s,
-    text-shadow 0.25s;
+    color 0.2s;
 }
 .menu-sheet[data-open] .menu-list a {
   translate: 0 0;
-  transition-delay: calc(0.22s + var(--i) * 0.06s), 0s, 0s;
+  transition-delay: calc(0.18s + var(--i) * 0.05s), 0s;
 }
-/* filled in kraft with the red plate a hair off, like the section headings: the section you are in, and a tap */
-.menu-list a[aria-current="true"],
-.menu-list a:active,
-.menu-list a:focus-visible {
-  color: #f3e8d6;
-  text-shadow: 0.04em 0.035em 0 rgba(212, 4, 4, 0.9);
+.menu-arrow {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  padding: 6px;
+  border-radius: 999px;
+  color: rgba(243, 232, 214, 0.55);
+  border: 1.5px solid rgba(243, 232, 214, 0.22);
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    rotate 0.3s cubic-bezier(0.2, 0.75, 0.15, 1);
 }
-@media (hover: hover) {
-  .menu-list a:hover {
-    color: #f3e8d6;
-    text-shadow: 0.04em 0.035em 0 rgba(212, 4, 4, 0.9);
-  }
+/* the section you are in, and a tap: the arrow turns red and points down the page */
+.menu-list a[aria-current="true"] .menu-arrow,
+.menu-list a:active .menu-arrow,
+.menu-list a:focus-visible .menu-arrow {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: #fff;
+  rotate: 90deg;
+}
+.menu-list a:active {
+  color: #fff;
 }
 .menu-list a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
+/* the emblem as a stamp in the free space of the sheet, half off the edge */
+.menu-stamp {
+  position: absolute;
+  right: -18%;
+  bottom: 22%;
+  width: min(78vw, 420px);
+  opacity: 0;
+  rotate: -14deg;
+  pointer-events: none;
+  transition:
+    opacity 0.6s 0.3s,
+    rotate 0.9s cubic-bezier(0.2, 0.75, 0.15, 1) 0.2s;
+}
+.menu-sheet[data-open] .menu-stamp {
+  opacity: 0.1;
+  rotate: -8deg;
+}
 .menu-foot {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 16px;
   opacity: 0;

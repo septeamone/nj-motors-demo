@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useSpring } from "motion/react";
 import { EASE } from "@/lib/motion";
 import { useEffect, useState } from "react";
@@ -90,7 +91,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
         aria-label="Основная навигация"
         className="menu-bar relative z-10 border-b border-line bg-[color-mix(in_srgb,var(--bg)_95%,transparent)]"
       >
-        <div className="mx-auto grid h-[68px] max-w-[var(--page)] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:h-[76px] sm:px-8 lg:h-[100px] lg:px-12 xl:px-20">
+        <div className="mx-auto grid h-[68px] max-w-[var(--page)] grid-cols-[1fr_auto] items-center gap-4 px-4 lg:grid-cols-[1fr_auto_1fr] sm:h-[76px] sm:px-8 lg:h-[100px] lg:px-12 xl:px-20">
           <div className="flex items-center">
             <a href={`${prefix}#top`} aria-label="NJ Motors — на главную" className="block shrink-0 lg:hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -100,9 +101,9 @@ export function Header({ prefix = "" }: { prefix?: string }) {
           </div>
 
           {/* the emblem, flown here from the hero by SplitHero, spins in this gap */}
-          <div aria-hidden className="w-[60px] sm:w-[72px] lg:w-[96px]" />
+          <div aria-hidden className="hidden w-[96px] lg:block" />
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <NavList items={NAV.slice(3)} prefix={prefix} active={active} />
             <span className="ml-auto" />
             {SITE.contacts.phone && (
@@ -116,7 +117,8 @@ export function Header({ prefix = "" }: { prefix?: string }) {
                 <span className="hidden min-[1400px]:inline">{SITE.contacts.phone}</span>
               </a>
             )}
-            {/* phones keep the theme switch inside the menu, so the bar has room */}
+            {/* phones: one round button that flips the theme; wide screens: the two-way switch */}
+            <ThemeToggle compact className="lg:hidden" />
             <div className="hidden lg:block">
               <ThemeToggle />
             </div>
@@ -126,12 +128,8 @@ export function Header({ prefix = "" }: { prefix?: string }) {
               aria-expanded={open}
               aria-controls="mobile-menu"
               onClick={() => setOpen((v) => !v)}
-              className="menu-btn flex min-h-11 items-center gap-2.5 rounded-full border border-line-strong py-2 pr-3.5 pl-4 text-[13px] font-bold tracking-[0.08em] text-ink uppercase lg:hidden"
+              className="menu-btn grid size-11 place-items-center rounded-full border border-line-strong text-ink lg:hidden"
             >
-              <span aria-hidden className="menu-word">
-                <i>Меню</i>
-                <i>Закрыть</i>
-              </span>
               <span aria-hidden className="menu-ico">
                 <b />
                 <b />
@@ -162,11 +160,14 @@ export function Header({ prefix = "" }: { prefix?: string }) {
                 aria-current={active === n.id ? "true" : undefined}
                 style={{ "--i": i } as React.CSSProperties}
               >
-                {n.label}
+                <span>{n.label}</span>
+                <ArrowUpRight aria-hidden className="menu-arrow" strokeWidth={2.4} />
               </a>
             </li>
           ))}
         </ul>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={asset("/brand/nj-logo-640.webp")} alt="" aria-hidden className="menu-stamp" width={640} height={640} />
         <div className="menu-foot">
           {SITE.contacts.phone && (
             <a href={telHref(SITE.contacts.phone)} className="menu-call">

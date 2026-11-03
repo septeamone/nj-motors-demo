@@ -24,7 +24,7 @@ function apply(t: Theme) {
   requestAnimationFrame(() => root.classList.remove("theme-swap"));
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
   const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
@@ -40,6 +40,22 @@ export function ThemeToggle() {
     } catch {}
     apply(t);
   };
+
+  if (compact) {
+    const next = theme === "dark" ? OPTIONS[0] : OPTIONS[1];
+    const now = theme === "dark" ? OPTIONS[1] : OPTIONS[0];
+    return (
+      <button
+        type="button"
+        aria-label={next.label}
+        title={next.label}
+        onClick={() => choose(next.value)}
+        className={`grid size-11 shrink-0 place-items-center rounded-full bg-ink/[0.07] text-ink ${className}`}
+      >
+        <NjIcon name={now.icon} className="size-[22px]" />
+      </button>
+    );
+  }
 
   return (
     <div role="radiogroup" aria-label="Тема оформления" className="relative flex items-center gap-0.5 rounded-full bg-ink/[0.07] p-[3px]">

@@ -141,10 +141,19 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
       const lgNow = innerWidth >= 1024;
       tx.style.transform = lgNow ? `translateX(calc(${e} * (-100% - 8px)))` : `translateY(calc(${e} * (100% + 8px)))`;
       ar.style.transform = lgNow ? `translateX(calc(${e} * (100% + 8px)))` : `translateY(calc(${e} * (-100% - 8px)))`;
-      const k = 1 + (endSize / s0 - 1) * e;
-      const cx = slotCx + (pageW / 2 - slotCx) * e; // the middle of the page, not counting the scrollbar
-      const cy = slotCy + (endTop + endSize / 2 - slotCy) * e;
-      em.style.transform = pose(cx, cy, k);
+      if (lgNow) {
+        const k = 1 + (endSize / s0 - 1) * e;
+        const cx = slotCx + (pageW / 2 - slotCx) * e; // the middle of the page, not counting the scrollbar
+        const cy = slotCy + (endTop + endSize / 2 - slotCy) * e;
+        em.style.transform = pose(cx, cy, k);
+        em.style.opacity = "1";
+        em.style.pointerEvents = "";
+      } else {
+        // phones keep the NJ Motors wordmark in the bar: the emblem leaves with the top half and fades out
+        em.style.transform = pose(slotCx, slotCy - (slotCy + s0) * e, 1);
+        em.style.opacity = String(1 - clamp(e * 1.6));
+        em.style.pointerEvents = e > 0.5 ? "none" : "";
+      }
     };
     const onScroll = () => {
       if (!raf && html.dataset.intro !== "play" && html.dataset.intro !== "glide") raf = requestAnimationFrame(update);
