@@ -70,7 +70,7 @@ export function Process() {
       <div aria-hidden className="h-[45svh]" />
       <div className="relative mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         {/* the heading on a frosted glass plate: the bright sky of the film stays visible around it, the words stay crisp */}
-        <div className="on-film glass-plate relative max-w-[980px] rounded-[20px] p-5 sm:p-8 lg:p-10">
+        <div data-theme="dark" className="on-film glass-plate relative max-w-[980px] rounded-[20px] p-5 sm:p-8 lg:p-10">
           <div className="relative">
             <SectionHead
               title="Процесс"
