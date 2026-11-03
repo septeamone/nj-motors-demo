@@ -166,8 +166,11 @@ export function Header({ prefix = "" }: { prefix?: string }) {
             </li>
           ))}
         </ul>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={asset("/brand/nj-logo-640.webp")} alt="" aria-hidden className="menu-stamp" width={640} height={640} />
+        {/* the stamp sits in its own clipped frame, so it can hang off the edge without making the sheet wider */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={asset("/brand/nj-logo-640.webp")} alt="" className="menu-stamp" width={640} height={640} />
+        </div>
         <div className="menu-foot">
           {SITE.contacts.phone && (
             <a href={telHref(SITE.contacts.phone)} className="menu-call">
@@ -175,8 +178,8 @@ export function Header({ prefix = "" }: { prefix?: string }) {
               {SITE.contacts.phone}
             </a>
           )}
-          <div className="flex items-center justify-between gap-3">
-            <ul className="flex gap-2.5">
+          {/* the theme switch already sits in the bar above: here only the ways to write */}
+          <ul className="grid grid-cols-4 gap-2.5">
               {SOCIAL.filter((x) => x.href).map((x) => (
                 <li key={x.brand}>
                   <a
@@ -185,15 +188,13 @@ export function Header({ prefix = "" }: { prefix?: string }) {
                     rel="noopener noreferrer"
                     aria-label={x.label}
                     style={{ background: BRAND[x.brand].fill }}
-                    className="grid size-11 place-items-center rounded-full text-white"
+                    className="grid h-12 place-items-center rounded-full text-white"
                   >
                     <BrandIcon brand={x.brand} tone={x.brand === "tiktok" ? "brand" : "current"} className="size-[22px]" />
                   </a>
                 </li>
               ))}
             </ul>
-            <ThemeToggle />
-          </div>
         </div>
       </div>
     </header>
