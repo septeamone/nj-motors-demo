@@ -1,13 +1,19 @@
 "use client";
 
-import { ArrowUpRight, Menu, X } from "lucide-react";
-import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
-import { DUR, EASE } from "@/lib/motion";
+import { motion, useScroll, useSpring } from "motion/react";
+import { EASE } from "@/lib/motion";
 import { useEffect, useState } from "react";
 import { asset } from "@/lib/asset";
-import { SITE, telHref } from "@/lib/site";
-import { BrandIcon } from "./BrandIcon";
+import { SITE, telHref, vkChat } from "@/lib/site";
+import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
 import { ThemeToggle } from "./ThemeToggle";
+
+const SOCIAL: { brand: Brand; href: string | null; label: string }[] = [
+  { brand: "telegram", href: SITE.contacts.telegram ? `https://t.me/${SITE.contacts.telegram.replace(/^@/, "")}` : null, label: "Telegram" },
+  { brand: "vk", href: SITE.contacts.vk ? vkChat(SITE.contacts.vk) : null, label: "ВКонтакте" },
+  { brand: "max", href: SITE.contacts.max, label: "MAX" },
+  { brand: "tiktok", href: SITE.social.tiktok, label: "TikTok" },
+];
 
 const NAV = [
   { id: "catalog", label: "Автомобили" },
@@ -65,6 +71,13 @@ export function Header({ prefix = "" }: { prefix?: string }) {
   }, []);
 
   useEffect(() => {
+    if (!open) return;
+    const k = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", k);
+    return () => window.removeEventListener("keydown", k);
+  }, [open]);
+
+  useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
     // the emblem (fixed, above the header) steps aside while the phone menu is open
     if (open) document.documentElement.dataset.menu = "open";
@@ -72,10 +85,10 @@ export function Header({ prefix = "" }: { prefix?: string }) {
   }, [open]);
 
   return (
-    <header className="header-in fixed inset-x-0 top-0 z-50">
+    <header data-menu-open={open || undefined} className="header-in fixed inset-x-0 top-0 z-50">
       <nav
         aria-label="Основная навигация"
-        className="relative border-b border-line bg-[color-mix(in_srgb,var(--bg)_95%,transparent)]"
+        className="menu-bar relative z-10 border-b border-line bg-[color-mix(in_srgb,var(--bg)_95%,transparent)]"
       >
         <div className="mx-auto grid h-[68px] max-w-[var(--page)] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:h-[76px] sm:px-8 lg:h-[100px] lg:px-12 xl:px-20">
           <div className="flex items-center">
@@ -103,15 +116,26 @@ export function Header({ prefix = "" }: { prefix?: string }) {
                 <span className="hidden min-[1400px]:inline">{SITE.contacts.phone}</span>
               </a>
             )}
-            <ThemeToggle />
+            {/* phones keep the theme switch inside the menu, so the bar has room */}
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
             <button
               type="button"
               aria-label={open ? "Закрыть меню" : "Открыть меню"}
               aria-expanded={open}
+              aria-controls="mobile-menu"
               onClick={() => setOpen((v) => !v)}
-              className="grid size-11 place-items-center rounded-[4px] border border-line-strong text-ink lg:hidden"
+              className="menu-btn flex min-h-11 items-center gap-2.5 rounded-full border border-line-strong py-2 pr-3.5 pl-4 text-[13px] font-bold tracking-[0.08em] text-ink uppercase lg:hidden"
             >
-              {open ? <X className="size-5" strokeWidth={1.75} /> : <Menu className="size-5" strokeWidth={1.75} />}
+              <span aria-hidden className="menu-word">
+                <i>Меню</i>
+                <i>Закрыть</i>
+              </span>
+              <span aria-hidden className="menu-ico">
+                <b />
+                <b />
+              </span>
             </button>
           </div>
         </div>
@@ -123,36 +147,54 @@ export function Header({ prefix = "" }: { prefix?: string }) {
         />
       </nav>
 
-      <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0, transition: { duration: DUR, ease: EASE } }}
-          exit={{ opacity: 0, y: -6, transition: { duration: 0.2, ease: "easeOut" } }}
-          className="plate mx-3 mt-2 p-3 lg:hidden"
-        >
-          <ul className="flex flex-col">
-            {NAV.map((n, i) => (
-              <motion.li key={n.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR, ease: EASE, delay: 0.05 + i * 0.04 }}>
-                <a
-                  href={`${prefix}#${n.id}`}
-                  onClick={() => setOpen(false)}
-                  className="font-display flex h-14 items-center justify-between border-b border-line px-3 text-[20px] tracking-wide text-ink uppercase last:border-0"
-                >
-                  {n.label}
-                  <ArrowUpRight className="size-4 text-ink-3" strokeWidth={1.75} />
-                </a>
-              </motion.li>
-            ))}
-          </ul>
-          <div className="mt-2 flex items-center justify-between gap-3 p-3 pt-4">
-            <a href={`${prefix}#contact`} onClick={() => setOpen(false)} className="btn btn-primary btn-sm">
-              Подобрать машину
+      {/* phones: the menu as a full-screen ink sheet under the bar; outlined words rise in one by one */}
+      <div id="mobile-menu" data-theme="dark" data-open={open || undefined} inert={!open} className="menu-sheet lg:hidden">
+        <ul className="menu-list">
+          {NAV.map((n, i) => (
+            <li key={n.id}>
+              <a
+                href={`${prefix}#${n.id}`}
+                onClick={() => {
+                  // the page is locked while the sheet is open: unlock it at once, so the jump to the section can happen
+                  document.documentElement.style.overflow = "";
+                  setOpen(false);
+                }}
+                aria-current={active === n.id ? "true" : undefined}
+                style={{ "--i": i } as React.CSSProperties}
+              >
+                {n.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div className="menu-foot">
+          {SITE.contacts.phone && (
+            <a href={telHref(SITE.contacts.phone)} className="menu-call">
+              <BrandIcon brand="call" className="size-5" />
+              {SITE.contacts.phone}
             </a>
+          )}
+          <div className="flex items-center justify-between gap-3">
+            <ul className="flex gap-2.5">
+              {SOCIAL.filter((x) => x.href).map((x) => (
+                <li key={x.brand}>
+                  <a
+                    href={x.href!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={x.label}
+                    style={{ background: BRAND[x.brand].fill }}
+                    className="grid size-11 place-items-center rounded-full text-white"
+                  >
+                    <BrandIcon brand={x.brand} tone={x.brand === "tiktok" ? "brand" : "current"} className="size-[22px]" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <ThemeToggle />
           </div>
-        </motion.div>
-      )}
-      </AnimatePresence>
+        </div>
+      </div>
     </header>
   );
 }

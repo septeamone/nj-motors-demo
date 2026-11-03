@@ -1092,3 +1092,192 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
 .glass-plate .lead {
   color: var(--ink);
 }
+
+/* ---------- phone menu: a full-screen ink sheet (after codefronts "full screen overlay", in NJ Motors colours) ---------- */
+.menu-word {
+  position: relative;
+  display: block;
+  height: 15px;
+  overflow: hidden;
+  line-height: 15px;
+}
+.menu-word i {
+  display: block;
+  height: 15px;
+  font-style: normal;
+  transition: translate 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.menu-ico {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 10px;
+}
+.menu-ico b {
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    translate 0.35s cubic-bezier(0.65, 0, 0.35, 1),
+    rotate 0.35s cubic-bezier(0.65, 0, 0.35, 1) 0.04s,
+    background-color 0.3s;
+}
+.menu-ico b:nth-child(1) {
+  top: 0;
+}
+.menu-ico b:nth-child(2) {
+  top: 8px;
+}
+[data-menu-open] .menu-word i {
+  translate: 0 -15px;
+}
+[data-menu-open] .menu-ico b {
+  background: var(--accent);
+}
+[data-menu-open] .menu-ico b:nth-child(1) {
+  translate: 0 4px;
+  rotate: 45deg;
+}
+[data-menu-open] .menu-ico b:nth-child(2) {
+  translate: 0 -4px;
+  rotate: -45deg;
+}
+/* the bar takes the sheet's ink while the menu is open, so bar and sheet read as one surface */
+[data-menu-open] .menu-bar {
+  background: #040c14;
+  border-color: rgba(243, 232, 214, 0.12);
+}
+[data-menu-open] .menu-bar .menu-btn {
+  color: #f3e8d6;
+  border-color: rgba(243, 232, 214, 0.3);
+}
+
+.menu-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  padding: calc(68px + 5svh) 24px calc(24px + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(120% 60% at 100% 100%, rgba(212, 4, 4, 0.22), transparent 60%),
+    #040c14;
+  color: #f3e8d6;
+  overflow-y: auto;
+  opacity: 0;
+  scale: 1.03;
+  visibility: hidden;
+  transition:
+    opacity 0.35s,
+    scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    visibility 0s 0.45s;
+}
+.menu-sheet::before {
+  /* the red rule of the hero split, along the top of the sheet */
+  content: "";
+  position: absolute;
+  inset: 68px 0 auto;
+  height: 4px;
+  background: var(--accent);
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0.6s cubic-bezier(0.2, 0.75, 0.15, 1) 0.15s;
+}
+.menu-sheet[data-open] {
+  opacity: 1;
+  scale: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.menu-sheet[data-open]::before {
+  scale: 1 1;
+}
+@media (min-width: 640px) {
+  .menu-sheet {
+    padding-top: calc(76px + 5svh);
+  }
+  .menu-sheet::before {
+    top: 76px;
+  }
+}
+.menu-list li {
+  overflow: hidden;
+}
+.menu-list a {
+  display: block;
+  padding: 2px 0 6px;
+  font-family: var(--font-head), "Arial Narrow", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(44px, 13.5vw, 72px);
+  line-height: 1;
+  letter-spacing: 0.004em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px #f3e8d6;
+  translate: 0 110%;
+  transition:
+    translate 0.6s cubic-bezier(0.2, 0.75, 0.15, 1),
+    color 0.25s,
+    text-shadow 0.25s;
+}
+.menu-sheet[data-open] .menu-list a {
+  translate: 0 0;
+  transition-delay: calc(0.22s + var(--i) * 0.06s), 0s, 0s;
+}
+/* filled in kraft with the red plate a hair off, like the section headings: the section you are in, and a tap */
+.menu-list a[aria-current="true"],
+.menu-list a:active,
+.menu-list a:focus-visible {
+  color: #f3e8d6;
+  text-shadow: 0.04em 0.035em 0 rgba(212, 4, 4, 0.9);
+}
+@media (hover: hover) {
+  .menu-list a:hover {
+    color: #f3e8d6;
+    text-shadow: 0.04em 0.035em 0 rgba(212, 4, 4, 0.9);
+  }
+}
+.menu-list a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.menu-foot {
+  display: grid;
+  gap: 16px;
+  opacity: 0;
+  translate: 0 12px;
+  transition:
+    opacity 0.4s,
+    translate 0.5s cubic-bezier(0.2, 0.75, 0.15, 1);
+}
+.menu-sheet[data-open] .menu-foot {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: 0.5s;
+}
+.menu-call {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  border-radius: 999px;
+  background: #1fae54;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-sheet,
+  .menu-sheet *,
+  .menu-sheet::before,
+  .menu-btn * {
+    transition-duration: 0.01s !important;
+    transition-delay: 0s !important;
+  }
+}
