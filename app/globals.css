@@ -1372,3 +1372,14 @@ html {
     display: none;
   }
 }
+
+/* the video list: a bare strip on phones; on desktops a thin scrollbar says there is more below */
+.reel {
+  scrollbar-width: none;
+}
+@media (min-width: 1024px) {
+  .reel {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+}
