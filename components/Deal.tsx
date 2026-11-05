@@ -40,19 +40,19 @@ const D = STOPS.reduce((d, [x, y], i) => {
  * One page of the process: the step's number, what happens and where, the step's points, and what you pay here.
  * The height follows the text (the desktop pad gives all its pages the same height).
  */
-function Page({ i, className = "" }: { i: number; className?: string }) {
+// `aligned`: the phone row lines all six cards up on one grid (subgrid), so headers, dashed lines and payment boxes sit at the same height
+function Page({ i, className = "", aligned = false }: { i: number; className?: string; aligned?: boolean }) {
   const s = STEPS[i];
   const pays = PAY_AT[i] ?? [];
   const points = s.text.split(/(?<=[.;])\s+(?=[А-ЯЁA-Z])/);
   return (
-    <article className={`relative flex flex-col overflow-hidden rounded-[10px] bg-[var(--paper)] text-[var(--paper-ink)] shadow-[0_1px_0_rgba(18,16,13,0.18),0_22px_40px_-26px_var(--shadow)] ${className}`}>
-      <header className="flex items-center gap-4 border-b-2 border-dashed border-[rgba(18,16,13,0.22)] px-5 pt-5 pb-4 lg:px-8 lg:pt-6">
-        <span className="num grid size-11 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-card text-white">{i + 1}</span>
-        <div className="min-w-0 flex-1">
-          <h3 className="font-display text-[clamp(1.3125rem,2.2vw,1.6875rem)] leading-[1.1] tracking-title uppercase">{s.title}</h3>
-          <p className="mt-1.5 text-ui font-medium opacity-75">{PLACE[i]}</p>
-        </div>
-        <NjIcon name={STEP_ICON[i]} className="size-9 shrink-0" />
+    <article className={`relative ${aligned ? "row-span-2 grid grid-rows-subgrid" : "flex flex-col"} overflow-hidden rounded-[10px] bg-[var(--paper)] text-[var(--paper-ink)] shadow-[0_1px_0_rgba(18,16,13,0.18),0_22px_40px_-26px_var(--shadow)] ${className}`}>
+      <header className="grid grid-cols-[auto_minmax(0,1fr)_auto] content-start gap-x-4 border-b-2 border-dashed border-[rgba(18,16,13,0.22)] px-5 pt-5 pb-4 lg:px-8 lg:pt-6">
+        <span className={`num row-span-2 grid size-11 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-card text-white ${aligned ? "self-start" : "self-center"}`}>{i + 1}</span>
+        <h3 className="col-start-2 self-center font-display text-[clamp(1.3125rem,2.2vw,1.6875rem)] leading-[1.1] tracking-title uppercase">{s.title}</h3>
+        <NjIcon name={STEP_ICON[i]} className={`col-start-3 row-start-1 size-9 shrink-0 ${aligned ? "self-start max-[359px]:hidden" : "row-span-2 self-center"}`} />
+        {/* on phones the place line may run under the icon, so "Инчхон → Владивосток" keeps to one line; under 360 px the small icon gives the title its room */}
+        <p className={`col-start-2 mt-1.5 text-ui font-medium opacity-75 ${aligned ? "col-span-2" : ""}`}>{PLACE[i]}</p>
       </header>
 
       <div className="flex flex-1 flex-col gap-4 px-5 pt-4 pb-5 lg:gap-5 lg:px-8 lg:pb-6">
@@ -309,11 +309,11 @@ function Swipe() {
         onScroll={onScroll}
         role="list"
         aria-label="Процесс: шесть шагов, листайте вбок"
-        className="-mx-5 flex snap-x snap-mandatory items-start scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8"
+        className="-mx-5 grid snap-x snap-mandatory auto-cols-[min(86%,520px)] grid-flow-col grid-rows-[auto_1fr] scroll-px-5 gap-x-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8"
       >
         {STEPS.map((s, i) => (
-          <div key={s.title} role="listitem" className="w-[86%] max-w-[520px] shrink-0 snap-start">
-            <Page i={i} />
+          <div key={s.title} role="listitem" className="row-span-2 grid snap-start grid-rows-subgrid">
+            <Page i={i} aligned />
           </div>
         ))}
       </div>
