@@ -23,7 +23,13 @@ deploy() {
   touch "$tmp/.nojekyll"
   git -C "$tmp" add -A
   git -C "$tmp" -c user.name="$(git config user.name)" -c user.email="$(git config user.email)" commit -q -m "Built site ($target) for GitHub Pages" || echo "(nothing changed)"
-  git -C "$tmp" push -q "$REPO" gh-pages
+  # GitHub now and then rejects the ref update ("fatal error in commit_refs"); a retry or two gets through
+  local n
+  for n in 1 2 3 4; do
+    git -C "$tmp" push -q "$REPO" gh-pages && break
+    [ "$n" = 4 ] && { echo "push failed"; rm -rf "$tmp"; return 1; }
+    sleep $((n * 10))
+  done
   rm -rf "$tmp"
   gh api -X POST "repos/septeamone/$name/pages/builds" >/dev/null
 }
