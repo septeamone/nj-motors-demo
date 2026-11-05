@@ -39,7 +39,8 @@ if (kind === "video") {
   const common = ["-map_metadata", "-1", "-map_chapters", "-1", "-c:v", "libx264", "-preset", "slow", "-profile:v", "high", "-fpsmax", "30", "-movflags", "+faststart"];
 
   run(["-i", input, "-vf", fit(1280, 720), ...common, "-crf", "23", "-maxrate", "2000k", "-bufsize", "4000k", ...audio("128k"), join(out, `${id}.mp4`)]);
-  run(["-i", input, "-vf", fit(960, 540), ...common, "-crf", "26", "-maxrate", "900k", "-bufsize", "1800k", ...audio("96k"), join(out, `${id}-sd.mp4`)]);
+  // the light copy is for slow mobile lines only: small enough to start fast there, still clean on a phone screen
+  run(["-i", input, "-vf", fit(854, 480), ...common, "-crf", "27", "-maxrate", "550k", "-bufsize", "1100k", ...audio("64k"), join(out, `${id}-sd.mp4`)]);
 
   const done = probe(join(out, `${id}.mp4`));
   const dv = done.streams.find((s) => s.codec_type === "video");
