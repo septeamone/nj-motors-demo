@@ -105,7 +105,6 @@ export function Process() {
         <div className="mt-12 lg:mt-16">
           <Reveal className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
             <h3 className="font-display text-[clamp(30px,3.4vw,46px)] leading-none tracking-wide uppercase">Гарантии</h3>
-            <p className="max-w-[46ch] text-[17px] leading-snug text-ink-2">Документы на ваше имя и понятные условия на каждом этапе.</p>
           </Reveal>
           <Reveal className="mt-6 grid gap-3 sm:grid-cols-3 lg:gap-4">
             {PROMISES.map((g) => (
