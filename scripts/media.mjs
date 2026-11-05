@@ -49,7 +49,8 @@ if (kind === "video") {
   const at = Math.min(1.5, dur / 3).toFixed(2);
   const frame = execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-ss", at, "-i", join(out, `${id}.mp4`), "-frames:v", "1", "-f", "image2pipe", "-c:v", "png", "-"], { maxBuffer: 64 << 20 });
   await sharp(frame).webp({ quality: 78 }).toFile(join(out, `${id}-poster.webp`));
-  await sharp(frame).resize({ width: 240, height: 320, fit: "cover" }).webp({ quality: 72 }).toFile(join(out, `${id}-thumb.webp`));
+  // the cover in the reel of reviews: upright 9:16 (wide videos are cropped to their middle)
+  await sharp(frame).resize({ width: 360, height: 640, fit: "cover" }).webp({ quality: 74 }).toFile(join(out, `${id}-thumb.webp`));
 
   for (const f of [`${id}.mp4`, `${id}-sd.mp4`, `${id}-poster.webp`, `${id}-thumb.webp`]) console.log(`  ${f}  ${kb(join(out, f))}`);
   console.log(JSON.stringify({ id, w: dv.width, h: dv.height, dur: Math.round(dur) }));
