@@ -13,7 +13,7 @@ import { Reveal, SectionHead } from "./ui";
 const ITEMS = [
   { id: "review-2", title: "Александр, г. Ванино", sub: "Chevrolet Trailblazer 2026", wide: false, dur: 102 },
   { id: "review-3", title: "Дмитрий, г. Санкт-Петербург", sub: "Hyundai Tucson 2020", wide: true, dur: 30 },
-  { id: "review-4", title: "Григорий, г. Ижевск", sub: "Land Rover Discovery Sport, SsangYong", wide: false, dur: 98 },
+  { id: "review-4", title: "Григорий и Андрей, г. Ижевск", sub: "Land Rover Discovery Sport, SsangYong", wide: false, dur: 98 },
   { id: "review-1", title: "Евгений, г. Красноярск", sub: "Chevrolet Trailblazer 2022", wide: false, dur: 82 },
 ] as const;
 
