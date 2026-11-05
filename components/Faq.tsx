@@ -40,15 +40,15 @@ export function Faq() {
                           aria-expanded={on}
                           aria-controls={`${id}-a`}
                           onClick={() => setOpen(on ? null : i)}
-                          className="faq-q group flex w-full cursor-pointer items-center justify-between gap-5 px-4 py-4 text-left text-[17px] font-bold sm:px-5"
+                          className="faq-q group flex w-full cursor-pointer items-center justify-between gap-5 px-4 py-4 text-left text-body-lg font-bold sm:px-5"
                         >
                           <span>{nb(f.q)}</span>
-                          <ChevronDown aria-hidden className="faq-chev size-5 shrink-0" strokeWidth={2.4} />
+                          <ChevronDown aria-hidden className="faq-chev size-5 shrink-0" strokeWidth={2.5} nonScalingStroke />
                         </button>
                       </h3>
                       <div id={`${id}-a`} role="region" aria-labelledby={`${id}-q`} className="faq-a">
                         <div className="faq-a-in">
-                          <p className="px-4 pb-5 text-[16px] leading-relaxed sm:px-5 sm:pr-12">{nb(f.a)}</p>
+                          <p className="max-w-[65ch] px-4 pb-5 text-body leading-relaxed sm:px-5 sm:pr-12">{nb(f.a)}</p>
                         </div>
                       </div>
                     </li>

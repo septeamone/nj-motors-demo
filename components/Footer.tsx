@@ -19,7 +19,7 @@ export function Footer() {
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <Wordmark />
           {contacts.length ? (
-            <ul className="flex flex-wrap items-center gap-3 text-[16px]">
+            <ul className="flex flex-wrap items-center gap-3 text-body">
               {contacts.map((c) => {
                 const b = MARK[c.key];
                 if (b && c.href)
@@ -41,7 +41,7 @@ export function Footer() {
                 return (
                   <li key={c.key}>
                     {c.href ? (
-                      <a href={c.href} className="font-semibold text-ink hover:text-accent-ink">
+                      <a href={c.href} className="relative font-semibold text-ink before:absolute before:-inset-x-1 before:-inset-y-[11px] hover:text-accent-ink">
                         {c.value}
                       </a>
                     ) : (
@@ -53,11 +53,11 @@ export function Footer() {
             </ul>
           ) : (
             // макет: контакты ещё не подтверждены владельцем
-            <p className="text-[16px] leading-snug text-ink-2">Напишите нам в соцсетях — ссылки выше.</p>
+            <p className="text-body leading-snug text-ink-2">Напишите нам в соцсетях — ссылки выше.</p>
           )}
         </div>
 
-        <div className="mt-6 flex flex-col gap-3 border-t border-line pt-5 text-[15px] text-ink-3 lg:flex-row lg:items-start lg:justify-between">
+        <div className="mt-6 flex flex-col gap-3 border-t border-line pt-5 text-ui text-ink-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="grid gap-1">
             <p>© 2026 NJ Motors. Сайт в разработке: фото, цены и сроки ориентировочные.</p>
             <p>Сайт носит информационный характер и не является публичной офертой.</p>
@@ -71,10 +71,10 @@ export function Footer() {
             )}
           </div>
           <div className="flex flex-wrap items-start gap-x-6 gap-y-2">
-            <a href={asset("/privacy/")} className="font-semibold hover:text-ink">
+            <a href={asset("/privacy/")} className="relative font-semibold before:absolute before:-inset-x-1 before:-inset-y-[11px] hover:text-ink">
               Политика конфиденциальности
             </a>
-            <a href={asset("/terms/")} className="font-semibold hover:text-ink">
+            <a href={asset("/terms/")} className="relative font-semibold before:absolute before:-inset-x-1 before:-inset-y-[11px] hover:text-ink">
               Пользовательское соглашение
             </a>
           </div>

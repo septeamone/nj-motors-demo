@@ -3,7 +3,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useSpring } from "motion/react";
 import { EASE } from "@/lib/motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { SITE, telHref, vkChat } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
@@ -33,7 +33,7 @@ function NavList({ items, prefix, active, className = "" }: { items: typeof NAV;
           <a
             href={`${prefix}#${n.id}`}
             aria-current={active === n.id ? "true" : undefined}
-            className="relative px-2.5 py-2 text-[16px] font-bold whitespace-nowrap text-ink-2 transition-colors hover:text-ink aria-[current=true]:text-ink min-[1600px]:px-4"
+            className="relative px-2.5 py-2 text-body font-bold whitespace-nowrap before:absolute before:inset-x-0 before:-inset-y-1 text-ink-2 transition-colors hover:text-ink aria-[current=true]:text-ink min-[1600px]:px-4"
           >
             {n.label}
             {active === n.id && (
@@ -53,6 +53,7 @@ function NavList({ items, prefix, active, className = "" }: { items: typeof NAV;
 export function Header({ prefix = "" }: { prefix?: string }) {
   const [active, setActive] = useState("");
   const [open, setOpen] = useState(false);
+  const head = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 28, mass: 0.4 });
 
@@ -73,7 +74,24 @@ export function Header({ prefix = "" }: { prefix?: string }) {
 
   useEffect(() => {
     if (!open) return;
-    const k = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "Escape") return setOpen(false);
+      if (e.key !== "Tab" || !head.current) return;
+      // Tab goes round the bar and the sheet while the menu is open, never to the page underneath
+      const els = [...head.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")].filter((el) => el.getClientRects().length);
+      const first = els[0];
+      const last = els.at(-1);
+      if (!first || !last) return;
+      const at = document.activeElement;
+      const inside = head.current.contains(at);
+      if (e.shiftKey && (at === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (at === last || !inside)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", k);
     return () => window.removeEventListener("keydown", k);
   }, [open]);
@@ -86,14 +104,14 @@ export function Header({ prefix = "" }: { prefix?: string }) {
   }, [open]);
 
   return (
-    <header data-menu-open={open || undefined} className="header-in fixed inset-x-0 top-0 z-50">
+    <header ref={head} data-menu-open={open || undefined} className="header-in fixed inset-x-0 top-0 z-50">
       <nav
         aria-label="Основная навигация"
         className="menu-bar relative z-10 border-b border-line bg-[color-mix(in_srgb,var(--bg)_95%,transparent)]"
       >
         <div className="mx-auto grid h-[68px] max-w-[var(--page)] grid-cols-[1fr_auto] items-center gap-4 px-4 lg:grid-cols-[1fr_auto_1fr] sm:h-[76px] sm:px-8 lg:h-[100px] lg:px-12 xl:px-20">
           <div className="flex items-center">
-            <a href={`${prefix}#top`} aria-label="NJ Motors — на главную" className="block shrink-0 lg:hidden">
+            <a href={`${prefix}#top`} aria-label="NJ Motors — на главную" className="block shrink-0 py-[3px] lg:hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={asset("/brand/nj-wordmark-header.webp")} alt="NJ Motors — автомобили из Кореи" width={480} height={146} className="block h-[38px] w-auto sm:h-[46px]" />
             </a>
@@ -111,7 +129,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
               <a
                 href={telHref(SITE.contacts.phone)}
                 aria-label={`Позвонить: ${SITE.contacts.phone}`}
-                className="grid size-11 shrink-0 place-items-center rounded-full bg-[#1fae54] text-white min-[1400px]:flex min-[1400px]:size-auto min-[1400px]:gap-2 min-[1400px]:bg-transparent min-[1400px]:px-2 min-[1400px]:text-[17px] min-[1400px]:font-bold min-[1400px]:whitespace-nowrap min-[1400px]:text-ink min-[1400px]:hover:text-accent-ink"
+                className="grid size-11 shrink-0 place-items-center rounded-full bg-[#1fae54] text-white min-[1400px]:flex min-[1400px]:size-auto min-[1400px]:gap-2 min-[1400px]:bg-transparent min-[1400px]:px-2 min-[1400px]:text-body-lg min-[1400px]:font-bold min-[1400px]:whitespace-nowrap min-[1400px]:text-ink min-[1400px]:hover:text-accent-ink"
               >
                 <BrandIcon brand="call" className="size-5 min-[1400px]:size-[18px] min-[1400px]:text-[#1fae54]" />
                 <span className="hidden min-[1400px]:inline">{SITE.contacts.phone}</span>
@@ -161,7 +179,7 @@ export function Header({ prefix = "" }: { prefix?: string }) {
                 style={{ "--i": i } as React.CSSProperties}
               >
                 <span>{n.label}</span>
-                <ArrowUpRight aria-hidden className="menu-arrow" strokeWidth={2.4} />
+                <ArrowUpRight aria-hidden className="menu-arrow" strokeWidth={2.5} nonScalingStroke />
               </a>
             </li>
           ))}

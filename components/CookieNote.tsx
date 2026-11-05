@@ -42,15 +42,15 @@ export function CookieNote() {
       localStorage.setItem(KEY, "1");
     } catch {}
     setOn(false);
-    window.setTimeout(() => setShow(false), 300);
+    window.setTimeout(() => setShow(false), 150);
   };
 
   return (
     <div
       role="region"
       aria-label="Уведомление о cookie"
-      className={`fixed inset-x-3 bottom-[92px] z-50 mx-auto flex max-w-[480px] items-center gap-4 rounded-[8px] bg-surface p-4 text-[15px] leading-snug text-ink-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-[opacity,translate] duration-300 ease-out lg:right-auto lg:bottom-6 lg:left-6 lg:mx-0 lg:max-w-[440px] ${
-        on ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+      className={`fixed inset-x-3 bottom-[92px] z-50 mx-auto flex max-w-[480px] items-center gap-4 rounded-[8px] bg-surface p-4 text-ui leading-body text-ink-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-[opacity,translate] ease-out lg:right-auto lg:bottom-6 lg:left-6 lg:mx-0 lg:max-w-[440px] ${
+        on ? "translate-y-0 opacity-100 duration-300" : "translate-y-3 opacity-0 duration-150"
       }`}
       style={{ marginBottom: "env(safe-area-inset-bottom)" }}
     >

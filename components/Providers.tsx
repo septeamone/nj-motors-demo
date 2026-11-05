@@ -1,6 +1,7 @@
 "use client";
 
 import Lenis from "lenis";
+import { MotionConfig } from "motion/react";
 import { useEffect } from "react";
 import { Tactile } from "./Tactile";
 
@@ -18,10 +19,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // reduced motion: motion drops transform and layout animations everywhere and keeps the fades
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <Tactile />
       {children}
-    </>
+    </MotionConfig>
   );
 }

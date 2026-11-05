@@ -17,27 +17,27 @@ export function Cases() {
           return (
             <Reveal as="li" key={`${c.car}-${c.city}`} className="plate flex flex-col gap-4 p-6">
               <div>
-                <p className="font-display text-[24px] leading-tight tracking-wide uppercase">{c.car}</p>
-                <p className="mt-1 text-[16px] text-ink-2">
+                <p className="font-display text-h3 leading-tight tracking-title uppercase">{c.car}</p>
+                <p className="mt-1 text-body text-ink-2">
                   {c.year} · для клиента из {c.city}
                 </p>
               </div>
               <dl className="grid grid-cols-2 gap-3 border-t border-line pt-4">
                 <div>
                   <dt className="label">Через NJ Motors</dt>
-                  <dd className="num mt-1 text-[22px]">{rub(c.ours)}</dd>
+                  <dd className="num mt-1 text-title">{rub(c.ours)}</dd>
                 </div>
                 <div>
                   <dt className="label">В России</dt>
-                  <dd className="num mt-1 text-[22px] text-ink-3 line-through decoration-1">{rub(c.market)}</dd>
+                  <dd className="num mt-1 text-title text-ink-3 line-through decoration-1">{rub(c.market)}</dd>
                 </div>
               </dl>
               {save > 0 && (
-                <p className="text-[18px] font-bold text-ink">
+                <p className="text-lead font-bold text-ink">
                   Выгода {rub(save)} ({Math.round((save / c.market) * 100)}%)
                 </p>
               )}
-              {c.note && <p className="text-[15px] leading-snug text-ink-2">{c.note}</p>}
+              {c.note && <p className="text-ui leading-snug text-ink-2">{c.note}</p>}
             </Reveal>
           );
         })}

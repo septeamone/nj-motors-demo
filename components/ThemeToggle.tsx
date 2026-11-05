@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IconSwap } from "./IconSwap";
 import { NjIcon, type IconName } from "./NjIcon";
 
 type Theme = "light" | "dark";
@@ -21,7 +22,7 @@ function apply(t: Theme) {
   root.dataset.theme = t;
   // let the new colours land before transitions come back
   void root.offsetHeight;
-  requestAnimationFrame(() => root.classList.remove("theme-swap"));
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-swap")));
 }
 
 export function ThemeToggle({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
@@ -50,9 +51,11 @@ export function ThemeToggle({ compact = false, className = "" }: { compact?: boo
         aria-label={next.label}
         title={next.label}
         onClick={() => choose(next.value)}
-        className={`grid size-11 shrink-0 place-items-center rounded-full bg-ink/[0.07] text-ink ${className}`}
+        className={`theme-compact grid size-11 shrink-0 place-items-center rounded-full bg-ink/[0.07] text-ink ${className}`}
       >
-        <NjIcon name={now.icon} className="size-[22px]" />
+        <IconSwap id={now.icon}>
+          <NjIcon name={now.icon} className="size-[22px]" />
+        </IconSwap>
       </button>
     );
   }
@@ -74,7 +77,7 @@ export function ThemeToggle({ compact = false, className = "" }: { compact?: boo
           aria-label={label}
           title={label}
           onClick={() => choose(value)}
-          className="relative grid size-9 place-items-center rounded-full text-ink-3 transition-colors hover:text-ink aria-checked:text-ink"
+          className="relative grid size-9 place-items-center rounded-full text-ink-3 before:absolute before:-inset-y-1 before:-inset-x-px transition-[color,scale] duration-150 ease-out hover:text-ink aria-checked:text-ink"
         >
           <NjIcon name={icon} className="size-[22px]" />
         </button>

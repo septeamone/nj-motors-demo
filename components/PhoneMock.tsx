@@ -145,8 +145,8 @@ export function PhoneMock() {
       <div className="-mt-12 flex w-full items-center justify-center gap-2 sm:-mt-8 lg:-mt-6">
         <div className="flex items-center" role="group" aria-label="Скриншоты канала">
           {SCREENS.map((alt, k) => (
-            <button key={alt} type="button" aria-label={`Показать: ${alt}`} aria-current={k === i} onClick={() => setI(k)} className="grid h-11 w-4 cursor-pointer place-items-center lg:w-5">
-              <span className={`block h-2 rounded-full transition-all duration-300 ${k === i ? "w-4 bg-accent" : "w-2 bg-line-strong hover:bg-ink-3"}`} />
+            <button key={alt} type="button" aria-label={`Показать: ${alt}`} aria-current={k === i} onClick={() => setI(k)} className="grid h-11 w-6 cursor-pointer place-items-center">
+              <span className={`block h-2 rounded-full transition-[width,background-color] duration-300 ${k === i ? "w-4 bg-accent" : "w-2 bg-line-strong hover:bg-ink-3"}`} />
             </button>
           ))}
         </div>
@@ -156,7 +156,7 @@ export function PhoneMock() {
         href={CHANNEL}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-2 inline-flex min-h-13 items-center gap-2.5 self-center rounded-full bg-[#26A5E4] px-6 py-3 text-[17px] font-bold text-white transition-transform duration-150 hover:-translate-y-0.5"
+        className="mt-2 inline-flex min-h-13 items-center gap-2.5 self-center rounded-full bg-[#26A5E4] px-6 py-3 text-body-lg font-bold text-white transition-transform duration-150 hover:-translate-y-0.5"
       >
         <BrandIcon brand="telegram" className="size-[22px] shrink-0" />
         Перейти в Telegram-канал

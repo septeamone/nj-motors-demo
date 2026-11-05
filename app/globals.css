@@ -36,6 +36,7 @@
   --stage-bottom: #0a0e12;
   --stage-floor: rgba(0, 0, 0, 0.6);
   --shadow: rgba(0, 0, 0, 0.55);
+  --img-edge: oklch(1 0 0 / 0.1);
 }
 
 [data-theme="light"] {
@@ -66,6 +67,7 @@
   --stage-bottom: #dccdb2;
   --stage-floor: rgba(60, 38, 14, 0.34);
   --shadow: rgba(50, 30, 10, 0.3);
+  --img-edge: oklch(0 0 0 / 0.1);
 }
 
 @theme inline {
@@ -91,6 +93,37 @@
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Type roles: text that wraps to three lines or more reads at 1.45 */
+@theme {
+  /* one size per role, in rem so the reader's own browser text size still applies */
+  --text-caption: 0.8125rem; /* 13px: notes on the hero tiles, player hints */
+  --text-caption--line-height: 1.4;
+  --text-small: 0.875rem; /* 14px: labels, payment counters */
+  --text-small--line-height: 1.55;
+  --text-ui: 0.9375rem; /* 15px: secondary text, chat bubbles */
+  --text-ui--line-height: 1.55;
+  --text-body: 1rem; /* 16px */
+  --text-body--line-height: 1.55;
+  --text-body-lg: 1.0625rem; /* 17px: card text, list items */
+  --text-body-lg--line-height: 1.55;
+  --text-lead: 1.125rem; /* 18px: leads inside panels */
+  --text-lead--line-height: 1.55;
+  --text-card: 1.25rem; /* 20px: small headings */
+  --text-card--line-height: 1.2;
+  --text-title: 1.375rem; /* 22px: card titles, the phone number */
+  --text-title--line-height: 1.2;
+  --text-h3: 1.5rem; /* 24px: car names */
+  --text-h3--line-height: 1.15;
+  --text-figure: 1.8125rem; /* 29px: prices */
+  --text-figure--line-height: 1;
+  --text-dialog: 2rem; /* 32px: the title of the car dialog */
+  --text-dialog--line-height: 1.15;
+  --leading-body: 1.45;
+  /* uppercase condensed headings: a hair of air for the big ones, a little more for card titles */
+  --tracking-display: 0.004em;
+  --tracking-title: 0.025em;
+}
+
 :root {
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --dur: 0.7s;
@@ -104,15 +137,15 @@ html {
   font-synthesis-weight: none;
   background: var(--bg);
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 body {
   background: transparent; /* the page colour is on html; the dot-field backdrop shows between */
   color: var(--ink);
   font-family: var(--font-onest), system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.55;
-  font-variant-numeric: tabular-nums lining-nums;
-  -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
 p,
@@ -131,11 +164,6 @@ p {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
-.field input:focus-visible,
-.field textarea:focus-visible,
-.field button:focus-visible {
-  outline: none;
-}
 html.lenis,
 html.lenis body {
   height: auto;
@@ -152,21 +180,21 @@ html.lenis body {
   font-family: var(--font-head), "Arial Narrow", system-ui, sans-serif;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.002em;
-  line-height: 0.94;
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
   text-wrap: balance;
 }
 .h2 {
   font-family: var(--font-head), "Arial Narrow", system-ui, sans-serif;
   font-weight: 800;
   text-transform: uppercase;
-  font-size: clamp(38px, 5vw, 76px);
-  line-height: 0.95;
-  letter-spacing: 0.004em;
+  font-size: clamp(2.375rem, 5vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
   text-wrap: balance;
 }
 .lead {
-  font-size: clamp(16px, 1.25vw, 19px);
+  font-size: clamp(1rem, 1.25vw, 1.1875rem);
   line-height: 1.6;
   color: var(--ink-2);
   max-width: 54ch;
@@ -179,7 +207,7 @@ html.lenis body {
 }
 .mono {
   font-family: var(--font-onest), system-ui, sans-serif;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
 }
 
@@ -201,7 +229,7 @@ html.lenis body {
   align-items: center;
   gap: 10px;
   font-family: var(--font-onest), system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--ink);
 }
@@ -218,30 +246,36 @@ html.lenis body {
   border-radius: 4px;
   font-family: var(--font-russo), "Arial Black", system-ui, sans-serif;
   font-weight: 400;
-  font-size: 16px;
-  letter-spacing: 0.07em;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
   border: 1px solid transparent;
   transition:
-    transform 160ms var(--ease-out),
+    scale 150ms ease-out,
     background-color 160ms var(--ease-out),
     border-color 160ms var(--ease-out),
     box-shadow 200ms var(--ease-out),
     color 160ms var(--ease-out);
 }
-.btn:active {
-  transform: translateY(1px) scale(0.98);
-}
-.pill:active,
-[role="radio"]:active {
-  transform: scale(0.97);
+/* a press scales to 0.96; a disabled control never moves */
+.btn:not(:disabled):active,
+.pill:not(:disabled):active,
+[role="radio"]:not(:disabled):active {
+  scale: 0.96;
 }
 .btn-sm {
   height: 44px;
   padding: 0 20px;
-  font-size: 14.5px;
+  font-size: 0.875rem;
+}
+/* a trailing arrow gets 2px less padding on its side, so label and icon look centred together */
+.btn:has(> svg:last-child) {
+  padding-inline-end: 26px;
+}
+.btn-sm:has(> svg:last-child) {
+  padding-inline-end: 18px;
 }
 .btn-primary {
   background: var(--accent-fill);
@@ -264,71 +298,17 @@ html.lenis body {
   }
 }
 
-/* ---------- Fields ---------- */
-.field {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 54px;
-  padding: 0 16px;
-  border-radius: 4px;
-  background: var(--surface-2);
-  border: 1px solid var(--line-strong);
-  color: var(--ink);
-  transition:
-    border-color 160ms var(--ease-out),
-    box-shadow 200ms var(--ease-out),
-    background-color 160ms var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .field:hover {
-    border-color: var(--ink-3);
-  }
-}
-.field:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
-}
-.field[data-invalid="true"] {
-  border-color: var(--danger);
-}
-.field input,
-.field textarea {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  background: transparent;
-  border: 0;
-  outline: 0;
-  color: inherit;
-  font: 600 17px/1 var(--font-onest), system-ui, sans-serif;
-}
-.field input::placeholder,
-.field textarea::placeholder {
-  color: var(--ink-3);
-  font-weight: 500;
-}
-.field textarea {
-  padding: 16px 0;
-  resize: vertical;
-  min-height: 112px;
-  line-height: 1.5;
-}
-.field-area {
-  height: auto;
-  align-items: flex-start;
-}
 .label {
   display: block;
   margin-bottom: 8px;
   font-family: var(--font-onest), system-ui, sans-serif;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--ink-2);
 }
 .hint {
   margin-top: 8px;
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   color: var(--ink-3);
 }
 
@@ -343,13 +323,13 @@ html.lenis body {
   background: transparent;
   color: var(--ink-2);
   font-weight: 700;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   transition:
     background-color 160ms var(--ease-out),
     color 160ms var(--ease-out),
     border-color 160ms var(--ease-out),
-    transform 160ms var(--ease-out);
+    scale 150ms ease-out;
 }
 @media (hover: hover) and (pointer: fine) {
   .pill:hover {
@@ -362,46 +342,6 @@ html.lenis body {
   background: var(--ink);
   color: var(--bg);
   border-color: var(--ink);
-}
-
-/* ---------- Select (Radix) ---------- */
-.select-content {
-  z-index: 90;
-  min-width: var(--radix-select-trigger-width);
-  max-height: min(320px, var(--radix-select-content-available-height));
-  overflow: hidden;
-  border-radius: 6px;
-  padding: 6px;
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
-  box-shadow: 0 28px 70px -18px var(--shadow);
-  animation: pop 160ms var(--ease-out);
-}
-.select-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  height: 42px;
-  padding: 0 12px;
-  border-radius: 3px;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--ink-2);
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-}
-.select-item[data-highlighted] {
-  background: var(--accent-soft);
-  color: var(--ink);
-}
-.select-item[data-state="checked"] {
-  color: var(--accent-ink);
-}
-.select-item[data-disabled] {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 /* text standing on a film (catalog over the container, the deal heading over the sea): a soft shade keeps it legible.
@@ -444,13 +384,13 @@ html.lenis body {
   animation: dlg-fade-in 400ms var(--ease-expo) both;
 }
 .dlg-fade[data-state="closed"] {
-  animation: dlg-fade-out 200ms ease-out both;
+  animation: dlg-fade-out 150ms ease-out both;
 }
 .dlg-pop[data-state="open"] {
   animation: dlg-pop-in 700ms var(--ease-expo) both;
 }
 .dlg-pop[data-state="closed"] {
-  animation: dlg-pop-out 200ms ease-out both;
+  animation: dlg-pop-out 150ms ease-out both;
 }
 @keyframes dlg-fade-in {
   from {
@@ -527,10 +467,6 @@ html.lenis body {
 }
 /* stroked (outline) display text */
 
-.field[data-disabled="true"] {
-  opacity: 0.5;
-}
-
 /* Entrance of the first screen runs in CSS, so it starts before JavaScript has loaded. */
 /* Theme switch: soft crossfade of the whole page (GPU, no per-element transitions) */
 ::view-transition-old(root),
@@ -545,13 +481,31 @@ html.lenis body {
   scrollbar-color: var(--line-strong) transparent;
 }
 
+/* Reduced motion: nothing moves, scales or blurs (keyframe sequences jump to their end, transform transitions are
+   dropped), but what appears and disappears still fades briefly, so no change is abrupt */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-property: opacity, color, background-color, border-color, box-shadow !important;
+    transition-duration: 150ms !important;
+    transition-timing-function: ease-out !important;
+    transition-delay: 0s !important;
+  }
+  /* the phone menu stays shown while it fades out */
+  .menu-sheet {
+    transition-property: opacity, visibility !important;
+  }
+  /* the dialogs keep their fade (the pop's scale is left out) */
+  .dlg-fade[data-state="open"],
+  .dlg-pop[data-state="open"] {
+    animation: dlg-fade-in 150ms ease-out both !important;
+  }
+  .dlg-fade[data-state="closed"],
+  .dlg-pop[data-state="closed"] {
+    animation: dlg-fade-out 150ms ease-out both !important;
   }
   ::view-transition-group(*),
   ::view-transition-old(*),
@@ -960,7 +914,8 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
 .vp-range {
   -webkit-appearance: none;
   appearance: none;
-  height: 22px;
+  /* the track stays 4px; the box is as tall as the buttons beside it, so it is easy to hit */
+  height: 40px;
   background: transparent;
   cursor: pointer;
 }
@@ -1138,6 +1093,10 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   color: #f3e8d6;
   border-color: rgba(243, 232, 214, 0.3);
 }
+[data-menu-open] .menu-bar .theme-compact {
+  color: #f3e8d6;
+  background: rgba(243, 232, 214, 0.1);
+}
 
 .menu-sheet {
   position: fixed;
@@ -1158,10 +1117,11 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   opacity: 0;
   scale: 1.03;
   visibility: hidden;
+  /* closing is quicker than opening */
   transition:
-    opacity 0.35s,
-    scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
-    visibility 0s 0.45s;
+    opacity 0.2s ease-out,
+    scale 0.2s ease-out,
+    visibility 0s 0.2s;
 }
 .menu-sheet::before {
   /* the red rule of the hero split, along the top of the sheet */
@@ -1172,16 +1132,20 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   background: var(--accent);
   transform-origin: left;
   scale: 0 1;
-  transition: scale 0.6s cubic-bezier(0.2, 0.75, 0.15, 1) 0.15s;
+  transition: scale 0.2s ease-out;
 }
 .menu-sheet[data-open] {
   opacity: 1;
   scale: 1;
   visibility: visible;
-  transition-delay: 0s;
+  transition:
+    opacity 0.35s,
+    scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    visibility 0s;
 }
 .menu-sheet[data-open]::before {
   scale: 1 1;
+  transition: scale 0.6s cubic-bezier(0.2, 0.75, 0.15, 1) 0.15s;
 }
 @media (min-width: 640px) {
   .menu-sheet {
@@ -1207,20 +1171,22 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   padding: clamp(8px, 1.6svh, 14px) 0 clamp(7px, 1.4svh, 12px);
   font-family: var(--font-head), "Arial Narrow", system-ui, sans-serif;
   font-weight: 800;
-  font-size: clamp(28px, min(9.6vw, 6.2svh), 52px);
+  font-size: clamp(1.75rem, min(9.6vw, 6.2svh), 3.25rem);
   line-height: 1;
-  letter-spacing: 0.004em;
+  letter-spacing: var(--tracking-display);
   text-transform: uppercase;
   color: #f3e8d6;
   text-shadow: 0.035em 0.03em 0 rgba(212, 4, 4, 0.85);
   translate: 0 105%;
   transition:
-    translate 0.6s cubic-bezier(0.2, 0.75, 0.15, 1),
+    translate 0.2s ease-out,
     color 0.2s;
 }
 .menu-sheet[data-open] .menu-list a {
   translate: 0 0;
-  transition-delay: calc(0.18s + var(--i) * 0.05s), 0s;
+  transition:
+    translate 0.6s cubic-bezier(0.2, 0.75, 0.15, 1) calc(0.18s + var(--i) * 0.05s),
+    color 0.2s;
 }
 .menu-arrow {
   width: 30px;
@@ -1262,12 +1228,15 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   rotate: -14deg;
   pointer-events: none;
   transition:
-    opacity 0.6s 0.3s,
-    rotate 0.9s cubic-bezier(0.2, 0.75, 0.15, 1) 0.2s;
+    opacity 0.2s ease-out,
+    rotate 0.2s ease-out;
 }
 .menu-sheet[data-open] .menu-stamp {
   opacity: 0.1;
   rotate: -8deg;
+  transition:
+    opacity 0.6s 0.3s,
+    rotate 0.9s cubic-bezier(0.2, 0.75, 0.15, 1) 0.2s;
 }
 .menu-foot {
   position: relative;
@@ -1277,13 +1246,15 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   opacity: 0;
   translate: 0 12px;
   transition:
-    opacity 0.4s,
-    translate 0.5s cubic-bezier(0.2, 0.75, 0.15, 1);
+    opacity 0.15s ease-out,
+    translate 0.2s ease-out;
 }
 .menu-sheet[data-open] .menu-foot {
   opacity: 1;
   translate: 0 0;
-  transition-delay: 0.5s;
+  transition:
+    opacity 0.4s 0.5s,
+    translate 0.5s cubic-bezier(0.2, 0.75, 0.15, 1) 0.5s;
 }
 .menu-call {
   display: inline-flex;
@@ -1294,15 +1265,25 @@ html[data-menu="open"] a[aria-label^="NJ Motors — Cars"] {
   border-radius: 999px;
   background: #1fae54;
   color: #fff;
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
 }
-@media (prefers-reduced-motion: reduce) {
-  .menu-sheet,
-  .menu-sheet *,
-  .menu-sheet::before,
-  .menu-btn * {
-    transition-duration: 0.01s !important;
-    transition-delay: 0s !important;
+/* custom pressed states (.btn, .pill, radios) replace the grey tap flash */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* photos get a hairline just inside their edge, pure black or white at 10%, so a light or dark picture never melts
+   into the page; laid over the picture (an outline on the img would sit under overlays) */
+.img-edge {
+  outline: 1px solid var(--img-edge);
+  outline-offset: -1px;
+}
+
+/* hero tile notes: tall phones have the room for a larger, airier note (short ones keep 12px so all four tiles fit) */
+@media (max-width: 639.98px) and (min-height: 800px) {
+  .hero-note {
+    font-size: 0.8125rem;
+    line-height: 1.35;
   }
 }

@@ -47,10 +47,10 @@ function Page({ i, className = "" }: { i: number; className?: string }) {
   return (
     <article className={`relative flex flex-col overflow-hidden rounded-[10px] bg-[var(--paper)] text-[var(--paper-ink)] shadow-[0_1px_0_rgba(18,16,13,0.18),0_22px_40px_-26px_var(--shadow)] ${className}`}>
       <header className="flex items-center gap-4 border-b-2 border-dashed border-[rgba(18,16,13,0.22)] px-5 pt-5 pb-4 lg:px-8 lg:pt-6">
-        <span className="num grid size-11 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-[20px] text-white">{i + 1}</span>
+        <span className="num grid size-11 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-card text-white">{i + 1}</span>
         <div className="min-w-0 flex-1">
-          <h3 className="font-display text-[clamp(21px,2.2vw,27px)] leading-none tracking-wide uppercase">{s.title}</h3>
-          <p className="mt-1.5 text-[15px] font-medium opacity-75">{PLACE[i]}</p>
+          <h3 className="font-display text-[clamp(1.3125rem,2.2vw,1.6875rem)] leading-[1.1] tracking-title uppercase">{s.title}</h3>
+          <p className="mt-1.5 text-ui font-medium opacity-75">{PLACE[i]}</p>
         </div>
         <NjIcon name={STEP_ICON[i]} className="size-9 shrink-0" />
       </header>
@@ -58,28 +58,28 @@ function Page({ i, className = "" }: { i: number; className?: string }) {
       <div className="flex flex-1 flex-col gap-4 px-5 pt-4 pb-5 lg:gap-5 lg:px-8 lg:pb-6">
         <ul className="grid gap-2">
           {points.map((t) => (
-            <li key={t} className="flex gap-2.5 text-[16px] leading-snug lg:text-[17px]">
-              <Check aria-hidden className="mt-[3px] size-4 shrink-0 text-[var(--accent-fill)]" strokeWidth={3.2} />
+            <li key={t} className="flex gap-2.5 text-body leading-body lg:text-body-lg">
+              <Check aria-hidden className="mt-[3px] size-4 shrink-0 text-[var(--accent-fill)]" strokeWidth={2.5} nonScalingStroke />
               <span>{nb(t)}</span>
             </li>
           ))}
         </ul>
 
-        <div className="mt-auto rounded-[6px] bg-[rgba(18,16,13,0.08)] px-4 py-3">
+        <div className="mt-auto rounded-[4px] bg-[rgba(18,16,13,0.08)] px-4 py-3">
           {pays.length ? (
             <>
-              <p className="text-[14px] font-bold opacity-70">
+              <p className="text-small font-bold opacity-70">
                 {pays.length > 1 ? `Платежи ${pays[0] + 1}–${pays.at(-1)! + 1}` : `Платёж ${pays[0] + 1}`} из {PAYS}
               </p>
               {pays.map((k) => (
                 <div key={k} className="mt-1 [&+div]:mt-2 [&+div]:border-t [&+div]:border-[rgba(18,16,13,0.18)] [&+div]:pt-2">
-                  <p className="text-[17px] leading-snug font-bold">{DEAL_STAGES[k].pay}</p>
-                  {pays.length === 1 && <p className="mt-0.5 text-[15px] leading-snug opacity-80">{DEAL_STAGES[k].when}</p>}
+                  <p className="text-body-lg leading-snug font-bold">{DEAL_STAGES[k].pay}</p>
+                  {pays.length === 1 && <p className="mt-0.5 text-ui leading-body opacity-80">{DEAL_STAGES[k].when}</p>}
                 </div>
               ))}
             </>
           ) : (
-            <p className="text-[17px] font-bold">{PAY_NOTE[i]}</p>
+            <p className="text-body-lg font-bold">{PAY_NOTE[i]}</p>
           )}
         </div>
       </div>
@@ -150,7 +150,7 @@ function RouteLine({ p, active }: { p: MotionValue<number>; active: number }) {
         <div key={i} className="absolute" style={{ left: `${x / 10}%`, top: `${(y / 120) * 100}%` }}>
           <span className={`absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] transition-colors duration-700 ${i <= active ? "border-accent bg-accent" : "border-line-strong bg-bg-2"}`} />
           <span
-            className={`absolute left-0 -translate-x-1/2 text-[15px] font-bold whitespace-nowrap transition-colors duration-700 ${y > 60 ? "top-7" : "bottom-7"} ${i <= active ? "text-ink" : "text-ink-3"}`}
+            className={`absolute left-0 -translate-x-1/2 text-ui font-bold whitespace-nowrap transition-colors duration-700 ${y > 60 ? "top-7" : "bottom-7"} ${i <= active ? "text-ink" : "text-ink-3"}`}
           >
             {STOP_NAME[i]}
           </span>
@@ -168,8 +168,8 @@ function Ledger({ active }: { active: number }) {
   const note = PAY_NOTE[active];
   return (
     <div>
-      <h3 className="font-display text-[clamp(22px,2vw,28px)] leading-none tracking-wide uppercase">Этапы оплаты</h3>
-      <p className="mt-3 max-w-[34ch] text-[17px] leading-snug text-ink-2">Все платежи официальные на имя покупателя.</p>
+      <h3 className="font-display text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.1] tracking-title uppercase">Этапы оплаты</h3>
+      <p className="mt-3 max-w-[34ch] text-body-lg leading-body text-ink-2">Все платежи официальные на имя покупателя.</p>
       <ol className="mt-6 flex flex-col gap-1.5">
         {DEAL_STAGES.map((d) => {
           const state = d.step < active ? "done" : d.step === active ? "now" : "next";
@@ -181,11 +181,11 @@ function Ledger({ active }: { active: number }) {
               <span
                 className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full transition-colors duration-700 ${state === "next" ? "border-2 border-line-strong" : "bg-accent text-on-accent"}`}
               >
-                {state === "done" && <Check className="size-4" strokeWidth={3} />}
+                {state === "done" && <Check className="size-4" strokeWidth={2.5} nonScalingStroke />}
               </span>
               <div className="min-w-0">
-                <p className="text-[17px] leading-snug font-bold text-ink">{d.pay}</p>
-                <p className="mt-0.5 text-[15px] leading-snug text-ink-2">{d.when}</p>
+                <p className="text-body-lg leading-snug font-bold text-ink">{d.pay}</p>
+                <p className="mt-0.5 max-w-[65ch] text-ui leading-body text-ink-2">{d.when}</p>
               </div>
             </li>
           );
@@ -200,7 +200,7 @@ function Ledger({ active }: { active: number }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6, transition: { duration: 0.2 } }}
               transition={{ duration: DUR, ease: EASE }}
-              className="px-4 text-[17px] font-bold text-accent-ink"
+              className="px-4 text-body-lg font-bold text-accent-ink"
             >
               Сейчас: {note.toLowerCase()}
             </motion.p>
@@ -223,7 +223,7 @@ function Leaf({ i, p }: { i: number; p: MotionValue<number> }) {
   return (
     <motion.div className="absolute inset-0 origin-top will-change-transform [backface-visibility:hidden]" style={{ rotateX, y, opacity, zIndex: N - i }}>
       <Page i={i} className="h-full" />
-      {i > 0 && <motion.span aria-hidden style={{ opacity: shade }} className="pointer-events-none absolute inset-0 rounded-[6px] bg-[#040c14]" />}
+      {i > 0 && <motion.span aria-hidden style={{ opacity: shade }} className="pointer-events-none absolute inset-0 rounded-[10px] bg-[#040c14]" />}
     </motion.div>
   );
 }
@@ -250,8 +250,8 @@ function Scene() {
         <div className="grid grid-cols-12 items-start gap-x-10">
           <div className="relative col-span-7 h-[min(460px,56svh)] [perspective:1800px]">
             {/* edges of the pages below, so the pad reads as a stack */}
-            <span aria-hidden className="absolute inset-x-3 -bottom-3 h-full rounded-[6px] bg-[color-mix(in_srgb,var(--paper)_55%,var(--bg-2))]" />
-            <span aria-hidden className="absolute inset-x-1.5 -bottom-1.5 h-full rounded-[6px] bg-[color-mix(in_srgb,var(--paper)_78%,var(--bg-2))]" />
+            <span aria-hidden className="absolute inset-x-3 -bottom-3 h-full rounded-[10px] bg-[color-mix(in_srgb,var(--paper)_55%,var(--bg-2))]" />
+            <span aria-hidden className="absolute inset-x-1.5 -bottom-1.5 h-full rounded-[10px] bg-[color-mix(in_srgb,var(--paper)_78%,var(--bg-2))]" />
             {STEPS.map((s, i) => (
               <Leaf key={s.title} i={i} p={p} />
             ))}
@@ -318,13 +318,13 @@ function Swipe() {
         ))}
       </div>
       <div className="mt-2 flex items-center justify-between gap-3">
-        <p className="text-[15px] font-bold text-ink-2">
+        <p className="text-ui font-bold text-ink-2">
           Шаг {at + 1} из {N}
         </p>
         <div className="flex" role="group" aria-label="Шаги сделки">
           {STEPS.map((s, i) => (
-            <button key={s.title} type="button" aria-label={`Шаг ${i + 1}: ${s.title}`} aria-current={i === at} onClick={() => go(i)} className="grid h-11 w-7 cursor-pointer place-items-center">
-              <span className={`block h-2 rounded-full transition-all duration-300 ${i === at ? "w-5 bg-accent" : i < at ? "w-2 bg-accent/60" : "w-2 bg-line-strong"}`} />
+            <button key={s.title} type="button" aria-label={`Шаг ${i + 1}: ${s.title}`} aria-current={i === at} onClick={() => go(i)} className="grid h-11 w-[30px] cursor-pointer place-items-center">
+              <span className={`block h-2 rounded-full transition-[width,background-color] duration-300 ${i === at ? "w-5 bg-accent" : i < at ? "w-2 bg-accent/60" : "w-2 bg-line-strong"}`} />
             </button>
           ))}
         </div>
@@ -337,15 +337,15 @@ function Swipe() {
 function Stages() {
   return (
     <div className="mt-10 lg:hidden">
-      <h3 className="font-display text-[clamp(26px,6vw,34px)] leading-none tracking-wide uppercase">Этапы оплаты</h3>
-      <p className="mt-2 text-[17px] leading-snug text-ink-2">Все платежи официальные на имя покупателя.</p>
+      <h3 className="font-display text-[clamp(1.625rem,6vw,2.125rem)] leading-[1.1] tracking-title uppercase">Этапы оплаты</h3>
+      <p className="mt-2 text-body-lg leading-body text-ink-2">Все платежи официальные на имя покупателя.</p>
       <ol className="mt-5 grid gap-2.5">
         {DEAL_STAGES.map((d, k) => (
           <li key={d.pay} className="flex gap-4 rounded-[10px] bg-surface px-4 py-4">
-            <span className="num grid size-9 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-[16px] text-white">{k + 1}</span>
+            <span className="num grid size-9 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-body text-white">{k + 1}</span>
             <div className="min-w-0">
-              <p className="text-[17px] leading-snug font-bold text-ink">{d.pay}</p>
-              <p className="mt-1 text-[15px] leading-snug text-ink-2">{d.when}</p>
+              <p className="text-body-lg leading-snug font-bold text-ink">{d.pay}</p>
+              <p className="mt-1 text-ui leading-body text-ink-2">{d.when}</p>
             </div>
           </li>
         ))}

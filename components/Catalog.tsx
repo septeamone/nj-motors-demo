@@ -82,10 +82,10 @@ export function Catalog() {
           {more && (
             <>
               <button type="button" aria-label="Предыдущие машины" onClick={() => slide(-1)} className="grid size-11 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
-                <ChevronLeft className="size-5" strokeWidth={2} />
+                <ChevronLeft className="size-5" strokeWidth={2} nonScalingStroke />
               </button>
               <button type="button" aria-label="Следующие машины" onClick={() => slide(1)} className="grid size-11 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent">
-                <ChevronRight className="size-5" strokeWidth={2} />
+                <ChevronRight className="size-5" strokeWidth={2} nonScalingStroke />
               </button>
             </>
           )}
@@ -100,7 +100,7 @@ export function Catalog() {
 
         {/* no model to your taste here: four taps and a phone instead of a long message */}
         <Reveal delay={0.1} className="mt-10 grid items-center gap-6 lg:mt-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
-          <p className="font-display text-[clamp(26px,3vw,40px)] leading-[1.05] tracking-wide text-ink uppercase">
+          <p className="font-display text-[clamp(1.625rem,3vw,2.5rem)] leading-[1.05] tracking-title text-ink uppercase">
             Нужной модели нет? Подберём любую с&nbsp;корейского рынка.
           </p>
           <Quiz />
@@ -112,7 +112,7 @@ export function Catalog() {
           <Dialog.Overlay className="dlg-fade fixed inset-0 z-[60] bg-[rgba(4,12,20,0.82)]" />
           <Dialog.Content
             data-lenis-prevent
-            className="plate dlg-pop fixed top-1/2 left-1/2 z-[70] max-h-[92svh] w-[min(94vw,880px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto"
+            className="plate dlg-pop fixed top-1/2 left-1/2 z-[70] max-h-[92svh] w-[min(94vw,880px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto overscroll-contain"
           >
             {open && <CarDetails car={open} onDone={() => setOpen(null)} />}
           </Dialog.Content>
@@ -154,9 +154,9 @@ function CarCard({ car, morph, pics, onOpen }: { car: Car; morph: boolean; pics:
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div>
           <p className="label">{car.brand}</p>
-          <p className="font-display mt-1 text-[24px] leading-tight tracking-wide uppercase">{car.model}</p>
+          <p className="font-display mt-1 text-h3 leading-tight tracking-title uppercase">{car.model}</p>
         </div>
-        <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-[16px] text-ink-2">
+        <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-body text-ink-2">
           <div>
             <dt className="sr-only">Год</dt>
             <dd className="num">{car.year}</dd>
@@ -176,16 +176,16 @@ function CarCard({ car, morph, pics, onOpen }: { car: Car; morph: boolean; pics:
         <div className="mt-auto flex items-end justify-between gap-3 pt-2">
           <div>
             <p className="label">{PRICE_LABEL}</p>
-            <p className="num mt-1.5 text-[28px] leading-none">{rub(car.price)}</p>
+            <p className="num mt-1.5 text-figure leading-none">{rub(car.price)}</p>
           </div>
-          <ArrowUpRight className="size-6 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={1.75} />
+          <ArrowUpRight className="size-6 text-ink-3 transition-colors group-hover:text-accent-ink" strokeWidth={2} nonScalingStroke />
         </div>
       </div>
     </button>
       <div className="px-5 pb-5">
         <a href="#lead-form" onClick={() => want(car)} className="btn btn-primary btn-sm w-full">
           Хочу такую
-          <ArrowRight className="size-[16px]" strokeWidth={2} />
+          <ArrowRight className="size-[16px]" strokeWidth={2.5} nonScalingStroke />
         </a>
       </div>
     </div>
@@ -209,25 +209,25 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
       </div>
       <div className="flex flex-col p-6 sm:p-8">
         <Dialog.Close aria-label="Закрыть" className="absolute top-3 right-3 grid size-10 place-items-center rounded-[4px] border border-line-strong text-ink">
-          <X className="size-5" strokeWidth={1.75} />
+          <X className="size-5" strokeWidth={2} nonScalingStroke />
         </Dialog.Close>
         <p className="label">{car.brand}</p>
-        <Dialog.Title className="font-display mt-1 text-[32px] leading-tight tracking-wide uppercase">{car.model}</Dialog.Title>
-        <Dialog.Description className="mt-3 text-[16px] leading-snug text-ink-2">
+        <Dialog.Title className="font-display mt-1 text-dialog leading-tight tracking-title uppercase">{car.model}</Dialog.Title>
+        <Dialog.Description className="mt-3 text-body leading-body text-ink-2">
           Привезём именно такой автомобиль или подберём по вашим параметрам: проверим историю, до выкупа проведём независимый осмотр, условия зафиксируем в договоре.
         </Dialog.Description>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-line-strong pt-5">
           {specs.map(([k, v]) => (
             <div key={k}>
               <dt className="label">{k}</dt>
-              <dd className="mt-1 text-[16px] font-bold text-ink">{v}</dd>
+              <dd className="mt-1 text-body font-bold text-ink">{v}</dd>
             </div>
           ))}
         </dl>
         <div className="mt-6 border-t border-line pt-5">
           <p className="label">{PRICE_LABEL}</p>
-          <p className="num mt-1 text-[30px] leading-none">{rub(car.price)}</p>
-          <p className="mt-2 text-[16px] leading-snug text-ink-3">Примерная сумма под ключ. Точную мы считаем по таможенным ставкам на дату сделки.</p>
+          <p className="num mt-1 text-figure leading-none">{rub(car.price)}</p>
+          <p className="mt-2 text-body leading-body text-ink-3">Примерная сумма под ключ. Точную мы считаем по таможенным ставкам на дату сделки.</p>
         </div>
         <a
           href="#lead-form"
@@ -238,7 +238,7 @@ function CarDetails({ car, onDone }: { car: Car; onDone: () => void }) {
           className="btn btn-primary mt-6 w-full sm:w-auto sm:self-start"
         >
           Получить расчёт
-          <ArrowRight className="size-[18px]" strokeWidth={2} />
+          <ArrowRight className="size-[18px]" strokeWidth={2.5} nonScalingStroke />
         </a>
       </div>
     </div>

@@ -18,7 +18,7 @@ export function Wordmark({ className = "" }: { className?: string }) {
         className="size-11 shrink-0 rounded-full sm:size-12"
       />
       <span className="leading-none">
-        <span className="font-display block text-[22px] font-semibold tracking-[0.06em] text-ink uppercase">NJ Motors</span>
+        <span className="font-display block text-title leading-none tracking-[0.06em] text-ink uppercase">NJ Motors</span>
       </span>
     </span>
   );

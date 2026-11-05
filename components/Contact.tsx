@@ -62,8 +62,8 @@ export function Contact() {
 
           <motion.div style={calm ? undefined : { x: plateX }}><Reveal delay={0.08}>
             <div id="lead-form" className="plate p-6 sm:p-9">
-              <p className="font-display text-[clamp(24px,2.4vw,32px)] leading-tight tracking-wide text-ink uppercase">Напишите нам</p>
-              <p className="mt-2 max-w-[46ch] text-[17px] leading-snug text-ink-2">
+              <p className="font-display text-[clamp(1.5rem,2.4vw,2rem)] leading-tight tracking-title text-ink uppercase">Напишите нам</p>
+              <p className="mt-2 max-w-[46ch] text-body-lg leading-body text-ink-2">
                 {car ? (
                   <>
                     Вы выбрали: <b className="text-ink">{car.replace(/^Интересует: /, "")}</b>. Напишите, где удобно, — пришлём похожие варианты с расчётом.

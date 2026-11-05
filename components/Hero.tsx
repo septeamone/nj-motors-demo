@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { NjIcon, type IconName } from "./NjIcon";
 import { SplitHero } from "./SplitHero";
+import { nb } from "@/lib/typo";
 
 // Advantages on the first screen, big, the way the owner's favourite competitor shows them. Only confirmed facts;
 // numbers (savings, cars delivered) are added once Andrey gives them.
@@ -16,7 +17,7 @@ export function Hero() {
   return (
     <SplitHero>
       <div className="flex h-full flex-col justify-center px-5 pt-4 pb-5 sm:px-8 lg:pt-[96px] lg:pr-10 lg:pb-8 lg:pl-[max(2rem,calc((100vw-var(--page))/2+3rem))]">
-        <h1 className="display text-[clamp(38px,10.6vw,58px)] !leading-[0.92] lg:text-[clamp(62px,6vw,108px)]">
+        <h1 className="display text-[clamp(2.375rem,10.6vw,3.625rem)] !leading-[0.92] lg:text-[clamp(3.875rem,6vw,6.75rem)]">
           <span className="block">Авто из Кореи</span>{" "}
           <span className="block">
             до <span className="text-accent">30%</span> дешевле
@@ -24,14 +25,14 @@ export function Hero() {
           <span className="block">рынка РФ.</span>
         </h1>
 
-        <p className="hero-lead lead mt-3 !max-w-[40ch] max-sm:!text-[15.5px] max-sm:!leading-snug lg:mt-6 lg:text-[18px]">
-          Без посредников и наценок — напрямую от корейской экспортной компании. Подбираем, проверяем и привозим под ключ со всеми документами и полной страховкой.
+        <p className="hero-lead lead mt-3 !max-w-[40ch] max-sm:!text-ui max-sm:!leading-body lg:mt-6 lg:text-lead">
+          {nb("Без посредников и наценок — напрямую от корейской экспортной компании. Подбираем, проверяем и привозим под ключ со всеми документами и полной страховкой.")}
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-3 lg:mt-8">
           <a href="#lead-form" className="btn btn-primary">
             Подобрать машину
-            <ArrowRight className="size-[18px]" strokeWidth={2} />
+            <ArrowRight className="size-[18px]" strokeWidth={2.5} nonScalingStroke />
           </a>
         </div>
 
@@ -44,9 +45,9 @@ export function Hero() {
             >
               <div className="flex items-center gap-2 lg:gap-2.5">
                 <NjIcon name={a.icon} className="size-5 shrink-0 sm:size-6 lg:size-7" />
-                <p className="font-display text-[14.5px] leading-[1.05] tracking-wide uppercase sm:text-[19px] lg:text-[clamp(20px,1.6vw,28px)]">{a.v}</p>
+                <p className="font-display text-small leading-[1.05] tracking-title uppercase sm:text-card lg:text-[clamp(1.25rem,1.6vw,1.75rem)]">{a.v}</p>
               </div>
-              <p className="mt-1 text-[12px] leading-[1.28] opacity-85 sm:text-[14px] lg:mt-1.5 lg:text-[15px]">{a.t}</p>
+              <p className="hero-note mt-1 text-[0.75rem] leading-[1.28] sm:text-small sm:leading-[1.4] lg:mt-1.5 lg:text-ui">{a.t}</p>
             </li>
           ))}
         </ul>

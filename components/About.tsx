@@ -1,4 +1,5 @@
 import { SITE, telHref } from "@/lib/site";
+import { nb } from "@/lib/typo";
 import { NjIcon } from "./NjIcon";
 import { Reveal, SectionHead } from "./ui";
 
@@ -20,21 +21,19 @@ export function About() {
             title="О нас"
             lead="NJ Motors Korea — прямой экспортёр автомобилей из Южной Кореи. Находимся непосредственно в Корее, в городе Инчхон."
           />
-          <Reveal className="mt-6 grid max-w-[60ch] gap-4 text-[17px] leading-relaxed text-ink-2">
+          <Reveal className="mt-6 grid max-w-[60ch] gap-4 text-body-lg leading-relaxed text-ink-2">
             <p>
-              Возим автомобили без посредников и переплат, курируем весь процесс «под ключ» — от брони до постановки автомобиля на учёт. Доставляем
-              автомобили в любой город РФ.
+              {nb("Возим автомобили без посредников и переплат, курируем весь процесс «под ключ» — от брони до постановки автомобиля на учёт. Доставляем автомобили в любой город РФ.")}
             </p>
             <p>
-              Работаем с физическими и юридическими лицами. Предоставляем комфортные условия сотрудничества для компаний и тех, кто занимается
-              привозом автомобилей под заказ.
+              {nb("Работаем с физическими и юридическими лицами. Предоставляем комфортные условия сотрудничества для компаний и тех, кто занимается привозом автомобилей под заказ.")}
             </p>
           </Reveal>
           <Reveal className="mt-8">
             <p className="label">Представительства в России</p>
             <ul className="mt-3 flex flex-wrap gap-2">
               {CITIES.map((c) => (
-                <li key={c} className="rounded-full bg-surface px-4 py-2 text-[16px] font-bold text-ink">
+                <li key={c} className="rounded-full bg-surface px-4 py-2 text-body font-bold text-ink">
                   {c}
                 </li>
               ))}
@@ -48,8 +47,8 @@ export function About() {
               <li key={p.k} className="flex gap-4">
                 <NjIcon name="pin" className="mt-0.5 size-7 shrink-0" />
                 <div>
-                  <p className="text-[15px] font-bold opacity-70">{p.k}</p>
-                  <p className="mt-0.5 text-[17px] leading-snug font-bold">{p.v}</p>
+                  <p className="text-ui font-bold opacity-70">{p.k}</p>
+                  <p className="mt-0.5 text-body-lg leading-snug font-bold">{p.v}</p>
                 </div>
               </li>
             ))}
@@ -57,8 +56,8 @@ export function About() {
               <li className="flex gap-4">
                 <NjIcon name="phone" className="mt-0.5 size-7 shrink-0" />
                 <div>
-                  <p className="text-[15px] font-bold opacity-70">Телефон для связи</p>
-                  <a href={telHref(phone)} className="mt-0.5 block text-[22px] leading-snug font-bold hover:underline">
+                  <p className="text-ui font-bold opacity-70">Телефон для связи</p>
+                  <a href={telHref(phone)} className="relative mt-0.5 block text-title leading-snug font-bold before:absolute before:inset-x-0 before:-inset-y-[7px] underline-offset-4 hover:underline">
                     {phone}
                   </a>
                 </div>
@@ -67,8 +66,8 @@ export function About() {
             <li className="flex gap-4">
               <NjIcon name="clock" className="mt-0.5 size-7 shrink-0" />
               <div>
-                <p className="text-[15px] font-bold opacity-70">Время в Корее</p>
-                <p className="mt-0.5 text-[17px] leading-snug font-bold">+6 часов от Москвы</p>
+                <p className="text-ui font-bold opacity-70">Время в Корее</p>
+                <p className="mt-0.5 text-body-lg leading-snug font-bold">+6 часов от Москвы</p>
               </div>
             </li>
           </ul>

@@ -2,7 +2,7 @@
 
 import { Pointer } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { EASE_CSS as EASE } from "@/lib/motion";
 import { finish as partDone, progress } from "@/lib/loading";
@@ -52,7 +52,13 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
   const film = useTransform(pageY, (v) => at(v, FILM_FROM, FILM));
   // the film never just stops: when the clip is over the camera keeps creeping in, and the picture settles into
   // shade as the catalog rises over it (scroll-linked, so linear: the scroll is the easing)
-  const push = useTransform(pageY, (v) => `scale(${1 + 0.14 * at(v, FILM_FROM + FILM - 0.15, 1.5)})`);
+  // reduced motion: no camera push (read after mount, so the server and the first client render agree)
+  const [calm, setCalm] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCalm(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+  const push = useTransform(pageY, (v) => (calm ? "none" : `scale(${1 + 0.14 * at(v, FILM_FROM + FILM - 0.15, 1.5)})`));
   const shade = useTransform(pageY, (v) => 0.6 * at(v, FILM_FROM + FILM - 0.1, 1.1));
   const stage = useRef<HTMLDivElement>(null);
   const slot = useRef<HTMLDivElement>(null);
@@ -503,8 +509,8 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         </svg>
         {/* the words are drawn by CSS (content), so search engines never take "loading 0%" for the page's text */}
         <p aria-hidden className="absolute inset-x-0 bottom-[max(3svh,20px)] flex flex-col items-center gap-1 text-ink">
-          <span className="loader-label text-[16px] font-semibold text-ink" />
-          <span ref={percent} data-p="0%" className="loader-pct num text-[clamp(30px,4vw,44px)] leading-none" />
+          <span className="loader-label text-body font-semibold text-ink" />
+          <span ref={percent} data-p="0%" className="loader-pct num text-[clamp(1.875rem,4vw,2.75rem)] leading-none" />
         </p>
       </div>
 
@@ -516,13 +522,13 @@ export function SplitHero({ children }: { children: React.ReactNode }) {
         className="intro-hint fixed bottom-6 left-1/2 z-[56] flex -translate-x-1/2 cursor-pointer flex-col items-center gap-2 rounded-[10px] bg-[var(--bg)]/85 px-5 py-3 text-ink transition-opacity duration-500"
       >
         {/* mouse: the wheel; touch screens: a finger swiping up */}
-        <span aria-hidden className="hint-label text-[16px] font-bold" />
+        <span aria-hidden className="hint-label text-body font-bold" />
         <span aria-hidden className="intro-hint-mouse relative block h-9 w-6 rounded-full border-2 border-current pointer-coarse:hidden">
           <i className="absolute top-1.5 left-1/2 block h-2 w-[3px] -translate-x-1/2 rounded-full bg-accent" />
         </span>
         <span aria-hidden className="intro-hint-swipe relative hidden h-11 w-8 pointer-coarse:block">
           <i className="absolute top-0 left-1/2 block h-full w-[3px] -translate-x-1/2 rounded-full bg-current opacity-25" />
-          <Pointer className="intro-hint-finger absolute bottom-0 left-1/2 size-7 -translate-x-1/2 text-accent" strokeWidth={2.2} />
+          <Pointer className="intro-hint-finger absolute bottom-0 left-1/2 size-7 -translate-x-1/2 text-accent" strokeWidth={2.5} nonScalingStroke />
         </span>
       </button>
     </>

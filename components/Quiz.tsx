@@ -31,8 +31,8 @@ export function Quiz() {
   return (
     <div className="plate p-6 sm:p-8">
       <div className="flex items-center justify-between gap-4">
-        <p className="font-display text-[clamp(22px,2.2vw,30px)] leading-tight tracking-wide uppercase">Подберём под вашу задачу</p>
-        <p className="num shrink-0 text-[15px] text-ink-3" aria-live="polite">
+        <p className="font-display text-[clamp(1.375rem,2.2vw,1.875rem)] leading-tight tracking-title uppercase">Подберём под вашу задачу</p>
+        <p className="num shrink-0 text-ui text-ink-3" aria-live="polite">
           {done ? "Готово" : `${step + 1} из ${QUIZ.length}`}
         </p>
       </div>
@@ -53,13 +53,13 @@ export function Quiz() {
         >
           {done ? (
             <>
-              <p className="text-[18px] leading-snug font-bold text-ink">Напишите нам — пришлём 2–3 варианта под ваш бюджет с расчётом под ключ.</p>
+              <p className="text-lead leading-snug font-bold text-ink">Напишите нам — пришлём 2–3 варианта под ваш бюджет с расчётом под ключ.</p>
               <WriteUs className="mt-5" text={["Здравствуйте! Подберите, пожалуйста, машину из Кореи.", ...said].join("\n")} />
             </>
           ) : (
             <div role="radiogroup" aria-label={q.q}>
-              <p className="text-[18px] font-bold text-ink">{q.q}</p>
-              {q.hint && <p className="mt-1 text-[15px] text-ink-3">{q.hint}</p>}
+              <p className="text-lead font-bold text-ink">{q.q}</p>
+              {q.hint && <p className="mt-1 text-ui text-ink-3">{q.hint}</p>}
               <div className="mt-4 flex flex-wrap gap-2">
                 {q.options.map((o) => (
                   <button
@@ -68,7 +68,7 @@ export function Quiz() {
                     role="radio"
                     aria-checked={answers[q.key] === o}
                     onClick={() => pick(o)}
-                    className="min-h-11 cursor-pointer rounded-full border border-line-strong px-4 text-[16px] font-bold text-ink-2 transition-[color,background-color,border-color] duration-150 hover:border-accent hover:text-ink aria-checked:border-accent aria-checked:bg-accent-soft aria-checked:text-ink"
+                    className="min-h-11 cursor-pointer rounded-full border border-line-strong px-4 text-body font-bold text-ink-2 transition-[color,background-color,border-color,scale] duration-150 ease-out hover:border-accent hover:text-ink aria-checked:border-accent aria-checked:bg-accent-soft aria-checked:text-ink"
                   >
                     {o}
                   </button>
@@ -80,8 +80,8 @@ export function Quiz() {
       </AnimatePresence>
 
       {step > 0 && (
-        <button type="button" onClick={() => setStep((s) => s - 1)} className="mt-5 inline-flex min-h-11 cursor-pointer items-center gap-2 text-[15px] font-bold text-ink-2 hover:text-ink">
-          <ArrowLeft className="size-4" strokeWidth={2} />
+        <button type="button" onClick={() => setStep((s) => s - 1)} className="mt-5 inline-flex min-h-11 cursor-pointer items-center gap-2 text-ui font-bold text-ink-2 hover:text-ink">
+          <ArrowLeft className="size-4" strokeWidth={2.5} nonScalingStroke />
           Назад
         </button>
       )}

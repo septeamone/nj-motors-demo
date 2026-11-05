@@ -4,6 +4,7 @@ import { ArrowUpRight, Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { SITE, telHref, vkChat } from "@/lib/site";
 import { BRAND, BrandIcon, type Brand } from "./BrandIcon";
+import { IconSwap } from "./IconSwap";
 
 // each button wears its own brand colour
 const brandStyle = (b: Brand) => ({ "--b": BRAND[b].color, "--bf": BRAND[b].fill }) as React.CSSProperties;
@@ -80,14 +81,16 @@ export function WriteUs({ text, className = "" }: { text?: string; className?: s
             <button
               type="button"
               onClick={async () => setNote((await copyText(text)) ? "copied" : "")}
-              className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 text-[14px] font-bold text-ink-2 hover:text-ink"
+              className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 text-small font-bold text-ink-2 hover:text-ink"
             >
-              {note === "copied" ? <Check className="size-4 text-[var(--ok)]" strokeWidth={2.4} /> : <Copy className="size-4" strokeWidth={2} />}
+              <IconSwap id={note === "copied" ? "copied" : "copy"}>
+                {note === "copied" ? <Check className="size-4 text-[var(--ok)]" strokeWidth={2.5} nonScalingStroke /> : <Copy className="size-4" strokeWidth={2.5} nonScalingStroke />}
+              </IconSwap>
               {note === "copied" ? "Скопировано" : "Скопировать"}
             </button>
           </div>
           {/* the message as a chat bubble: what the visitor is about to send */}
-          <p className="mt-2 rounded-[14px] rounded-bl-[4px] bg-surface-2 px-4 py-3 text-[15px] leading-snug whitespace-pre-line text-ink">{text}</p>
+          <p className="mt-2 rounded-[14px] rounded-bl-[4px] bg-surface-2 px-4 py-3 text-ui leading-body whitespace-pre-line text-ink">{text}</p>
         </div>
       )}
       <ul className="grid grid-cols-2 gap-2.5 sm:gap-3">
@@ -99,22 +102,22 @@ export function WriteUs({ text, className = "" }: { text?: string; className?: s
               rel={l.brand === "call" ? undefined : "noopener noreferrer"}
               onClick={(e) => open(e, l)}
               style={brandStyle(l.brand)}
-              className={`group flex min-h-14 items-center justify-center gap-2.5 rounded-full px-4 text-[16px] font-bold text-white transition-transform duration-150 [background:var(--bf)] hover:-translate-y-0.5 sm:text-[17px] ${
+              className={`group flex min-h-14 items-center justify-center gap-2.5 rounded-full px-4 text-body font-bold text-white transition-transform duration-150 [background:var(--bf)] hover:-translate-y-0.5 sm:text-body-lg ${
                 l.brand === "tiktok" ? "shadow-[-2px_-2px_0_#25F4EE,2px_2px_0_#FE2C55]" : ""
               }`}
             >
               <BrandIcon brand={l.brand} tone={l.brand === "tiktok" ? "brand" : "current"} className="size-[22px] shrink-0" />
               {l.label}
-              <ArrowUpRight className="hidden size-4 shrink-0 opacity-70 transition-opacity group-hover:opacity-100 sm:block" strokeWidth={2.2} />
+              <ArrowUpRight className="hidden size-4 shrink-0 opacity-70 transition-opacity group-hover:opacity-100 sm:block" strokeWidth={2.5} nonScalingStroke />
             </a>
           </li>
         ))}
       </ul>
       {/* said only after a tap on VK, MAX or TikTok, when the text waits on the clipboard */}
-      <p aria-live="polite" className="mt-3 min-h-0 text-[15px] leading-snug font-bold text-ink empty:hidden">
+      <p aria-live="polite" className="mt-3 min-h-0 text-ui leading-snug font-bold text-ink empty:hidden">
         {note === "paste" && (
           <span className="inline-flex items-start gap-1.5">
-            <Check className="mt-0.5 size-4 shrink-0 text-[var(--ok)]" strokeWidth={2.4} />
+            <Check className="mt-0.5 size-4 shrink-0 text-[var(--ok)]" strokeWidth={2.5} nonScalingStroke />
             Текст скопирован. В чате зажмите поле ввода и нажмите «Вставить».
           </span>
         )}

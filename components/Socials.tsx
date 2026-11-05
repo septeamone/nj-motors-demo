@@ -24,10 +24,10 @@ export function Socials() {
         {/* wide screens: one panel, the phone rising out of it above and below, so the height is the phone's, not empty space */}
         <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,330px)] lg:gap-12 lg:rounded-[18px] lg:bg-surface lg:py-12 lg:pr-12 lg:pl-14 xl:grid-cols-[minmax(0,1fr)_minmax(0,350px)] xl:gap-16 xl:pl-16">
           <Reveal>
-            <div className="flex flex-col gap-5 rounded-[8px] bg-surface p-5 sm:p-7 lg:gap-8 lg:rounded-none lg:bg-transparent lg:p-0">
+            <div className="flex flex-col gap-5 rounded-[10px] bg-surface p-5 sm:p-7 lg:gap-8 lg:rounded-none lg:bg-transparent lg:p-0">
               <div>
-                <p className="font-display text-[clamp(22px,3vw,48px)] leading-[1.02] tracking-wide text-ink uppercase">Мы в соцсетях</p>
-                <p className="mt-1.5 max-w-[46ch] text-[16px] leading-snug text-ink-2 lg:mt-3 lg:text-[19px]">Ещё больше вариантов с ценами, этапы и процессы работы.</p>
+                <h2 className="h2 text-ink">Мы в соцсетях</h2>
+                <p className="mt-1.5 max-w-[46ch] text-body leading-body text-ink-2 lg:mt-3 lg:text-lead">Ещё больше вариантов с ценами, этапы и процессы работы.</p>
               </div>
               <ul className="grid grid-cols-3 gap-2.5 sm:gap-3 xl:grid-cols-5">
                 {links.map((l) => (
@@ -37,7 +37,7 @@ export function Socials() {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ background: BRAND[l.brand].fill }}
-                      className={`flex min-h-[84px] flex-col items-center justify-center gap-1.5 rounded-[14px] px-2 py-3 text-[15px] font-bold text-white transition-transform duration-150 hover:-translate-y-0.5 lg:min-h-[112px] lg:gap-2.5 lg:rounded-[16px] lg:text-[17px] ${
+                      className={`flex min-h-[84px] flex-col items-center justify-center gap-1.5 rounded-[6px] px-2 py-3 text-ui font-bold text-white transition-transform duration-150 hover:-translate-y-0.5 lg:min-h-[112px] lg:gap-2.5 lg:rounded-[16px] lg:text-body-lg ${
                         l.brand === "tiktok" ? "shadow-[-2px_-2px_0_#25F4EE,2px_2px_0_#FE2C55]" : ""
                       }`}
                     >

@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Maximize, Minimize, Pause, Play, SkipBack, S
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { useNear, useVideoSrc } from "@/lib/video";
+import { IconSwap } from "./IconSwap";
 import { Reveal, SectionHead } from "./ui";
 
 // Videos compressed from the owner's originals (public/reviews).
@@ -88,10 +89,10 @@ function Rail({ label, hint, shelf, listRef, children }: { label: string; hint: 
         {more && (
           <span className="flex gap-1.5">
             <button type="button" aria-label="Назад" onClick={() => slide(-1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent pointer-coarse:size-11">
-              <ChevronLeft className="size-4" strokeWidth={2} />
+              <ChevronLeft className="size-4" strokeWidth={2} nonScalingStroke />
             </button>
             <button type="button" aria-label="Вперёд" onClick={() => slide(1)} className="grid size-8 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-accent pointer-coarse:size-11">
-              <ChevronRight className="size-4" strokeWidth={2} />
+              <ChevronRight className="size-4" strokeWidth={2} nonScalingStroke />
             </button>
           </span>
         )}
@@ -340,7 +341,7 @@ export function Reviews() {
                       type="button"
                       aria-label={`Видео ${n + 1}: ${it.title}`}
                       onClick={() => go(n)}
-                      className="pointer-events-auto h-5 flex-1 cursor-pointer py-2 pointer-coarse:h-11 pointer-coarse:pt-2 pointer-coarse:pb-[22px]"
+                      className="pointer-events-auto relative h-5 flex-1 cursor-pointer py-2 before:absolute before:inset-x-0 before:-top-3 before:-bottom-3 pointer-coarse:h-11 pointer-coarse:before:hidden pointer-coarse:pt-2 pointer-coarse:pb-[22px]"
                     >
                       <span className="block h-[3px] overflow-hidden rounded-full bg-white/30">
                         <span ref={(el) => { segs.current[n] = el; }} className="block h-full origin-left bg-white" style={{ transform: `scaleX(${n < i ? 1 : 0})` }} />
@@ -354,9 +355,9 @@ export function Reviews() {
                   <button
                     type="button"
                     onClick={() => setLevel(volume || 1)}
-                    className="absolute top-12 left-3 inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent-fill px-4 py-2.5 text-[15px] font-bold text-white shadow-lg"
+                    className="absolute top-12 left-3 inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent-fill px-4 py-2.5 text-ui font-bold text-white shadow-lg"
                   >
-                    <VolumeX className="size-[18px]" strokeWidth={2} />
+                    <VolumeX className="size-[18px]" strokeWidth={2.5} nonScalingStroke />
                     Включить звук
                   </button>
                 )}
@@ -369,16 +370,16 @@ export function Reviews() {
                     onClick={toggle}
                     className="absolute top-1/2 left-1/2 grid size-20 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-accent-fill text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-transform hover:scale-105"
                   >
-                    <Play className="ml-1 size-8" strokeWidth={2} fill="currentColor" />
+                    <Play className="ml-1 size-8" strokeWidth={2} nonScalingStroke fill="currentColor" />
                   </button>
                 )}
                 {waiting && playing && <span aria-hidden className="absolute top-1/2 left-1/2 size-12 -translate-x-1/2 -translate-y-1/2 animate-spin rounded-full border-[3px] border-white/30 border-t-white" />}
 
                 {/* controls */}
                 <div className="absolute inset-x-0 bottom-0 flex flex-col gap-2 px-3 pt-10 pb-3 [background:linear-gradient(0deg,rgba(0,0,0,0.75),transparent)]">
-                  <p className="px-1 text-[16px] leading-tight font-bold text-white">
+                  <p className="px-1 text-body leading-tight font-bold text-white">
                     {cur.title}
-                    {cur.sub && <span className="block text-[14px] font-medium text-white/75">{cur.sub}</span>}
+                    {cur.sub && <span className="block text-small leading-tight font-medium text-white/75">{cur.sub}</span>}
                   </p>
                   <div
                     role="slider"
@@ -394,27 +395,31 @@ export function Reviews() {
                     onPointerMove={(e) => e.currentTarget.hasPointerCapture(e.pointerId) && seek(e.clientX, e.currentTarget)}
                     className="group/bar cursor-pointer touch-none py-2 pointer-coarse:py-3.5"
                   >
-                    <div className="h-[5px] overflow-hidden rounded-full bg-white/30 transition-[height] group-hover/bar:h-[7px]">
+                    <div className="h-[5px] overflow-hidden rounded-full bg-white/30 transition-[scale] duration-150 ease-out group-hover/bar:scale-y-[1.4]">
                       <div ref={bar} className="h-full origin-left bg-accent" style={{ transform: "scaleX(0)" }} />
                     </div>
                   </div>
                   <div className="flex items-center gap-1 text-white">
                     <button type="button" aria-label="Предыдущее видео" onClick={() => go(i - 1)} className="vp-btn">
-                      <SkipBack className="size-5" strokeWidth={2} />
+                      <SkipBack className="size-5" strokeWidth={2} nonScalingStroke />
                     </button>
                     <button type="button" aria-label={playing ? "Пауза" : "Играть"} onClick={toggle} className="vp-btn">
-                      {playing ? <Pause className="size-5" strokeWidth={2} /> : <Play className="size-5" strokeWidth={2} />}
+                      <IconSwap id={playing ? "pause" : "play"}>{playing ? <Pause className="size-5" strokeWidth={2} nonScalingStroke /> : <Play className="size-5 translate-x-px" strokeWidth={2} nonScalingStroke />}</IconSwap>
                     </button>
                     <button type="button" aria-label="Следующее видео" onClick={() => go(i + 1)} className="vp-btn">
-                      <SkipForward className="size-5" strokeWidth={2} />
+                      <SkipForward className="size-5" strokeWidth={2} nonScalingStroke />
                     </button>
                     <span className="flex-1" />
                     <div className="flex items-center gap-1">
                       <button type="button" aria-label={muted || volume === 0 ? "Включить звук" : "Выключить звук"} onClick={toggleMute} className="vp-btn">
                         {(() => {
                           const lvl = muted ? 0 : volume;
-                          const Icon = lvl === 0 ? VolumeX : lvl < 0.5 ? Volume1 : Volume2;
-                          return <Icon className="size-5" strokeWidth={2} />;
+                          const [key, Icon] = lvl === 0 ? ["off", VolumeX] as const : lvl < 0.5 ? ["low", Volume1] as const : ["high", Volume2] as const;
+                          return (
+                            <IconSwap id={key}>
+                              <Icon className="size-5" strokeWidth={2} nonScalingStroke />
+                            </IconSwap>
+                          );
                         })()}
                       </button>
                       <input
@@ -430,7 +435,7 @@ export function Reviews() {
                       />
                     </div>
                     <button type="button" aria-label={fs ? "Выйти из полноэкранного режима" : "Во весь экран"} onClick={fullscreen} className="vp-btn">
-                      {fs ? <Minimize className="size-5" strokeWidth={2} /> : <Maximize className="size-5" strokeWidth={2} />}
+                      {fs ? <Minimize className="size-5" strokeWidth={2} nonScalingStroke /> : <Maximize className="size-5" strokeWidth={2} nonScalingStroke />}
                     </button>
                   </div>
                 </div>
@@ -451,20 +456,21 @@ export function Reviews() {
                       type="button"
                       onClick={() => go(n)}
                       aria-current={on}
-                      className={`flex size-full cursor-pointer items-center gap-3 rounded-[10px] border p-2.5 text-left transition-colors ${
+                      className={`flex size-full cursor-pointer items-center gap-3 rounded-[15px] border p-2.5 text-left transition-colors ${
                         on ? "border-accent bg-accent-soft" : "border-line-strong hover:border-ink-3"
                       }`}
                     >
-                      <span className="relative aspect-[3/4] w-[48px] shrink-0 overflow-hidden rounded-[6px] bg-black sm:w-[64px]">
+                      <span className="relative aspect-[3/4] w-[48px] shrink-0 overflow-hidden rounded-[4px] bg-black sm:w-[64px]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={asset(`/reviews/${it.id}-poster.webp`)} alt="" loading="lazy" className="size-full object-cover" />
                         <span aria-hidden className="absolute inset-0 grid place-items-center bg-black/25">
                           {on ? <Bars on={playing} /> : <Play className="size-5 text-white" fill="currentColor" strokeWidth={0} />}
                         </span>
+                        <span aria-hidden className="img-edge pointer-events-none absolute inset-0 rounded-[inherit]" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-[16px] leading-tight font-bold text-ink">{it.title}</span>
-                        {it.sub && <span className="mt-0.5 line-clamp-2 block text-[14px] text-ink-2 max-sm:line-clamp-1">{it.sub}</span>}
+                        <span className="block text-body leading-tight font-bold text-ink">{it.title}</span>
+                        {it.sub && <span className="mt-0.5 line-clamp-2 block text-small text-ink-2 max-sm:line-clamp-1">{it.sub}</span>}
                       </span>
                     </button>
                   </div>
@@ -480,11 +486,12 @@ export function Reviews() {
                       type="button"
                       onClick={() => setPhoto(n)}
                       aria-label={`Открыть фото: ${p.title}`}
-                      className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-[8px] border border-line-strong bg-bg-2 outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-[8px] bg-bg-2 outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={p.tile} alt={p.alt} loading="lazy" className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
-                      <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2.5 pt-6 pb-1.5 text-[13px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{p.title}</span>
+                      <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2.5 pt-6 pb-1.5 text-caption font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">{p.title}</span>
+                      <span aria-hidden className="img-edge pointer-events-none absolute inset-0 rounded-[inherit]" />
                     </button>
                   </div>
                 ))}
@@ -511,25 +518,25 @@ export function Reviews() {
             {photo !== null && (
               <figure className="relative flex max-h-full max-w-full flex-col items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={PHOTOS[photo].full} alt={PHOTOS[photo].alt} className="max-h-[80svh] max-w-[94vw] rounded-[10px] object-contain shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)]" />
+                <img src={PHOTOS[photo].full} alt={PHOTOS[photo].alt} className="max-h-[80svh] max-w-[94vw] rounded-[10px] object-contain outline outline-1 -outline-offset-1 outline-white/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)]" />
                 <figcaption className="flex items-center gap-4 text-white">
                   <button type="button" aria-label="Предыдущее фото" onClick={() => setPhoto((photo + PHOTOS.length - 1) % PHOTOS.length)} className="vp-btn">
-                    <ChevronLeft className="size-6" strokeWidth={2} />
+                    <ChevronLeft className="size-6" strokeWidth={2} nonScalingStroke />
                   </button>
                   <span className="text-center">
-                    <span className="font-display block text-[20px] tracking-wide uppercase">{PHOTOS[photo].title}</span>
-                    <span className="num text-[14px] opacity-75">
+                    <span className="font-display block text-card tracking-title uppercase">{PHOTOS[photo].title}</span>
+                    <span className="num text-small opacity-75">
                       {photo + 1} / {PHOTOS.length}
                     </span>
                   </span>
                   <button type="button" aria-label="Следующее фото" onClick={() => setPhoto((photo + 1) % PHOTOS.length)} className="vp-btn">
-                    <ChevronRight className="size-6" strokeWidth={2} />
+                    <ChevronRight className="size-6" strokeWidth={2} nonScalingStroke />
                   </button>
                 </figcaption>
               </figure>
             )}
             <Dialog.Close aria-label="Закрыть" className="absolute top-3 right-3 z-[102] grid size-11 cursor-pointer place-items-center rounded-full bg-black/60 text-white transition-colors hover:bg-accent-fill sm:top-5 sm:right-5">
-              <X className="size-5" strokeWidth={2} />
+              <X className="size-5" strokeWidth={2} nonScalingStroke />
             </Dialog.Close>
           </Dialog.Content>
         </Dialog.Portal>
