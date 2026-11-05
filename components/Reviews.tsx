@@ -45,7 +45,8 @@ function Bars({ on }: { on: boolean }) {
 
 type Shelf = { rows: number; cols: number; show?: number };
 // how many rows and columns each shelf shows at a given screen width (show: columns' worth of width, a little more than cols peeks the next page)
-const VIDEO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 1, cols: 1, show: 1.4 } : { rows: w < 1024 ? 1 : 2, cols: 2 });
+// 1024–1279: the column next to the player is too narrow for two cards side by side, so one column of three
+const VIDEO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 1, cols: 1, show: 1.4 } : w < 1024 ? { rows: 1, cols: 2 } : w < 1280 ? { rows: 3, cols: 1 } : { rows: 2, cols: 2 });
 const PHOTO_SHELF = (w: number): Shelf => (w < 640 ? { rows: 1, cols: 2, show: 2.4 } : w < 1024 ? { rows: 2, cols: 3 } : { rows: 2, cols: 5 });
 
 /**

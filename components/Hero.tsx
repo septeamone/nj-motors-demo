@@ -16,7 +16,7 @@ const ADVANTAGES: { v: string; t: string; icon: IconName }[] = [
 export function Hero() {
   return (
     <SplitHero>
-      <div className="flex h-full flex-col justify-center px-5 pt-4 pb-5 sm:px-8 lg:pt-[96px] lg:pr-10 lg:pb-8 lg:pl-[max(2rem,calc((100vw-var(--page))/2+3rem))]">
+      <div className="hero-body flex h-full flex-col justify-center px-5 pt-4 pb-5 sm:px-8 lg:pt-[96px] lg:pr-10 lg:pb-8 lg:pl-[max(2rem,calc((100vw-var(--page))/2+3rem))]">
         <h1 className="display text-[clamp(2.375rem,10.6vw,3.625rem)] !leading-[0.92] lg:text-[clamp(3.875rem,6vw,6.75rem)]">
           <span className="block">Авто из Кореи</span>{" "}
           <span className="block">
