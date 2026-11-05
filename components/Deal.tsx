@@ -333,6 +333,27 @@ function Swipe() {
   );
 }
 
+/** Phones and tablets: "Этапы оплаты" as a plain numbered list under the swiped steps. */
+function Stages() {
+  return (
+    <div className="mt-10 lg:hidden">
+      <h3 className="font-display text-[clamp(26px,6vw,34px)] leading-none tracking-wide uppercase">Этапы оплаты</h3>
+      <p className="mt-2 text-[17px] leading-snug text-ink-2">Все платежи официальные на имя покупателя.</p>
+      <ol className="mt-5 grid gap-2.5">
+        {DEAL_STAGES.map((d, k) => (
+          <li key={d.pay} className="flex gap-4 rounded-[10px] bg-surface px-4 py-4">
+            <span className="num grid size-9 shrink-0 place-items-center rounded-full bg-[var(--accent-fill)] text-[16px] text-white">{k + 1}</span>
+            <div className="min-w-0">
+              <p className="text-[17px] leading-snug font-bold text-ink">{d.pay}</p>
+              <p className="mt-1 text-[15px] leading-snug text-ink-2">{d.when}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 export function Deal() {
   // read after mount, so the server and the first client render agree
   const [calm, setCalm] = useState(false);
@@ -343,6 +364,7 @@ export function Deal() {
   return (
     <>
       <Swipe />
+      <Stages />
       {calm ? <List className="hidden lg:flex" /> : <Scene />}
     </>
   );

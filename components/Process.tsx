@@ -121,11 +121,7 @@ export function Process() {
             ))}
           </Reveal>
           <Reveal className="mt-3 rounded-[10px] bg-surface p-5 sm:p-7 lg:mt-4 lg:p-9">
-            <div className="flex items-center gap-4">
-              <NjIcon name="contract" className="size-10 shrink-0 text-ink" />
-              <p className="font-display text-[clamp(22px,2.2vw,30px)] leading-tight tracking-wide uppercase">Документы на ваше имя</p>
-            </div>
-            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:gap-3">
+            <ul className="grid gap-2.5 sm:grid-cols-2 lg:gap-3">
               {DOCS.map((d) => (
                 <li key={d} className="flex items-start gap-3 rounded-[8px] bg-surface-2 px-4 py-3.5 text-[16px] leading-snug font-bold text-ink">
                   <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2 border-[var(--accent-fill)] text-accent-ink">
