@@ -1,7 +1,7 @@
 "use client";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, MessageSquareText, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Pause, Play, Pointer, Volume1, Volume2, VolumeX, X } from "lucide-react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
 import { clock, PHOTOS, splitTitle, VIDEOS } from "@/lib/reviews";
@@ -12,35 +12,55 @@ import { Reveal, SectionHead } from "./ui";
 const N = VIDEOS.length;
 
 // every page of the photo viewer: a client's photo, and their written review right after it when there is one
-const SLIDES = PHOTOS.flatMap((p, k) => [
-  { item: k, src: asset(`/clients/${p.id}-full.webp`), alt: p.alt },
-  ...(p.text ? [{ item: k, src: asset(`/clients/${p.text.id}-full.webp`), alt: p.text.alt }] : []),
-]);
+const SLIDES = PHOTOS.flatMap((p, k) => {
+  const pages = [{ src: asset(`/clients/${p.id}-full.webp`), alt: p.alt }, ...(p.text ? [{ src: asset(`/clients/${p.text.id}-full.webp`), alt: p.text.alt }] : [])];
+  return pages.map((pg, page) => ({ ...pg, item: k, page, pages: pages.length }));
+});
 const firstSlide = (item: number) => SLIDES.findIndex((s) => s.item === item);
 
 const calmNow = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const saverNow = () => typeof navigator !== "undefined" && !!(navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData;
+const smooth = (): ScrollBehavior => (calmNow() ? "auto" : "smooth");
 
-/** A sideways swipe on touch screens: `on(+1)` for left (next), `on(-1)` for right (previous). */
-function useSwipe(on: (dir: 1 | -1) => void) {
-  const start = useRef<{ x: number; y: number } | null>(null);
-  return {
-    onPointerDown: (e: React.PointerEvent) => {
-      start.current = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY };
-    },
-    onPointerUp: (e: React.PointerEvent) => {
-      const s = start.current;
-      start.current = null;
-      if (!s) return;
-      const dx = e.clientX - s.x;
-      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(e.clientY - s.y) * 1.4) on(dx < 0 ? 1 : -1);
-    },
-    onPointerCancel: () => (start.current = null),
-  };
+/** A sideways strip with arrow buttons: which way it can still go, and a step of most of its width. */
+function useStrip<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [can, setCan] = useState({ prev: false, next: false });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => setCan({ prev: el.scrollLeft > 4, next: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 });
+    check();
+    el.addEventListener("scroll", check, { passive: true });
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", check);
+      ro.disconnect();
+    };
+  }, []);
+  const step = (dir: 1 | -1) => ref.current?.scrollBy({ left: dir * ref.current.clientWidth * 0.8, behavior: smooth() });
+  return { ref, can, step };
+}
+
+function Arrows({ can, step, label }: { can: { prev: boolean; next: boolean }; step: (dir: 1 | -1) => void; label: string }) {
+  if (!can.prev && !can.next) return null;
+  const cls =
+    "grid size-11 cursor-pointer place-items-center rounded-full border border-line-strong text-ink transition-[border-color,opacity,scale] duration-150 ease-out hover:border-accent active:scale-95 disabled:cursor-default disabled:opacity-30";
+  return (
+    <span className="flex gap-2">
+      <button type="button" aria-label={`${label}: назад`} disabled={!can.prev} onClick={() => step(-1)} className={cls}>
+        <ChevronLeft className="size-5" strokeWidth={2.5} nonScalingStroke />
+      </button>
+      <button type="button" aria-label={`${label}: дальше`} disabled={!can.next} onClick={() => step(1)} className={cls}>
+        <ChevronRight className="size-5" strokeWidth={2.5} nonScalingStroke />
+      </button>
+    </span>
+  );
 }
 
 /**
- * Client reviews, the way people watch them in Reels and TikTok: a row of upright covers (a strip to swipe on phones,
+ * Client reviews, the way people watch them in Reels and TikTok: a row of upright covers (a strip with arrows on phones,
  * the whole set as a grid on desktops), the cover in view plays a silent preview, and a tap opens the full-screen feed
  * where the videos play with sound and the next one is a swipe up. Photos and written reviews follow.
  */
@@ -49,10 +69,13 @@ export function Reviews() {
   const [slide, setSlide] = useState<number | null>(null);
   const [live, setLive] = useState<number | null>(null);
   const [previews, setPreviews] = useState(false);
-  const strip = useRef<HTMLUListElement>(null);
+  const vids = useStrip<HTMLUListElement>();
+  const pics = useStrip<HTMLUListElement>();
+  const strip = vids.ref;
   const near = useNear(strip);
   const pick = useVideoSrc();
   const close = useCallback(() => setOpen(null), []);
+  const closePhoto = useCallback(() => setSlide(null), []);
 
   // silent previews only where they cost nothing to the reader: not with reduced motion or data saver
   useEffect(() => {
@@ -79,23 +102,21 @@ export function Reviews() {
     );
     [...ul.children].forEach((li) => io.observe(li));
     return () => io.disconnect();
-  }, [previews]);
-
-  const shown = slide !== null ? SLIDES[slide] : null;
-  const turn = (d: number) => setSlide((s) => (s === null ? s : (s + d + SLIDES.length) % SLIDES.length));
-  const photoSwipe = useSwipe((dir) => turn(dir));
+  }, [previews, strip]);
 
   return (
     <section id="reviews" className="bg-bg-2 pt-9 pb-10 lg:pt-14 lg:pb-16">
       <div className="mx-auto max-w-[var(--page)] px-5 sm:px-8 lg:px-12 xl:px-20">
         <SectionHead title="Отзывы клиентов" lead="Видео от наших покупателей: как получили машину и как прошла сделка." />
 
-        <div className="mt-6 mb-3 flex items-baseline justify-between gap-3 lg:mt-10">
+        <div className="mt-6 mb-3 flex min-h-11 items-center justify-between gap-3 lg:mt-10">
           <p className="eyebrow">
             Видео
             <span className="num text-ink-3">{N}</span>
           </p>
-          <p className="text-small text-ink-3 lg:hidden">Листайте вбок</p>
+          <span className="lg:hidden">
+            <Arrows can={vids.can} step={vids.step} label="Видео" />
+          </span>
         </div>
 
         {/* lifted over the page's paper grain, so covers and previews stay clean */}
@@ -116,7 +137,7 @@ export function Reviews() {
                   onPointerEnter={(e) => e.pointerType === "mouse" && previews && setLive(n)}
                   onPointerLeave={(e) => e.pointerType === "mouse" && setLive((v) => (v === n ? null : v))}
                   aria-label={`Смотреть отзыв: ${it.title}${it.sub ? `, ${it.sub}` : ""}, ${clock(it.dur)}`}
-                  className="group/v relative block aspect-[9/16] w-full cursor-pointer lg:aspect-[3/4] overflow-hidden rounded-[12px] bg-black text-left outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="group/v relative block aspect-[9/16] w-full cursor-pointer overflow-hidden rounded-[12px] bg-black text-left outline-none focus-visible:ring-2 focus-visible:ring-accent lg:aspect-[3/4]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={asset(`/reviews/${it.id}-thumb.webp`)} alt="" loading="lazy" decoding="async" width={360} height={640} className="absolute inset-0 size-full object-cover transition-transform duration-500 ease-out group-hover/v:scale-[1.03]" />
@@ -139,11 +160,16 @@ export function Reviews() {
 
         {/* photos and written reviews of the clients */}
         <Reveal delay={0.08} className="mt-8 lg:mt-12">
-          <p className="eyebrow mb-3">
-            Фото и отзывы от клиентов
-            <span className="num text-ink-3">{PHOTOS.length}</span>
-          </p>
-          <ul data-lenis-prevent className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto overscroll-x-contain px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 xl:grid-cols-5">
+          <div className="mb-3 flex min-h-11 items-center justify-between gap-3">
+            <p className="eyebrow">
+              Фото и отзывы от клиентов
+              <span className="num text-ink-3">{PHOTOS.length}</span>
+            </p>
+            <span className="lg:hidden">
+              <Arrows can={pics.can} step={pics.step} label="Фото" />
+            </span>
+          </div>
+          <ul ref={pics.ref} data-lenis-prevent className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto overscroll-x-contain px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 xl:grid-cols-5">
             {PHOTOS.map((p, n) => (
               <li key={p.id} className="w-[64%] max-w-[260px] shrink-0 snap-start sm:w-[38%] lg:w-auto lg:max-w-none">
                 <button
@@ -154,12 +180,6 @@ export function Reviews() {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={asset(`/clients/${p.id}.webp`)} alt={p.alt} loading="lazy" decoding="async" style={{ objectPosition: p.focus }} className="size-full object-cover transition-transform duration-500 ease-out group-hover/p:scale-[1.04]" />
-                  {p.text && (
-                    <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-caption font-bold text-white">
-                      <MessageSquareText className="size-3.5" strokeWidth={2.5} nonScalingStroke />
-                      Отзыв
-                    </span>
-                  )}
                   <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pt-10 pb-2.5 text-white">
                     <span className="block text-ui leading-tight font-bold">{p.title}</span>
                     {p.sub && <span className="mt-0.5 block text-caption text-white/80">{p.sub}</span>}
@@ -173,75 +193,144 @@ export function Reviews() {
       </div>
 
       <Feed start={open} onClose={close} />
-
-      <Dialog.Root open={slide !== null} onOpenChange={(v) => !v && setSlide(null)}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="dlg-fade fixed inset-0 z-[100] bg-[rgba(4,12,20,0.94)]" />
-          <Dialog.Content
-            aria-describedby={undefined}
-            className="dlg-pop fixed inset-0 z-[101] grid place-items-center p-3 outline-none sm:p-6"
-            onClick={(e) => e.target === e.currentTarget && setSlide(null)}
-            onKeyDown={(e) => {
-              if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-              e.preventDefault();
-              turn(e.key === "ArrowRight" ? 1 : -1);
-            }}
-          >
-            <Dialog.Title className="sr-only">{shown ? PHOTOS[shown.item].title : ""}</Dialog.Title>
-            {shown && slide !== null && (
-              <figure className="relative flex max-h-full max-w-full flex-col items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  key={shown.src}
-                  src={shown.src}
-                  alt={shown.alt}
-                  {...photoSwipe}
-                  className="max-h-[78svh] max-w-[94vw] touch-pan-y rounded-[10px] object-contain outline outline-1 -outline-offset-1 outline-white/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] select-none"
-                  draggable={false}
-                />
-                <figcaption className="flex items-center gap-4 text-white">
-                  <button type="button" aria-label="Назад" onClick={() => turn(-1)} className="vp-btn">
-                    <ChevronLeft className="size-6" strokeWidth={2} nonScalingStroke />
-                  </button>
-                  <span className="min-w-0 text-center">
-                    <span className="block text-body leading-tight font-bold">{PHOTOS[shown.item].title}</span>
-                    <span className="block text-small text-white/75">
-                      {PHOTOS[shown.item].sub}
-                      <span className="num"> · {slide + 1} / {SLIDES.length}</span>
-                    </span>
-                  </span>
-                  <button type="button" aria-label="Дальше" onClick={() => turn(1)} className="vp-btn">
-                    <ChevronRight className="size-6" strokeWidth={2} nonScalingStroke />
-                  </button>
-                </figcaption>
-              </figure>
-            )}
-            <Dialog.Close aria-label="Закрыть" className="absolute top-3 right-3 z-[102] grid size-11 cursor-pointer place-items-center rounded-full bg-black/60 text-white transition-colors hover:bg-accent-fill sm:top-5 sm:right-5">
-              <X className="size-5" strokeWidth={2} nonScalingStroke />
-            </Dialog.Close>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <PhotoViewer start={slide} onClose={closePhoto} />
     </section>
   );
 }
 
 /**
+ * The photo viewer: every photo and written review on one sideways track. Native scroll snapping carries the swipe, so
+ * it follows the finger and settles softly; a client with a photo and a written review shows both, «1 из 2».
+ */
+function PhotoViewer({ start, onClose }: { start: number | null; onClose: () => void }) {
+  const open = start !== null;
+  const [at, setAt] = useState(0);
+  const track = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (start === null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAt(start);
+    const place = () => {
+      const t = track.current;
+      if (t) t.scrollLeft = start * t.clientWidth;
+      else requestAnimationFrame(place);
+    };
+    requestAnimationFrame(place);
+  }, [start]);
+
+  const go = (k: number) => {
+    const t = track.current;
+    if (t && k >= 0 && k < SLIDES.length) t.scrollTo({ left: k * t.clientWidth, behavior: smooth() });
+  };
+  const s = SLIDES[at];
+  const p = PHOTOS[s.item];
+
+  return (
+    <Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="dlg-fade fixed inset-0 z-[100] bg-[rgba(4,12,20,0.95)]" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          className="dlg-fade fixed inset-0 z-[101] outline-none"
+          onKeyDown={(e) => {
+            if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+            e.preventDefault();
+            go(at + (e.key === "ArrowRight" ? 1 : -1));
+          }}
+        >
+          <Dialog.Title className="sr-only">{p.title}</Dialog.Title>
+          <div
+            ref={track}
+            data-lenis-prevent
+            onScroll={(e) => {
+              const t = e.currentTarget;
+              const k = Math.round(t.scrollLeft / t.clientWidth);
+              if (k !== at && k >= 0 && k < SLIDES.length) setAt(k);
+            }}
+            className="flex h-dvh snap-x snap-mandatory overflow-x-auto overscroll-contain [scrollbar-width:none]"
+          >
+            {SLIDES.map((sl, k) => (
+              <div key={sl.src} className="grid h-full w-full shrink-0 snap-center snap-always place-items-center px-3 pt-16 pb-32 sm:px-20">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={sl.src}
+                  alt={sl.alt}
+                  loading={Math.abs(k - at) <= 1 ? "eager" : "lazy"}
+                  draggable={false}
+                  className="max-h-full max-w-full rounded-[10px] object-contain outline outline-1 -outline-offset-1 outline-white/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] select-none"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-2 px-4 pb-[max(20px,env(safe-area-inset-bottom))] text-center text-white">
+            <p className="text-body-lg leading-tight font-bold">{p.title}</p>
+            <p className="text-small text-white/75">
+              {p.sub}
+              {s.pages > 1 && ` · ${s.page === 0 ? "фото" : "отзыв"}`}
+            </p>
+            {s.pages > 1 ? (
+              <span className="mt-1 flex items-center gap-2" aria-label={`${s.page + 1} из ${s.pages}`}>
+                {Array.from({ length: s.pages }, (_, j) => (
+                  <i key={j} className={`block h-1.5 rounded-full transition-[width,background-color] duration-300 ease-out ${j === s.page ? "w-6 bg-white" : "w-1.5 bg-white/40"}`} />
+                ))}
+              </span>
+            ) : (
+              <span className="num text-caption text-white/55">
+                {p.title && `${PHOTOS.indexOf(p) + 1} / ${PHOTOS.length}`}
+              </span>
+            )}
+          </div>
+
+          {/* desktops: arrows at the sides; phones swipe */}
+          <button type="button" aria-label="Назад" disabled={at === 0} onClick={() => go(at - 1)} className="absolute top-1/2 left-5 hidden size-12 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 disabled:cursor-default disabled:opacity-25 pointer-fine:grid">
+            <ChevronLeft className="size-6" strokeWidth={2} nonScalingStroke />
+          </button>
+          <button type="button" aria-label="Дальше" disabled={at === SLIDES.length - 1} onClick={() => go(at + 1)} className="absolute top-1/2 right-5 hidden size-12 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 disabled:cursor-default disabled:opacity-25 pointer-fine:grid">
+            <ChevronRight className="size-6" strokeWidth={2} nonScalingStroke />
+          </button>
+          <Dialog.Close aria-label="Закрыть" className="absolute top-3 right-3 grid size-11 cursor-pointer place-items-center rounded-full bg-white text-black transition-colors hover:bg-accent-fill hover:text-white sm:top-5 sm:right-5">
+            <X className="size-5" strokeWidth={2.5} nonScalingStroke />
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
+
+const VOL_KEY = "review-volume";
+
+/**
  * The full-screen feed: one video per screen, swipe (or scroll, arrows, keys) up and down between them; native scroll
  * snapping does the motion. Only the video on screen plays; its neighbours fetch their first bytes.
- * Opened by a tap, so it starts with sound. Closes with the cross, Esc, or the browser's / phone's back.
+ * Opened by a tap, so it starts with sound, at a moderate level the reader can change (remembered for next time).
+ * Closes with the cross, Esc, or the browser's / phone's back. The first time, a hint shows how to move on.
  */
 function Feed({ start, onClose }: { start: number | null; onClose: () => void }) {
   const open = start !== null;
   const [cur, setCur] = useState(0);
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(0.6);
+  const [canVolume, setCanVolume] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [waiting, setWaiting] = useState(false);
+  const [hint, setHint] = useState(false);
   const feed = useRef<HTMLDivElement>(null);
   const vids = useRef<(HTMLVideoElement | null)[]>([]);
   const bar = useRef<HTMLDivElement>(null);
   const userPaused = useRef(false);
   const pick = useVideoSrc();
+
+  // the level the reader chose last time; iPhones only take the side buttons, so there the slider stays away
+  useEffect(() => {
+    const a = document.createElement("audio");
+    a.volume = 0.5;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCanVolume(a.volume === 0.5);
+    const saved = Number(localStorage.getItem(VOL_KEY));
+    if (saved > 0 && saved <= 1) setVolume(saved);
+  }, []);
 
   // the phone's back button closes the feed instead of leaving the page
   useEffect(() => {
@@ -255,11 +344,12 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
     };
   }, [open, onClose]);
 
-  // open on the chosen video, without scrolling through the others
+  // open on the chosen video, without scrolling through the others; the hint until the reader has moved on once
   useLayoutEffect(() => {
     if (start === null) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCur(start);
+    setHint(localStorage.getItem("feed-hint") !== "seen");
     userPaused.current = false;
     const place = () => {
       const f = feed.current;
@@ -269,6 +359,13 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
     requestAnimationFrame(place);
   }, [start]);
 
+  // the hint steps aside by itself after a few seconds
+  useEffect(() => {
+    if (!hint) return;
+    const t = setTimeout(() => setHint(false), 4200);
+    return () => clearTimeout(t);
+  }, [hint]);
+
   const onScroll = () => {
     const f = feed.current;
     if (!f) return;
@@ -276,13 +373,15 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
     if (k !== cur && k >= 0 && k < N) {
       userPaused.current = false;
       setCur(k);
+      setHint(false);
+      localStorage.setItem("feed-hint", "seen");
     }
   };
 
   const goTo = useCallback((k: number) => {
     const f = feed.current;
     if (!f || k < 0 || k >= N) return;
-    f.scrollTo({ top: k * f.clientHeight, behavior: calmNow() ? "auto" : "smooth" });
+    f.scrollTo({ top: k * f.clientHeight, behavior: smooth() });
   }, []);
 
   // the video on screen plays, every other one stops and rewinds
@@ -291,6 +390,7 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
     vids.current.forEach((v, k) => {
       if (!v) return;
       if (k === cur) {
+        v.volume = volume;
         v.muted = muted;
         if (!userPaused.current && v.paused)
           v.play().catch(() => {
@@ -304,7 +404,7 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
         v.currentTime = 0;
       }
     });
-  }, [cur, open, muted]);
+  }, [cur, open, muted, volume]);
 
   // the progress line of the video on screen
   useEffect(() => {
@@ -318,6 +418,16 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [open, playing, cur]);
+
+  const setLevel = (x: number) => {
+    setVolume(x);
+    setMuted(x === 0);
+    if (x > 0) localStorage.setItem(VOL_KEY, String(x));
+  };
+  const toggleMute = () => {
+    if (muted && volume === 0) setVolume(0.6);
+    setMuted((m) => !m);
+  };
 
   const toggle = () => {
     const v = vids.current[cur];
@@ -342,10 +452,11 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
   const onKey = (e: React.KeyboardEvent) => {
     const v = vids.current[cur];
     const k = e.key;
+    if ((e.target as HTMLElement).tagName === "INPUT" && (k === "ArrowLeft" || k === "ArrowRight")) return;
     if (k === "ArrowDown" || k === "PageDown" || k === "j") goTo(cur + 1);
     else if (k === "ArrowUp" || k === "PageUp" || k === "k") goTo(cur - 1);
     else if (k === " ") toggle();
-    else if (k === "m") setMuted((m) => !m);
+    else if (k === "m") toggleMute();
     else if (v && k === "ArrowRight") v.currentTime = Math.min(v.duration || 0, v.currentTime + 5);
     else if (v && k === "ArrowLeft") v.currentTime = Math.max(0, v.currentTime - 5);
     else return;
@@ -353,6 +464,8 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
   };
 
   const it = VIDEOS[cur];
+  const lvl = muted ? 0 : volume;
+  const [volKey, VolIcon] = lvl === 0 ? (["off", VolumeX] as const) : lvl < 0.5 ? (["low", Volume1] as const) : (["high", Volume2] as const);
 
   return (
     <Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
@@ -378,6 +491,10 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
                     preload={k === cur ? "auto" : "metadata"}
                     aria-label={`Видеоотзыв: ${v.title}`}
                     onClick={toggle}
+                    onLoadedMetadata={(e) => {
+                      e.currentTarget.volume = volume;
+                      e.currentTarget.muted = muted;
+                    }}
                     onPlay={() => k === cur && setPlaying(true)}
                     onPause={() => k === cur && setPlaying(false)}
                     onWaiting={() => k === cur && setWaiting(true)}
@@ -395,10 +512,27 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
             <span className="num rounded-full bg-black/55 px-3 py-1.5 text-small text-white">
               {cur + 1} / {N}
             </span>
-            <span className="pointer-events-auto flex gap-2">
-              <button type="button" aria-label={muted ? "Включить звук" : "Выключить звук"} onClick={() => setMuted((m) => !m)} className="grid size-11 cursor-pointer place-items-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/75">
-                <IconSwap id={muted ? "off" : "on"}>{muted ? <VolumeX className="size-5" strokeWidth={2} nonScalingStroke /> : <Volume2 className="size-5" strokeWidth={2} nonScalingStroke />}</IconSwap>
-              </button>
+            <span className="pointer-events-auto flex items-center gap-2">
+              <span className="flex items-center gap-1 rounded-full bg-black/55 pr-1 text-white">
+                <button type="button" aria-label={lvl === 0 ? "Включить звук" : "Выключить звук"} onClick={toggleMute} className="grid size-11 cursor-pointer place-items-center rounded-full">
+                  <IconSwap id={volKey}>
+                    <VolIcon className="size-5" strokeWidth={2} nonScalingStroke />
+                  </IconSwap>
+                </button>
+                {canVolume && (
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.02}
+                    value={lvl}
+                    onChange={(e) => setLevel(Number(e.target.value))}
+                    aria-label="Громкость"
+                    className="vp-range mr-3 w-20 sm:w-24"
+                    style={{ ["--lvl" as string]: `${lvl * 100}%` }}
+                  />
+                )}
+              </span>
               <Dialog.Close aria-label="Закрыть" className="grid size-11 cursor-pointer place-items-center rounded-full bg-white text-black transition-colors hover:bg-accent-fill hover:text-white">
                 <X className="size-5" strokeWidth={2.5} nonScalingStroke />
               </Dialog.Close>
@@ -406,12 +540,28 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
           </div>
 
           {/* centre: paused or loading */}
-          {!playing && !waiting && (
+          {!playing && !waiting && !hint && (
             <button type="button" aria-label="Смотреть" onClick={toggle} className="absolute top-1/2 left-1/2 grid size-20 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-accent-fill text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
               <Play className="ml-1 size-8" fill="currentColor" strokeWidth={0} />
             </button>
           )}
           {waiting && playing && <span aria-hidden className="pointer-events-none absolute top-1/2 left-1/2 size-12 -translate-x-1/2 -translate-y-1/2 animate-spin rounded-full border-[3px] border-white/30 border-t-white" />}
+
+          {/* how to move on: a finger drawing the swipe on phones, the wheel and keys on desktops (shown until used once) */}
+          {hint && N > 1 && (
+            <button type="button" onClick={() => setHint(false)} className="feed-hint absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer flex-col items-center gap-3 rounded-[22px] border border-white/15 bg-black/45 px-7 py-6 text-white backdrop-blur-md">
+              <span aria-hidden className="relative grid h-24 w-14 place-items-center">
+                <span className="feed-hint-trail absolute inset-x-[22px] top-2 bottom-8 rounded-full bg-gradient-to-t from-white/0 via-white/35 to-white/0" />
+                <Pointer className="feed-hint-finger size-10 pointer-fine:hidden" strokeWidth={1.75} nonScalingStroke />
+                <ChevronUp className="feed-hint-finger size-10 pointer-coarse:hidden" strokeWidth={2} nonScalingStroke />
+              </span>
+              <span className="text-ui font-bold">
+                <span className="pointer-fine:hidden">Листайте вверх</span>
+                <span className="pointer-coarse:hidden">Колесо мыши или стрелки ↑ ↓</span>
+              </span>
+              <span className="text-small text-white/75">Ещё {N - 1} видео</span>
+            </button>
+          )}
 
           {/* bottom: who, what car, the scrub line */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pt-16 pb-[max(16px,env(safe-area-inset-bottom))] [background:linear-gradient(0deg,rgba(0,0,0,0.75),transparent)] sm:px-6 sm:pb-6">
@@ -454,14 +604,6 @@ function Feed({ start, onClose }: { start: number | null; onClose: () => void })
               <ChevronDown className="size-6" strokeWidth={2} nonScalingStroke />
             </button>
           </div>
-
-          {/* on the first video: the rest are a swipe away */}
-          {cur === 0 && N > 1 && (
-            <p className="pointer-events-none absolute bottom-36 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/55 px-3.5 py-2 text-small font-bold whitespace-nowrap text-white pointer-fine:hidden">
-              <ChevronUp className="size-4" strokeWidth={2.5} nonScalingStroke />
-              Листайте вверх: ещё {N - 1}
-            </p>
-          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

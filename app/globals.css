@@ -641,15 +641,12 @@ html[data-intro="play"] :is(.header-in, .split-panel) {
   cursor: pointer;
   transition: background 0.2s;
 }
-/* a finger needs about 44 px; phones set the volume with their own buttons, so the slider goes */
+/* a finger needs about 44 px (iPhones keep the volume to their side buttons: the feed leaves the slider out there) */
 @media (pointer: coarse) {
   .vp-btn {
     flex-shrink: 0;
     width: 44px;
     height: 44px;
-  }
-  .vp-range {
-    display: none;
   }
 }
 /* the open phone menu covers the page: the floating bars at the bottom wait until it closes */
@@ -1383,4 +1380,77 @@ html {
 .no-grain {
   position: relative;
   z-index: 45;
+}
+
+/* the feed's first-time hint: the glass card settles in, the finger draws the swipe up, again and again */
+.feed-hint {
+  animation: feed-hint-in 0.45s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+.feed-hint-finger {
+  animation: feed-hint-swipe 1.6s cubic-bezier(0.45, 0, 0.2, 1) 0.3s infinite;
+}
+.feed-hint-trail {
+  transform-origin: bottom;
+  animation: feed-hint-trail 1.6s cubic-bezier(0.45, 0, 0.2, 1) 0.3s infinite;
+}
+@keyframes feed-hint-in {
+  from {
+    opacity: 0;
+    scale: 0.94;
+  }
+}
+@keyframes feed-hint-swipe {
+  0% {
+    translate: 0 26px;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    translate: 0 -22px;
+    opacity: 1;
+  }
+  100% {
+    translate: 0 -26px;
+    opacity: 0;
+  }
+}
+@keyframes feed-hint-trail {
+  0%,
+  15% {
+    scale: 1 0;
+    opacity: 0;
+  }
+  70% {
+    scale: 1 1;
+    opacity: 1;
+  }
+  100% {
+    scale: 1 1;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feed-hint,
+  .feed-hint-finger,
+  .feed-hint-trail {
+    animation: none;
+  }
+}
+
+/* the volume slider under a finger: a bigger thumb, the box as tall as the buttons */
+@media (pointer: coarse) {
+  .vp-range {
+    height: 44px;
+  }
+  .vp-range::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+    margin-top: -8px;
+  }
+  .vp-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+  }
 }
