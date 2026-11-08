@@ -1,4 +1,4 @@
-:HL["/nj-motors-demo/_next/static/chunks/3lebt0-loo9jq.css","style"]
+:HL["/nj-motors-demo/_next/static/chunks/1af18gomn4o1j.css","style"]
 2:[["children",{"s":"__PAGE__","h":160}]]
 1:[["children",{"s":"/_not-found","h":96,"c":"$Q2"}]]
-0:{"b":"uv9VeyG4ECWy-LpQVYkOy","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"yA7oCggs29JVJD-gEPwDD","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
